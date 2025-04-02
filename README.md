@@ -3,7 +3,7 @@
 ## 1. Introduction
 Ce cahier des charges décrit le développement d'un système de pop-up pour la prise de commandes sur les sites e-commerce. Ce système devra être compatible avec toutes les plateformes e-commerce, intégrer 10 tables de données, synchroniser les commandes avec Google Sheets et envoyer des notifications par email lorsqu'une commande est passée.
 
----
+
 
 ## 2. Objectifs
 - Affichage d'un pop-up de commande interactif sur toutes les plateformes e-commerce.

@@ -1,0 +1,256 @@
+{
+  "nav": {
+    "1": "À propos",
+    "2": "Menu",
+    "3": "SpectacleDîner",
+    "4": "Galerie",
+    "5": "Contact",
+    "6": "TableLivre"
+  },
+  "header": {
+    "t1": "Bienvenue dans notre restaurant !",
+    "t2": "Des boissons rafraîchissantes servies ici !",
+    "t3": "Nos chefs créent la perfection !",
+    "t4": "Nos plats sont délicieux !",
+    "5": "Réserver une table",
+    "6": "Lounge Le Bureau"
+  },
+  "about": {
+    "1": "Notre histoire",
+    "2": "Restaurant Lounge Le Bureau à Fès, Maroc, propose une cuisine raffinée mettant en valeur des ingrédients locaux et de saison. Sous la direction d'un chef passionné, le restaurant offre une expérience gastronomique unique dans un cadre élégant et intime, avec une attention particulière pour chaque invité afin de rendre chaque repas inoubliable.",
+    "3": "Nous nous efforçons de respecter les produits avec beaucoup de rigueur et de précision.",
+    "4": "Savourez la générosité et l'ingéniosité du chef étoilé.",
+    "5": "Découvrez notre restaurant qui propose une large gamme de vins de qualité."
+  },
+  "gallery": {
+    "1": "Nos Plats",
+    "1t": "PETIT-DÉJEUNER AVEC LES",
+    "1s": "ARÔMES DE CAFÉ",
+    "1h": "FRAIS",
+    "1d": "Commencez votre journée au cœur de Venise",
+    "2t": "DÎNER DANS UN",
+    "2s": "CADRE",
+    "2h": "ROMANTIQUE",
+    "2d": "Vivez la magie des nuits vénitiennes",
+    "3t": "EXCELLENCE",
+    "3s": "CULINAIRE",
+    "3d": "Découvrez notre monde de saveurs exquises",
+    "3b": "Explorez Notre Plats",
+    "4": "Notre Galerie Culinaire",
+    "5": "Explorez nos plats signature et créations"
+  },
+  "menu": {
+    "title": "Menu",
+    "sections": {
+      "salads": "Salades",
+      "hotStarters": "Entrées Chaudes",
+      "starters": "Entrées",
+      "traditional": "Plats Traditionnels",
+      "pizza": "Pizza au Feu de Bois",
+      "pasta": "Pâtes Italiennes",
+      "meatAndPoultry": "Viandes et Volailles",
+      "fish": "Poissons"
+    },
+    "salads": {
+      "richBureau": {
+        "name": "Salade Riche du Bureau",
+        "description": "Salade mesclun, avocat, crevettes, cœur de palmier, maïs, poivron grillé, charcuterie, tomate fraîche"
+      },
+      "market": {
+        "name": "Salade du Marché",
+        "description": "Laitue verte, tomate fraîche, carotte râpée, haricot vert, concombre, pomme de terre, maïs, poivron, œufs durs, thon, oignon"
+      },
+      "caesar": {
+        "name": "Salade César",
+        "description": "Tendance César, volaille, parmesan, tomate confite, anchois"
+      }
+    },
+    "specialties": {
+      "cheeseSlate": "Ardoise de Fromages",
+      "beefCarpaccio": "Carpaccio de Bœuf",
+      "avocadoShrimp": {
+        "name": "Avocat Sauce Cocktail aux Crevettes"
+      }
+    },
+    "hotStarters": {
+      "gratineeEggplant": "Aubergine Gratinée",
+      "seafoodGratin": "Gratin de Fruits de Mer",
+      "legumesGratin": "Gratin de Légumes",
+      "pilPilShrimp": "Crevettes Pil Pil à l'Andalouse",
+      "vegetableSoup": "Soupe de Légumes",
+      "fishSoup": "Soupe de Poisson"
+    },
+    "starters": {
+      "moroccanSalad": {
+        "name": "Salade Marocaine",
+        "description": "Tomate, oignon, thon"
+      },
+      "aubergineSalad": "Salade d'Aubergines",
+      "brioatesAssortment": "Assortiment de Briouates",
+      "chickenPastilla": "Pastilla au Poulet",
+      "seafoodPastilla": "Pastilla aux Fruits de Mer",
+      "harira": "Soupe Marocaine Traditionnelle (Harira)"
+    },
+    "pizza": {
+      "margherita": {
+        "name": "Margherita",
+        "description": "Sauce tomate, mozzarella, basilic"
+      },
+      "seafood": {
+        "name": "Fruits de Mer",
+        "description": "Sauce tomate, mozzarella, crevettes, calamar, moules, basilic, origan"
+      },
+      "fourCheeses": {
+        "name": "4 Fromages",
+        "description": "Ricotta, mozzarella, bleu, fontal, parmesan"
+      },
+      "bureau": {
+        "name": "Pizza Le Bureau",
+        "description": "Sauce tomate, mozzarella, viande hachée, jambon de dinde fumé, champignons de Paris, origan"
+      },
+      "custom": {
+        "name": "Pizza au Choix",
+        "description": "Composition selon la demande du client"
+      }
+    },
+    "pasta": {
+      "penneToscana": {
+        "name": "Penne alla Toscana",
+        "description": "Jambon de dinde fumé, champignons, épinards, basilic"
+      },
+      "tagliatelleAlfredo": {
+        "name": "Tagliatelles Alfredo",
+        "description": "Poulet sauté, crème fraîche, origan"
+      },
+      "linguineMamma": {
+        "name": "Linguine della Mamma",
+        "description": "Thon, champignons, sauce tomate"
+      },
+      "spaghettiPuttanesca": {
+        "name": "Spaghetti Puttanesca",
+        "description": "Anchois salés, tomate cerise, olives noires, basilic, huile d’olive"
+      },
+      "spaghettiDelmare": {
+        "name": "Spaghetti Delmare",
+        "description": "Calamar, crevettes, moules, tomate cerise, huile d’olive, basilic"
+      }
+    },
+    "traditional": {
+      "beefTagine": {
+        "name": "Tajine de Bœuf",
+        "description": "Aux oignons et aux amandes"
+      },
+      "meatballTagine": {
+        "name": "Tajine de Boulettes de Viande",
+        "description": "Sauce tomate et œuf"
+      },
+      "chickenTagine": {
+        "name": "Tajine de Poulet",
+        "description": "Aux citrons confits et olives"
+      },
+      "moroccanTagine": {
+        "name": "Tajine de Poisson à la Marocaine",
+        "description": "Selon l’arrivage du jour"
+      },
+      "couscous": {
+        "beef": "Couscous au Bœuf",
+        "chicken": "Couscous au Poulet",
+        "vegetable": "Couscous aux Légumes",
+        "moroccan": {
+          "name": "Couscous à la Marocaine",
+          "description": "Semoule, oignon et raisins caramélisés, pois chiches"
+        }
+      },
+      "seffa": {
+        "name": "Seffa aux Cheveux d'Ange",
+        "description": "Bœuf ou Poulet",
+        "ingredients": "Vermicelles très fins, fruits secs, raisins, amandes, dattes"
+      }
+    },
+    "meatAndPoultry": {
+      "beefFillet": {
+        "name": "Filet de Bœuf",
+        "description": "220G"
+      },
+      "beefSteak": {
+        "name": "Steak de Bœuf",
+        "description": "220G"
+      },
+      "ossoBucco": {
+        "name": "Osso Bucco",
+        "description": "Jarret de veau au four"
+      },
+      "mincedBeef": {
+        "name": "Viande Hachée de Bœuf",
+        "description": "Champignons de Paris"
+      },
+      "chickenCutlet": {
+        "name": "Escalope de Poulet Panée"
+      },
+      "lemonChicken": {
+        "name": "Escalope de Poulet au Citron"
+      },
+      "mincedChicken": {
+        "name": "Viande Hachée de Poulet",
+        "description": "Deux champignons d’Asie"
+      },
+      "moroccanSkewers": {
+        "name": "Brochettes de Poulet à la Marocaine"
+      },
+      "cordonBleu": {
+        "name": "Cordon Bleu de Poulet",
+        "description": "Sauce à l’estragon"
+      },
+      "accompaniments": {
+        "title": "Accompagnements",
+        "options": "Légumes ou Pâtes, Purée de Pommes de Terre, Frites Fraîches, Riz"
+      }
+    },
+    "fish": {
+      "dorade": {
+        "name": "Dorade Farcie au Four à Bois"
+      },
+      "saintPierre": {
+        "name": "Filet de Saint Pierre à la Marocaine"
+      },
+      "swordfish": {
+        "name": "Filet d’Espadon Grillé",
+        "description": "Sauce Verte à l’Huile d’Olive"
+      },
+      "salmon": {
+        "name": "Pavé de Saumon Grillé",
+        "description": "À la Marocaine"
+      }
+    },
+    "pricing": {
+      "salads": "À partir de 85 DH",
+      "hotStarters": "À partir de 70 DH",
+      "starters": "À partir de 70 DH",
+      "traditional": "À partir de 90 DH",
+      "pizza": "À partir de 70 DH",
+      "pasta": "À partir de 90 DH",
+      "meatAndPoultry": "À partir de 110 DH",
+      "fish": "À partir de 180 DH"
+    }
+  },
+  "book": {
+    "1": "Calendrier réservation"
+  },
+  "foot": {
+    "1": "CONTACTEZ-NOUS",
+    "2": "HEURES D'OUVERTURE",
+    "3": "ADRESSE",
+    "4": "À PROPOS",
+    "5": "Notre Histoire",
+    "6": "Menu",
+    "7": "DÉCOUVRIR",
+    "8": "Évènements",
+    "9": "Galerie",
+    "10": "INFORMATION",
+    "11": "Réservations",
+    "12": "Contact",
+    "13": "MENTIONS LÉGALES",
+    "14": "POLITIQUE DE CONFIDENTIALITÉ",
+    "15": "GESTION DES COOKIES"
+  }
+}

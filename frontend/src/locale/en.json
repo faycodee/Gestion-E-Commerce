@@ -1,0 +1,136 @@
+{
+  "nav": {
+    "1": "Home",
+    "2": "About Us",
+    "3": "Products",
+    "4": "FAQ",
+    "5": "Contact"
+  },
+  "header": {
+    "t1": "Welcome to our store!",
+    "t2": "Find what you love across categories!",
+    "t3": "Best quality products, handpicked for you.",
+    "t4": "Explore the latest trends and deals!",
+    "5": "Shop Now",
+    "6": "Your One-Stop Marketplace"
+  },
+  "about": {
+    "1": "Who We Are",
+    "2": "Our ecommerce platform offers a curated selection of products across categories including electronics, fashion, home decor, beauty, and more. We’re committed to quality, convenience, and customer satisfaction.",
+    "3": "We source products from trusted suppliers worldwide.",
+    "4": "Experience seamless shopping and fast delivery.",
+    "5": "Join our community of happy customers today."
+  },
+  "gallery": {
+    "1": "Product Highlights",
+    "1t": "MORNING TECH",
+    "1s": "WITH THE BEST",
+    "1h": "GADGETS",
+    "1d": "Start your day with the latest tech",
+    "2t": "STYLE UP",
+    "2s": "YOUR DAILY",
+    "2h": "LOOK",
+    "2d": "Fashion that speaks your personality",
+    "3t": "HOME &",
+    "3s": "LIVING",
+    "3d": "Make your space cozy and smart",
+    "3b": "Explore Collections",
+    "4": "Our Product Gallery",
+    "5": "Discover top-rated items and new arrivals"
+  },
+  "menu": {
+    "title": "Shop by Category",
+    "sections": {
+      "electronics": "Electronics",
+      "fashion": "Fashion",
+      "homeDecor": "Home & Living",
+      "beauty": "Beauty & Health",
+      "toys": "Toys & Kids",
+      "sports": "Sports & Outdoors"
+    },
+    "electronics": {
+      "smartphones": {
+        "name": "Smartphones",
+        "description": "Latest models from top brands"
+      },
+      "laptops": {
+        "name": "Laptops",
+        "description": "For work, play, and everything in between"
+      },
+      "headphones": {
+        "name": "Headphones",
+        "description": "Noise-cancelling and wireless options"
+      }
+    },
+    "fashion": {
+      "mensClothing": {
+        "name": "Men's Clothing",
+        "description": "Trendy and comfortable styles"
+      },
+      "womensClothing": {
+        "name": "Women's Clothing",
+        "description": "Elegant, casual, and everything in between"
+      },
+      "accessories": {
+        "name": "Accessories",
+        "description": "Watches, bags, sunglasses, and more"
+      }
+    },
+    "homeDecor": {
+      "furniture": {
+        "name": "Furniture",
+        "description": "Stylish and functional pieces"
+      },
+      "lighting": {
+        "name": "Lighting",
+        "description": "Create the perfect mood"
+      },
+      "kitchen": {
+        "name": "Kitchen Essentials",
+        "description": "Tools and gadgets for easy cooking"
+      }
+    },
+    "beauty": {
+      "skincare": {
+        "name": "Skincare",
+        "description": "Nourish and protect your skin"
+      },
+      "makeup": {
+        "name": "Makeup",
+        "description": "From subtle to glam"
+      },
+      "fragrance": {
+        "name": "Fragrances",
+        "description": "Signature scents for every style"
+      }
+    },
+    "pricing": {
+      "electronics": "Starting from 499 DH",
+      "fashion": "Starting from 129 DH",
+      "homeDecor": "Starting from 89 DH",
+      "beauty": "Starting from 59 DH",
+      "toys": "Starting from 39 DH",
+      "sports": "Starting from 99 DH"
+    }
+  },
+  "book": {
+    "1": "Track Your Orders"
+  },
+  "foot": {
+    "1": "CONTACT US",
+    "2": "CUSTOMER SERVICE",
+    "3": "OUR LOCATION",
+    "4": "ABOUT US",
+    "5": "Our Story",
+    "6": "Product Categories",
+    "7": "DISCOVER",
+    "8": "Blog & Tips",
+    "9": "Gallery",
+    "10": "INFO",
+    "11": "Shipping & Returns",
+    "12": "Contact",
+    "13": "TERMS & CONDITIONS",
+    "14": "PRIVACY POLICY",
+    "15": "COOKIE SETTINGS"
+  }
+}

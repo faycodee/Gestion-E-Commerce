@@ -122,7 +122,7 @@ const Home = () => {
 
   const handleMouseLeave = () => {
     gsap.to(buttonRef.current, {
-      backgroundColor: "#FF6347",
+      backgroundColor: "#4A90E2",
       color: "#fff",
       scale: 1,
       rotation: 0,
@@ -298,7 +298,7 @@ const Home = () => {
             onMouseLeave={handleMouseLeave}
             onClick={() => (location.href = "#book")}
             style={{
-              backgroundColor: "#FF6347",
+              backgroundColor: "#4A90E2",
               zIndex: 1000,
               position: "absolute",
               bottom: "110px",
@@ -330,7 +330,7 @@ const Home = () => {
                 onMouseLeave={handleMouseLeave}
                 onClick={() => (location.href = "#book")}
                 style={{
-                  backgroundColor: "#FF6347",
+                  backgroundColor: "#4A90E2",
                   zIndex: 1000,
                   position: "relative",
                   color: "#fff",

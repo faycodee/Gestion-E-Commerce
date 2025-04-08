@@ -1,10 +1,11 @@
 {
   "nav": {
     "1": "Home",
-    "2": "About Us",
-    "3": "Products",
+    "2": "Shop",
+    "3": "Categories",
     "4": "FAQ",
     "5": "Contact"
+    
   },
   "header": {
     "t1": "Welcome to our store!",
@@ -16,10 +17,11 @@
   },
   "about": {
     "1": "Who We Are",
-    "2": "Our ecommerce platform offers a curated selection of products across categories including electronics, fashion, home decor, beauty, and more. We’re committed to quality, convenience, and customer satisfaction.",
-    "3": "We source products from trusted suppliers worldwide.",
-    "4": "Experience seamless shopping and fast delivery.",
-    "5": "Join our community of happy customers today."
+    "2": "Founded in 2024, we began as a small passion project with a bigvision - to bring quality products from around the world to your doorstep. What started as a modest online shop has grown into a trusted e-commerce destination.",
+    "3": "Our journey has been guided by core values of quality, customer satisfaction, and innovation. We carefully curate our product selection to ensure every item meets our high standards.",
+    "4": "Happy Customers",
+    "5": "Customer Support",
+    "6": "Secure Payments"
   },
   "gallery": {
     "1": "Product Highlights",

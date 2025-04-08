@@ -47,8 +47,8 @@ ________________________________________
 ________________________________________
 3. Technologies utilisées
 •	Front-end : React.js, Tailwind CSS, GSAP.
-•	Back-end : Laravel ou Node.js.
-•	Base de données : MySQL ou PostgreSQL.
+•	Back-end : Laravel .
+•	Base de données : MySQL .
 •	Paiement : Stripe, PayPal (option).
 •	Intégrations : Google Sheets, WhatsApp API, Zapier.
 •	Hébergement : Hostinger ou DigitalOcean.

@@ -1,17 +1,30 @@
 import React, { useState, useRef } from "react";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { MdOutlineRestaurantMenu } from "react-icons/md";
+import { Link } from "react-router-dom";
+import {
+  RiMenu3Line,
+  RiCloseLine,
+  RiShoppingBag2Line,
+  RiSearchLine,
+  RiUser3Line,
+  RiHeartLine,
+} from "react-icons/ri";
 import { gsap } from "gsap";
 import images from "../constants/images";
-
-
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
-  const [t, i18n] = useTranslation();
+  const { t } = useTranslation();
   const buttonRef = useRef(null);
   const [toggleMenu, setToggleMenu] = useState(false);
+
+  const navLinks = [
+    { to: "/", text: t("nav.1") }, // Home
+    { to: "/shop", text: t("nav.2") }, // Shop
+    { to: "/categories", text: t("nav.3") }, // Category
+    { to: "/faq", text: t("nav.4") }, // FAQ
+    { to: "/contact", text: t("nav.5") }, // Contact
+  ];
 
   const handleMouseEnter = () => {
     gsap.to(buttonRef.current, {
@@ -38,153 +51,82 @@ const Navbar = () => {
   };
 
   return (
-    <nav
-      style={{ position: "fixed", zIndex: 100 }}
-      className="z-nav fixed w-full flex justify-between my-3 items-center
-       text-white h-[50px] bg-transparent backdrop-blur-2xl sm:px-8 sm:py-4 p-4"
-    >
-      <div className="flex justify-start items-center">
-        <img
-          src={images.logo}
-          onClick={() => (window.location.href = "#home")}
-          alt="app logo"
-          className="h-auto w-[50px] max-md:w-[50px] "
-        />
+    <nav className="fixed z-50 w-full flex justify-between items-center px-6 py-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-sm">
+      <div className="flex items-center gap-2">
+        <Link to="/">
+          <img
+            src={images.logo}
+            alt="Store logo"
+            className="h-8 w-auto cursor-pointer"
+          />
+        </Link>
       </div>
-      <ul className="lg:flex hidden justify-center items-center flex-1 duration-300 gap-2">
-        <li className="">
-          <a
-            className="text-darkBackground dark:text-background my-0 mx-1 duration-150 cursor-pointer p-1 font-mono hover:outline-dashed  
-            hover:text-slate-700"
-            href="#about"
-          >
-            {t("nav.1")}
-          </a>
-        </li>
 
-        <li className="">
-          <a
-            className="text-darkBackground dark:text-background my-0 mx-1 duration-150 cursor-pointer p-1 font-mono hover:outline-dashed  
-            hover:text-slate-700"
-            href="#gallery"
-          >
-            {t("nav.4")}
-          </a>
-        </li>
-        <li className="">
-          <a
-            className="text-darkBackground dark:text-background my-0 mx-1 duration-150 cursor-pointer p-1 font-mono hover:outline-dashed  
-            hover:text-slate-700"
-            href="#menu"
-          >
-            {t("nav.2")}
-          </a>
-        </li>
-        <li className="">
-          <a
-            className="text-darkBackground dark:text-background my-0 mx-1 duration-150 cursor-pointer p-1 font-mono hover:outline-dashed  
-            hover:text-slate-700"
-            href="#book"
-          >
-            {/* BookTable */}
-            {t("nav.6")}
-          </a>
-        </li>
-        <li className="">
-          <a
-            className="text-darkBackground dark:text-background my-0 mx-1 duration-150 cursor-pointer p-1 font-mono hover:outline-dashed  
-            hover:text-slate-700"
-            href="#contact"
-          >
-            {t("nav.5")}
-          </a>
-        </li>
+      {/* Desktop Navigation */}
+      <ul className="hidden lg:flex items-center space-x-8">
+        {navLinks.map((link) => (
+          <li key={link.to}>
+            <Link
+              to={link.to}
+              className="text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary-light transition-colors duration-200"
+            >
+              {link.text}
+            </Link>
+          </li>
+        ))}
       </ul>
-      <div className="sm:flex hidden justify-end items-center">
-  
-        <LanguageSwitcher />
+
+      {/* Right side icons */}
+      <div className="flex items-center space-x-4">
+        <button className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+          <LanguageSwitcher />
+          <RiUser3Line className="h-5 w-5" />
+        </button>
+        <button className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+          <RiHeartLine className="h-5 w-5" />
+        </button>
+        <button className="relative p-2 group">
+          <RiShoppingBag2Line className="h-5 w-5 text-gray-600 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-white transition-colors duration-200" />
+          <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center group-hover:bg-primary/90 transition-colors duration-200">
+            0
+          </span>
+        </button>
+
+        {/* Mobile menu button */}
+        <button
+          className="lg:hidden p-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+          onClick={() => setToggleMenu(!toggleMenu)}
+        >
+          <RiMenu3Line className="h-5 w-5" />
+        </button>
       </div>
 
-      <div className="flex lg:hidden">
-        <GiHamburgerMenu
-          className="text-background"
-          fontSize={27}
-          onClick={() => setToggleMenu(true)}
-        />
-        {toggleMenu && (
-          <div
-            className="slide-bottom fixed top-0 left-0 w-full h-[600px]
-           duration-500 flex flex-col z-10 text-background 
-            dark:text-darkBackground 
-            bg-darkBackground dark:bg-background backdrop-blur-2xl"
-          >
-            <MdOutlineRestaurantMenu
-              className="text-2xl  text-background
-              dark:text-darkBackground
-              absolute top-5 right-5 cursor-pointer p-1"
-              
-              fontSize={27}
+      {/* Mobile Navigation */}
+      {toggleMenu && (
+        <div className="fixed inset-0 bg-white dark:bg-gray-900 z-50 lg:hidden">
+          <div className="flex justify-end p-4">
+            <button
               onClick={() => setToggleMenu(false)}
-            />
-            <ul className="list-none mt-4 p-6">
-              <li className="font-mono m-4 hover:text-background/30 dark:hover:text-darkBackground/30 cursor-pointer p-1 text-golden text-4xl text-center hover:text-white">
-                <a href="#about" onClick={() => setToggleMenu(false)}>
-                  {t("nav.1")}
-                </a>
-                <img
-                  src={images.spoon}
-                  alt="spoon underline"
-                  className="h-[10px] w-24 mx-auto"
-                />
-              </li>
-              <li className="font-mono m-4 hover:text-background/30 dark:hover:text-darkBackground/30 cursor-pointer p-1 text-golden text-4xl text-center hover:text-white">
-                <a href="#gallery" onClick={() => setToggleMenu(false)}>
-                  {t("nav.4")}
-                </a>
-                <img
-                  src={images.spoon}
-                  alt="spoon underline"
-                  className="h-[10px] w-24 mx-auto"
-                />
-              </li>
-              <li className="font-mono m-4 hover:text-background/30 dark:hover:text-darkBackground/30 cursor-pointer p-1 text-golden text-4xl text-center hover:text-white">
-                <a href="#menu" onClick={() => setToggleMenu(false)}>
-                  {t("nav.2")}
-                </a>
-                <img
-                  src={images.spoon}
-                  alt="spoon underline"
-                  className="h-[10px] w-24 mx-auto"
-                />
-              </li>
-              <li className="font-mono m-4 hover:text-background/30 dark:hover:text-darkBackground/30 cursor-pointer p-1 text-golden text-4xl text-center hover:text-white">
-                <a href="#book" onClick={() => setToggleMenu(false)}>
-                  {t("nav.6")}
-                </a>
-                <img
-                  src={images.spoon}
-                  alt="spoon underline"
-                  className="h-[10px] w-24 mx-auto"
-                />
-              </li>
-              <li className="font-mono m-4 hover:text-background/30 dark:hover:text-darkBackground/30 cursor-pointer p-1 text-golden text-4xl text-center hover:text-white">
-                <a href="#contact" onClick={() => setToggleMenu(false)}>
-                  {t("nav.5")}
-                </a>
-                <img
-                  src={images.spoon}
-                  alt="spoon underline"
-                  className="h-[10px] w-24 mx-auto"
-                />
-              </li>
-            </ul>
-            <div className="flex justify-center">
-              <LanguageSwitcher />
-             
-            </div>{" "}
+              className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            >
+              <RiCloseLine className="h-6 w-6" />
+            </button>
           </div>
-        )}
-      </div>
+          <ul className="flex flex-col items-center space-y-8 pt-8">
+            {navLinks.map((link) => (
+              <li key={link.to}>
+                <Link
+                  to={link.to}
+                  onClick={() => setToggleMenu(false)}
+                  className="text-xl text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary-light"
+                >
+                  {link.text}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </nav>
   );
 };

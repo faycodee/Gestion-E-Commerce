@@ -2,21 +2,22 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-
 gsap.registerPlugin(ScrollTrigger);
 
-const MarqueeComponent = ({r}) => {
+const MarqueeComponent = ({ r }) => {
   const marqueeRef = useRef(null);
   const content = [
-    "Order Now! 🍔",
-    "Delicious Food Available! 🔥",
-    "Visit Our Restaurant! 🗺️",
-    "Drinks Available! 🍺"
+    "Shop Now! 🛍️",
+    "New Arrivals! ✨",
+    "Free Shipping on Orders Over $50! 🚚",
+    "Limited Time Offers! ⏰",
+    "Best Deals! 💯",
+    "24/7 Customer Support! 💬",
   ];
-  
+
   useEffect(() => {
     const marquee = marqueeRef.current;
-    
+
     gsap.to(marquee, {
       xPercent: -100,
       ease: "none",
@@ -25,8 +26,8 @@ const MarqueeComponent = ({r}) => {
         start: "top bottom",
         end: "bottom top",
         scrub: 1,
-        invalidateOnRefresh: true
-      }
+        invalidateOnRefresh: true,
+      },
     });
   }, []);
 
@@ -34,15 +35,18 @@ const MarqueeComponent = ({r}) => {
   const duplicatedContent = [...content, ...content];
 
   return (
-    <div className="relative w-screen overflow-hidden mt-20 py-8 transform  bg-darkBackground dark:bg-background " style={{rotate:r}}>
+    <div
+      className="relative w-screen overflow-hidden mt-20 py-8 transform  bg-darkBackground dark:bg-background "
+      style={{ rotate: r }}
+    >
       {/* Gradient overlays for professional look */}
       <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-darkBackground to-transparent z-10 dark:from-background" />
       <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-darkBackground to-transparent z-10 dark:from-background" />
-      
+
       <div
         ref={marqueeRef}
         className="flex whitespace-nowrap will-change-transform"
-        style={{ width: 'max-content' }}
+        style={{ width: "max-content" }}
       >
         {duplicatedContent.map((text, index) => (
           <div

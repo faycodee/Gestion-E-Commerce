@@ -47,11 +47,10 @@ const LanguageSwitcher = () => {
       <button
         onClick={toggleDropdown}
         className="flex items-center px-4 py-2 
-          text-background bg-darkBackground dark:text-darkBackground dark:bg-background 
-          dark:hover:bg-background/50 hover:bg-darkBackground/50  rounded-full transition-all duration-200"
+        rounded-full transition-all duration-200  text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
       >
-        <FaGlobe className="mr-2 text-[15px]" />
-        <span className="text-[10px]">{selectedLanguage}</span>
+      <FaGlobe className="mr-2 text-[15px]" />
+        {/* <span className="text-[10px]">{selectedLanguage}</span> */}
       </button>
 
       <div

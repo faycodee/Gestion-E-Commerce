@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import  React, {useState } from "react";
+import { BrowserRouter, Routes, Route, Link ,} from "react-router-dom";
 // import './i18n';
 import "./App.css";
 import { Home, Navbar, About } from "./components";
@@ -9,6 +9,7 @@ import CustomCursor from "./components/cursor";
 import HighlightsWelcome from "./components/highlightsWelcome";
 import Highlights from "./components/highlights";
 import Footer from "./components/Footer";
+// import Shopping from "../public/Shopping";
 // import Login from "./admin/Login";
 // import Dashboard from "./admin/dashboard";
 // import Edit from "./admin/Edit";
@@ -19,6 +20,7 @@ import Footer from "./components/Footer";
 const App = () => (
   <BrowserRouter>
     <CustomCursor />
+
     <DarkLightToggle />
     <div className="bg-background dark:bg-darkBackground ">
       <Navbar />

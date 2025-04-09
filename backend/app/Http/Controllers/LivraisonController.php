@@ -1,28 +1,55 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Http\Controllers;
 
-use App\Models\Livraison;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class LivraisonController
+class LivraisonController extends Controller
 {
-    public function createLivraison(array $data)
+    public function index()
     {
-        // Logic to create a new delivery
+        // Retrieve all livraison
+        $livraison = DB::table('livraison')->get();
+        return response()->json($livraison, 200);
     }
 
-    public function updateLivraison(int $id, array $data)
+    public function store(Request $request)
     {
-        // Logic to update an existing delivery
+        // Create a new livraison
+        $id = DB::table('livraison')->insertGetId($request->all());
+        $livraison = DB::table('livraison')->where('id', $id)->first();
+        return response()->json($livraison, 201);
     }
 
-    public function deleteLivraison(int $id)
+    public function show($id)
     {
-        // Logic to delete a delivery
+        // Retrieve a single livraison
+        $livraison = DB::table('livraison')->where('id', $id)->first();
+        if ($livraison) {
+            return response()->json($livraison, 200);
+        }
+        return response()->json(['error' => 'Livraison not found'], 404);
     }
 
-    public function getLivraison(int $id)
+    public function update(Request $request, $id)
     {
-        // Logic to retrieve a delivery by ID
+        // Update an existing livraison
+        $updated = DB::table('livraison')->where('id', $id)->update($request->all());
+        if ($updated) {
+            $livraison = DB::table('livraison')->where('id', $id)->first();
+            return response()->json($livraison, 200);
+        }
+        return response()->json(['error' => 'Livraison not found'], 404);
+    }
+
+    public function destroy($id)
+    {
+        // Delete a livraison
+        $deleted = DB::table('livraison')->where('id', $id)->delete();
+        if ($deleted) {
+            return response()->json(['message' => 'Livraison deleted'], 200);
+        }
+        return response()->json(['error' => 'Livraison not found'], 404);
     }
 }

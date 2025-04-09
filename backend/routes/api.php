@@ -9,6 +9,15 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FactureController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ProduitImageController;
+use App\Http\Controllers\PaysController;
+use App\Http\Controllers\VilleController;
+use App\Http\Controllers\CodePostalController;
+use App\Http\Controllers\PrivilegeController;
+use App\Http\Controllers\FournisseurController;
+use App\Http\Controllers\TvaController;
+use App\Http\Controllers\ReductionController;
+use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\CategorieImageController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -21,3 +30,12 @@ Route::apiResource('factures', FactureController::class);
 Route::apiResource('faqs', FaqController::class);
 Route::apiResource('livraisons', LivraisonController::class);
 Route::apiResource('produit-images', ProduitImageController::class);
+Route::apiResource('pays', PaysController::class);
+Route::apiResource('villes', VilleController::class);
+Route::apiResource('code-postaux', CodePostalController::class);
+Route::apiResource('privileges', PrivilegeController::class);
+Route::apiResource('fournisseurs', FournisseurController::class);
+Route::apiResource('tvas', TvaController::class);
+Route::apiResource('reductions', ReductionController::class);
+Route::apiResource('categories', CategorieController::class);
+Route::apiResource('categorie-images', CategorieImageController::class);

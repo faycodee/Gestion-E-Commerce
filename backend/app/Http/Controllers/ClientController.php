@@ -9,9 +9,9 @@ class ClientController extends Controller
 {
     public function index()
     {
-        // Retrieve all client
-        $client = DB::table('client')->get();
-        return response()->json($client, 200);
+        // Retrieve all clients
+        $clients = DB::table('client')->get();
+        return response()->json($clients, 200);
     }
 
     public function store(Request $request)

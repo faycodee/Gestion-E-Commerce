@@ -2,39 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Faq;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class FaqController
+class FaqController extends Controller
 {
-    public function createFaq(array $data)
+    public function index()
     {
-        $faq = new Faq($data);
-        $faq->save();
-        return $faq;
+        // Retrieve all faq
+        $faq = DB::table('faq')->get();
+        return response()->json($faq, 200);
     }
 
-    public function updateFaq(int $id, array $data)
+    public function store(Request $request)
     {
-        $faq = Faq::find($id);
+        // Create a new FAQ
+        $id = DB::table('faq')->insertGetId($request->all());
+        $faq = DB::table('faq')->where('id', $id)->first();
+        return response()->json($faq, 201);
+    }
+
+    public function show($id)
+    {
+        // Retrieve a single FAQ
+        $faq = DB::table('faq')->where('id', $id)->first();
         if ($faq) {
-            $faq->update($data);
-            return $faq;
+            return response()->json($faq, 200);
         }
-        return null;
+        return response()->json(['error' => 'FAQ not found'], 404);
     }
 
-    public function deleteFaq(int $id)
+    public function update(Request $request, $id)
     {
-        $faq = Faq::find($id);
-        if ($faq) {
-            $faq->delete();
-            return true;
+        // Update an existing FAQ
+        $updated = DB::table('faq')->where('id', $id)->update($request->all());
+        if ($updated) {
+            $faq = DB::table('faq')->where('id', $id)->first();
+            return response()->json($faq, 200);
         }
-        return false;
+        return response()->json(['error' => 'FAQ not found'], 404);
     }
 
-    public function getFaq(int $id)
+    public function destroy($id)
     {
-        return Faq::find($id);
+        // Delete a FAQ
+        $deleted = DB::table('faq')->where('id', $id)->delete();
+        if ($deleted) {
+            return response()->json(['message' => 'FAQ deleted'], 200);
+        }
+        return response()->json(['error' => 'FAQ not found'], 404);
     }
 }

@@ -1,26 +1,55 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Http\Controllers;
 
-class CommandeController
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class CommandeController extends Controller
 {
-    public function createCommande()
+    public function index()
     {
-        // Logic to create a new order
+        // Retrieve all commandes
+        $commandes = DB::table('commande')->get();
+        return response()->json($commandes, 200);
     }
 
-    public function updateCommande($id)
+    public function store(Request $request)
     {
-        // Logic to update an existing order by ID
+        // Create a new commande
+        $id = DB::table('commande')->insertGetId($request->all());
+        $commande = DB::table('commande')->where('id', $id)->first();
+        return response()->json($commande, 201);
     }
 
-    public function deleteCommande($id)
+    public function show($id)
     {
-        // Logic to delete an order by ID
+        // Retrieve a single commande
+        $commande = DB::table('commande')->where('id', $id)->first();
+        if ($commande) {
+            return response()->json($commande, 200);
+        }
+        return response()->json(['error' => 'Commande not found'], 404);
     }
 
-    public function getCommande($id)
+    public function update(Request $request, $id)
     {
-        // Logic to retrieve an order by ID
+        // Update an existing commande
+        $updated = DB::table('commande')->where('id', $id)->update($request->all());
+        if ($updated) {
+            $commande = DB::table('commande')->where('id', $id)->first();
+            return response()->json($commande, 200);
+        }
+        return response()->json(['error' => 'Commande not found'], 404);
+    }
+
+    public function destroy($id)
+    {
+        // Delete a commande
+        $deleted = DB::table('commande')->where('id', $id)->delete();
+        if ($deleted) {
+            return response()->json(['message' => 'Commande deleted'], 200);
+        }
+        return response()->json(['error' => 'Commande not found'], 404);
     }
 }

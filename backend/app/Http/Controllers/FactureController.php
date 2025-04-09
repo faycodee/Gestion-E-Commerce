@@ -1,44 +1,55 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Http\Controllers;
 
-use App\Models\Facture;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class FactureController
+class FactureController extends Controller
 {
-    public function createFacture(array $data)
+    public function index()
     {
-        // Logic to create a new invoice
-        $facture = new Facture($data);
-        $facture->save();
-        return $facture;
+        // Retrieve all facture
+        $facture = DB::table('facture')->get();
+        return response()->json($facture, 200);
     }
 
-    public function updateFacture(int $id, array $data)
+    public function store(Request $request)
     {
-        // Logic to update an existing invoice
-        $facture = Facture::find($id);
+        // Create a new facture
+        $id = DB::table('facture')->insertGetId($request->all());
+        $facture = DB::table('facture')->where('id', $id)->first();
+        return response()->json($facture, 201);
+    }
+
+    public function show($id)
+    {
+        // Retrieve a single facture
+        $facture = DB::table('facture')->where('id', $id)->first();
         if ($facture) {
-            $facture->update($data);
-            return $facture;
+            return response()->json($facture, 200);
         }
-        return null;
+        return response()->json(['error' => 'Facture not found'], 404);
     }
 
-    public function deleteFacture(int $id)
+    public function update(Request $request, $id)
     {
-        // Logic to delete an invoice
-        $facture = Facture::find($id);
-        if ($facture) {
-            $facture->delete();
-            return true;
+        // Update an existing facture
+        $updated = DB::table('facture')->where('id', $id)->update($request->all());
+        if ($updated) {
+            $facture = DB::table('facture')->where('id', $id)->first();
+            return response()->json($facture, 200);
         }
-        return false;
+        return response()->json(['error' => 'Facture not found'], 404);
     }
 
-    public function getFacture(int $id)
+    public function destroy($id)
     {
-        // Logic to retrieve an invoice
-        return Facture::find($id);
+        // Delete a facture
+        $deleted = DB::table('facture')->where('id', $id)->delete();
+        if ($deleted) {
+            return response()->json(['message' => 'Facture deleted'], 200);
+        }
+        return response()->json(['error' => 'Facture not found'], 404);
     }
 }

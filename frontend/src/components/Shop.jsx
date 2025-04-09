@@ -9,7 +9,6 @@ const Shop = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
-
   // Fetch products from the API
   useEffect(() => {
     const fetchProducts = async () => {

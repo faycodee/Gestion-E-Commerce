@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +11,6 @@ class ProduitController extends Controller
         $produit = DB::table('produit')->get();
         return response()->json($produit, 200);
     }
-
     public function store(Request $request)
     {
         $id = DB::table('produit')->insertGetId($request->all());

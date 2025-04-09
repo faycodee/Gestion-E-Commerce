@@ -8,6 +8,7 @@ use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FactureController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\ProduitImageController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -19,3 +20,4 @@ Route::apiResource('commandes', CommandeController::class);
 Route::apiResource('factures', FactureController::class);
 Route::apiResource('faqs', FaqController::class);
 Route::apiResource('livraisons', LivraisonController::class);
+Route::apiResource('produit-images', ProduitImageController::class);

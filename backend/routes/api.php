@@ -18,6 +18,13 @@ use App\Http\Controllers\TvaController;
 use App\Http\Controllers\ReductionController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\CategorieImageController;
+use App\Http\Controllers\PanierController;
+use App\Http\Controllers\LignePanierController;
+use App\Http\Controllers\PaiementController;
+use App\Http\Controllers\CommandePaiementController;
+use App\Http\Controllers\LigneFactureController;
+use App\Http\Controllers\LigneLivraisonController;
+use App\Http\Controllers\AvisController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -39,3 +46,10 @@ Route::apiResource('tvas', TvaController::class);
 Route::apiResource('reductions', ReductionController::class);
 Route::apiResource('categories', CategorieController::class);
 Route::apiResource('categorie-images', CategorieImageController::class);
+Route::apiResource('paniers', PanierController::class);
+Route::apiResource('ligne-paniers', LignePanierController::class);
+Route::apiResource('paiements', PaiementController::class);
+Route::apiResource('commande-paiements', CommandePaiementController::class);
+Route::apiResource('ligne-factures', LigneFactureController::class);
+Route::apiResource('ligne-livraisons', LigneLivraisonController::class);
+Route::apiResource('avis', AvisController::class);

@@ -1,5 +1,5 @@
-import  React, {useState } from "react";
-import { BrowserRouter, Routes, Route, Link ,} from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 // import './i18n';
 import "./App.css";
 import { Home, Navbar, About } from "./components";
@@ -9,13 +9,14 @@ import CustomCursor from "./components/cursor";
 import HighlightsWelcome from "./components/highlightsWelcome";
 import Highlights from "./components/highlights";
 import Footer from "./components/Footer";
+import Shop from "./components/Shop";
+import SingleProduct from "./components/SingleProduct";
 // import Shopping from "../public/Shopping";
 // import Login from "./admin/Login";
 // import Dashboard from "./admin/dashboard";
 // import Edit from "./admin/Edit";
 // import Add from "./admin/Add";
 // import Manag from "./admin/Manag";
-
 
 const App = () => (
   <BrowserRouter>
@@ -28,26 +29,19 @@ const App = () => (
         <Route
           path="/"
           element={
-            <>   
+            <>
               <Home />
               <MarqueeComponent r={"-2deg"} />
               <About />
               <HighlightsWelcome />
               <Highlights />
-  
-             
-             </> } />
+            </>
+          }
+        />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/about" element={<About />} />
-       
         <Route path="/footer" element={<Footer />} />
-        
-      
-       
-        {/* <Route path="/login" element={<Login />} />
-        <Route path="login/dashboard" element={<Dashboard />} />
-        <Route path="login/dashboard/add" element={<Add />} />
-        <Route path="login/dashboard/manag" element={<Manag />} />
-        <Route path="login/dashboard/manag/edit/:id" element={<Edit />}  /> */}
       </Routes>
       <Footer />
     </div>

@@ -72,7 +72,7 @@ const HighlightsWelcome = () => {
         <div id="clip" className="h-dvh w-screen">
           <div className="mask-clip-path about-video relative">
             <video
-              src="./videos/4.mp4"
+              src="./videos/5.mp4"
               muted
               autoPlay
               loop

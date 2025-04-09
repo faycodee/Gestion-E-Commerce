@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import RestaurantLoader from "./Loader";
 
 gsap.registerPlugin(ScrollTrigger);
-const totalVideos = 3;
+const totalVideos = 4;
 
 const Home = () => {
   const Mode = useSelector((state) => state.lightdark.mode);

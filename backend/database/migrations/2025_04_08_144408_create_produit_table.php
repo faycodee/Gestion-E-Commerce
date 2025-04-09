@@ -22,7 +22,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_tva');
             $table->unsignedBigInteger('id_reduction');
             $table->unsignedBigInteger('id_fournisseur');
-            
             // Foreign key constraints
             $table->foreign('id_categorie')->references('id')->on('categorie')->onDelete('cascade');
             $table->foreign('id_tva')->references('id')->on('tva')->onDelete('cascade');

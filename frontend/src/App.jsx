@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-// import './i18n';
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import { Home, Navbar, About } from "./components";
 import DarkLightToggle from "./components/darkLight";
@@ -11,19 +10,15 @@ import Highlights from "./components/highlights";
 import Footer from "./components/Footer";
 import Shop from "./components/Shop";
 import SingleProduct from "./components/SingleProduct";
-// import Shopping from "../public/Shopping";
-// import Login from "./admin/Login";
-// import Dashboard from "./admin/dashboard";
-// import Edit from "./admin/Edit";
-// import Add from "./admin/Add";
-// import Manag from "./admin/Manag";
+import Categories from "./components/Categories";
+import FAQ from "./components/FAQ";
+import Contact from "./components/Contact";
 
 const App = () => (
   <BrowserRouter>
     <CustomCursor />
-
     <DarkLightToggle />
-    <div className="bg-background dark:bg-darkBackground ">
+    <div className="bg-background dark:bg-darkBackground">
       <Navbar />
       <Routes>
         <Route
@@ -40,8 +35,9 @@ const App = () => (
         />
         <Route path="/shop" element={<Shop />} />
         <Route path="/product/:id" element={<SingleProduct />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/footer" element={<Footer />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />
     </div>

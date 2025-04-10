@@ -11,8 +11,8 @@ import Footer from "./components/Footer";
 import Shop from "./components/Shop";
 import SingleProduct from "./components/SingleProduct";
 import Categories from "./components/Categories";
-import FAQ from "./components/FAQ";
 import Contact from "./components/Contact";
+import Faq from "./components/FAQ";
 
 const App = () => (
   <BrowserRouter>
@@ -36,7 +36,8 @@ const App = () => (
         <Route path="/shop" element={<Shop />} />
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/categories" element={<Categories />} />
-        <Route path="/faq" element={<FAQ />} />
+        <Route path="/faq" element={<Faq />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />

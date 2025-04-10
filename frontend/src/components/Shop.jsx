@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { gsap } from "gsap";
 import { Link } from "react-router-dom";
+import { FaHeart, FaShoppingCart } from "react-icons/fa"; // Import icons
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -70,6 +71,28 @@ const Shop = () => {
     return image ? image.url : "/images/default.jpg"; // Default image if no match
   };
 
+  const addToFavorites = (product) => {
+    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    if (!favorites.some((fav) => fav.id === product.id)) {
+      favorites.push(product);
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+      alert(`${product.nom} added to Favorites!`);
+    } else {
+      alert(`${product.nom} is already in Favorites!`);
+    }
+  };
+
+  const addToCart = (product) => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    if (!cart.some((item) => item.id === product.id)) {
+      cart.push(product);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(`${product.nom} added to Cart!`);
+    } else {
+      alert(`${product.nom} is already in Cart!`);
+    }
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen p-8">
       <div className="text-center mb-8 mt-[50px]">
@@ -93,27 +116,45 @@ const Shop = () => {
         {currentProducts.map((product) => (
           <div
             key={product.id}
-            className="product-card bg-white shadow-lg rounded-lg p-4 hover:shadow-xl transition-shadow duration-300"
+            className="product-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
           >
             {/* Display product image */}
             <img
               src={getProductImage(product.id)}
               alt={product.nom}
-              className="w-full h-40 object-cover rounded-t-lg mb-4"
+              className="w-full h-48 object-cover"
             />
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              {product.nom}
-            </h2>
-            <p className="text-gray-600 mb-4">{product.description}</p>
-            <p className="text-lg font-bold text-gray-900 mb-2">
-              {product.prix} MAD
-            </p>
-            <Link
-              to={`/product/${product.id}`}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300 block text-center"
-            >
-              View Details
-            </Link>
+            <div className="p-4">
+              <h2 className="text-lg font-semibold text-gray-800 mb-2 truncate">
+                {product.nom}
+              </h2>
+              <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                {product.description}
+              </p>
+              <p className="text-lg font-bold text-gray-900 mb-4">
+                {product.prix} MAD
+              </p>
+              <div className="flex justify-between items-center space-x-2">
+                <button
+                  onClick={() => addToFavorites(product)}
+                  className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-300 w-1/2"
+                >
+                  <FaHeart className="mr-2" /> Favorites
+                </button>
+                <button
+                  onClick={() => addToCart(product)}
+                  className="flex items-center justify-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300 w-1/2"
+                >
+                  <FaShoppingCart className="mr-2" /> Cart
+                </button>
+              </div>
+              <Link
+                to={`/product/${product.id}`}
+                className="block bg-blue-500 text-white text-center px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 mt-4"
+              >
+                View Details
+              </Link>
+            </div>
           </div>
         ))}
       </div>

@@ -53,3 +53,4 @@ Route::apiResource('commande-paiements', CommandePaiementController::class);
 Route::apiResource('ligne-factures', LigneFactureController::class);
 Route::apiResource('ligne-livraisons', LigneLivraisonController::class);
 Route::apiResource('avis', AvisController::class);
+Route::apiResource('stocks', \App\Http\Controllers\StockController::class);

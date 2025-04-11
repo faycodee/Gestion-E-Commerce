@@ -17,6 +17,8 @@ const Navbar = () => {
   const { t } = useTranslation();
   const buttonRef = useRef(null);
   const [toggleMenu, setToggleMenu] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+  const [userMenuOpen, setUserMenuOpen] = useState(false); // State for user menu dropdown
 
   const navLinks = [
     { to: "/", text: t("nav.1") }, // Home
@@ -50,6 +52,11 @@ const Navbar = () => {
     });
   };
 
+  const handleLogout = () => {
+    setIsLoggedIn(false); // Simulate logout
+    setUserMenuOpen(false); // Close the dropdown
+  };
+
   return (
     <nav className="fixed z-50 w-full flex justify-between items-center px-6 py-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-sm">
       <div className="flex items-center gap-2">
@@ -80,7 +87,6 @@ const Navbar = () => {
       <div className="flex items-center space-x-4">
         <button className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
           <LanguageSwitcher />
-          <RiUser3Line className="h-5 w-5" />
         </button>
         <button className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
           <RiHeartLine className="h-5 w-5" />
@@ -91,6 +97,45 @@ const Navbar = () => {
             0
           </span>
         </button>
+
+        {/* User Icon with Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setUserMenuOpen(!userMenuOpen)}
+            className="flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+          >
+            <RiUser3Line className="h-5 w-5" />
+          </button>
+          {userMenuOpen && (
+            <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-lg rounded-md overflow-hidden">
+              {isLoggedIn ? (
+                <button
+                  onClick={handleLogout}
+                  className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    Signup
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Mobile menu button */}
         <button

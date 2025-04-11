@@ -25,6 +25,7 @@ use App\Http\Controllers\CommandePaiementController;
 use App\Http\Controllers\LigneFactureController;
 use App\Http\Controllers\LigneLivraisonController;
 use App\Http\Controllers\AvisController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -54,3 +55,7 @@ Route::apiResource('ligne-factures', LigneFactureController::class);
 Route::apiResource('ligne-livraisons', LigneLivraisonController::class);
 Route::apiResource('avis', AvisController::class);
 Route::apiResource('stocks', \App\Http\Controllers\StockController::class);
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');

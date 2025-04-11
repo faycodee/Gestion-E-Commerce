@@ -12,6 +12,7 @@ class Client extends Model
     protected $table = 'client';
 
     protected $fillable = [
+        'user_id',
         'id_privilege',
         'nom',
         'prenom',
@@ -41,5 +42,10 @@ class Client extends Model
     public function privilege()
     {
         return $this->belongsTo(Privilege::class, 'id_privilege');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

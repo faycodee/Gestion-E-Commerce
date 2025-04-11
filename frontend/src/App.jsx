@@ -13,6 +13,8 @@ import SingleProduct from "./components/SingleProduct";
 import Categories from "./components/Categories";
 import FAQ from "./components/FAQ";
 import Contact from "./components/Contact";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 const App = () => (
   <BrowserRouter>
@@ -38,6 +40,8 @@ const App = () => (
         <Route path="/categories" element={<Categories />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
       <Footer />
     </div>

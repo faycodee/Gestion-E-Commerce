@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('client', function (Blueprint $table) {
-            $table->id(); // id INT AUTO_INCREMENT PRIMARY KEY
-            $table->foreignId('id_privilege')->constrained('privilege')->onDelete('cascade'); // Foreign Key vers privilege(id)
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('id_privilege')->constrained('privilege')->onDelete('cascade');
             $table->string('nom', 50)->nullable(false);
             $table->string('prenom', 50)->nullable(false);
             $table->string('email', 50)->nullable(false);

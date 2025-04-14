@@ -7,12 +7,10 @@ import Alert from "./Alert";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
-  const [productImages, setProductImages] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [stocks, setStocks] = useState([]);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const productsPerPage = 8;
 
@@ -20,13 +18,10 @@ const Shop = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [productsResponse, imagesResponse] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/api/produits"),
-          axios.get("http://127.0.0.1:8000/api/produit-images"),
-        ]);
-
+        const productsResponse = await axios.get(
+          "http://127.0.0.1:8000/api/produits"
+        );
         setProducts(productsResponse.data);
-        setProductImages(imagesResponse.data);
         setError(null);
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
@@ -40,18 +35,6 @@ const Shop = () => {
   }, []);
 
   useEffect(() => {
-    const fetchStocks = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/stocks");
-        setStocks(response.data);
-      } catch (error) {
-        console.error("Error fetching stocks:", error);
-      }
-    };
-    fetchStocks();
-  }, []);
-
-  useEffect(() => {
     gsap.from(".product-card", {
       opacity: 0,
       y: 50,
@@ -61,19 +44,15 @@ const Shop = () => {
   }, [products]);
 
   const getProductImage = (productId) => {
-    const image = productImages.find((img) => img.id_produit === productId);
-    return image ? image.url : "/images/default.jpg";
+    const product = products.find((prod) => prod.id === productId);
+    return product
+      ? `http://127.0.0.1:8000/storage/${product.image}`
+      : "/images/default.jpg";
   };
 
   const checkStock = (productId) => {
-    const productStocks = stocks.filter(
-      (stock) => stock.id_produit === productId
-    );
-    const totalQuantity = productStocks.reduce(
-      (sum, stock) => sum + stock.quantite,
-      0
-    );
-    return totalQuantity;
+    const product = products.find((prod) => prod.id === productId);
+    return product ? product.quantity : 0;
   };
 
   const addToFavorites = (product) => {
@@ -221,7 +200,7 @@ const Shop = () => {
                   {product.description}
                 </p>
                 <p className="text-lg font-bold text-gray-900 mb-4">
-                  {product.prix} MAD
+                  {product.prix_HT} MAD
                 </p>
                 <p className="text-sm text-gray-500 mb-2">
                   Available: {checkStock(product.id)} in stock
@@ -243,9 +222,7 @@ const Shop = () => {
                     }`}
                   >
                     <FaShoppingCart className="mr-2" />
-                    {checkStock(product.id) <= 0
-                      ? "Out of Stock"
-                      : "Add "}
+                    {checkStock(product.id) <= 0 ? "Out of Stock" : "Add "}
                   </button>
                 </div>
                 <Link

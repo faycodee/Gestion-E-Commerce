@@ -9,7 +9,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Highlights = () => {
   const [products, setProducts] = useState([]);
-  const [productImages, setProductImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,13 +16,8 @@ const Highlights = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [productsResponse, imagesResponse] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/api/produits"),
-          axios.get("http://127.0.0.1:8000/api/produit-images"),
-        ]);
-
-        setProducts(productsResponse.data.slice(0, 8));
-        setProductImages(imagesResponse.data);
+        const response = await axios.get("http://127.0.0.1:8000/api/produits");
+        setProducts(response.data.slice(0, 8)); // Limit to 8 products
         setError(null);
       } catch (err) {
         setError("Failed to fetch data. Please try again later.");
@@ -48,11 +42,6 @@ const Highlights = () => {
       },
     });
   }, [products]);
-
-  const getProductImage = (productId) => {
-    const image = productImages.find((img) => img.id_produit === productId);
-    return image ? image.url : "/images/default.jpg";
-  };
 
   const addToFavorites = (product) => {
     const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
@@ -114,7 +103,7 @@ const Highlights = () => {
               className="highlight-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
             >
               <img
-                src={getProductImage(product.id)}
+                src={product.image || "/images/default.jpg"} // Use the image field
                 alt={product.nom}
                 className="w-full h-48 object-cover"
               />
@@ -126,7 +115,7 @@ const Highlights = () => {
                   {product.description}
                 </p>
                 <p className="text-lg font-bold text-gray-900 mb-4">
-                  {product.prix} MAD
+                  {product.prix_HT} MAD
                 </p>
                 <div className="flex justify-between items-center space-x-2">
                   <button

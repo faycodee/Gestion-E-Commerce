@@ -7,10 +7,8 @@ import Alert from "./Alert";
 const SingleProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [productImage, setProductImage] = useState(null);
   const [category, setCategory] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [stocks, setStocks] = useState([]);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
 
   useEffect(() => {
@@ -20,65 +18,22 @@ const SingleProduct = () => {
           `http://127.0.0.1:8000/api/produits/${id}`
         );
         setProduct(response.data);
-      } catch (error) {
-        console.error("Error fetching product:", error);
-      }
-    };
 
-    const fetchProductImage = async () => {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/produit-images"
+        // Fetch the category details based on the product's category_id
+        const categoryResponse = await axios.get(
+          `http://127.0.0.1:8000/api/categories/${response.data.category_id}`
         );
-        const image = response.data.find(
-          (img) => img.id_produit === parseInt(id)
-        );
-        setProductImage(image ? image.url : "/images/default.jpg"); // Default image if no match
+        setCategory(categoryResponse.data);
       } catch (error) {
-        console.error("Error fetching product image:", error);
-      }
-    };
-
-    const fetchCategory = async () => {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/categories"
-        );
-        if (product) {
-          const matchedCategory = response.data.find(
-            (cat) => cat.id === product.id_categorie
-          );
-          setCategory(matchedCategory ? matchedCategory.nom : "Unknown");
-        }
-      } catch (error) {
-        console.error("Error fetching category:", error);
-      }
-    };
-
-    const fetchStocks = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/api/stocks");
-        setStocks(response.data);
-      } catch (error) {
-        console.error("Error fetching stocks:", error);
+        console.error("Error fetching product or category:", error);
       }
     };
 
     fetchProduct();
-    fetchProductImage();
-    fetchCategory();
-    fetchStocks();
-  }, [id, product]);
+  }, [id]);
 
-  const checkStock = (productId) => {
-    const productStocks = stocks.filter(
-      (stock) => stock.id_produit === productId
-    );
-    const totalQuantity = productStocks.reduce(
-      (sum, stock) => sum + stock.quantite,
-      0
-    );
-    return totalQuantity;
+  const checkStock = () => {
+    return product ? product.quantity : 0;
   };
 
   const handleAddToFavorites = () => {
@@ -102,7 +57,7 @@ const SingleProduct = () => {
   };
 
   const handleAddToCart = () => {
-    const availableQuantity = checkStock(product.id);
+    const availableQuantity = checkStock();
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     const existingItem = cart.find((item) => item.id === product.id);
 
@@ -148,12 +103,12 @@ const SingleProduct = () => {
     });
   };
 
-  if (!product) {
+  if (!product || !category) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
+    <div className="bg-gray-100 min-h-screen p-8 ">
       {alert.show && (
         <Alert
           message={alert.message}
@@ -162,33 +117,40 @@ const SingleProduct = () => {
         />
       )}
 
-      <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6 flex flex-col md:flex-row gap-8">
+      <div className="max-w-6xl mx-auto bg-white mt-[100px] shadow-lg rounded-lg p-6 flex flex-col md:flex-row gap-8">
         {/* Product Image */}
-        <div className="flex-shrink-0mt-[50px] ">
+        <div className="flex-shrink-0">
           <img
-            src={productImage}
+            src={`http://127.0.0.1:8000/storage/${product.image}`}
             alt={product.nom}
-            className="w-full md:w-96 h-auto object-cover rounded-lg mt-[50px]"
+            className="w-full md:w-96 h-auto object-cover rounded-lg"
           />
         </div>
 
         {/* Product Details */}
-        <div className="flex-grow mt-[50px]">
+        <div className="flex-grow">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
             {product.nom}
           </h1>
           <p className="text-gray-600 mb-4">{product.description}</p>
           <p className="text-lg font-bold text-gray-900 mb-4">
-            Price: {product.prix} MAD
+            Price: {product.prix_HT} MAD
+          </p>
+          <p className="text-gray-600 mb-4">
+            Available Stock: {checkStock()} items
           </p>
 
-          <p className="text-gray-600 mb-4">
-            Category: {category || "Unknown"}
-          </p>
-          <p className="text-gray-600 mb-4">Date Added: {product.date}</p>
-          <p className="text-gray-600 mb-4">
-            Available Stock: {checkStock(product.id)} items
-          </p>
+          {/* Category Details */}
+          <div className="mb-4">
+            <h2 className="text-lg font-bold text-gray-800">Category:</h2>
+            <p className="text-gray-600">{category.nom}</p>
+            {/* <p className="text-gray-500">{category.description}</p>
+            <img
+              src={`http://127.0.0.1:8000/storage/${category.image}`}
+              alt={category.nom}
+              className="w-32 h-32 object-cover rounded-lg mt-2"
+            /> */}
+          </div>
 
           {/* Quantity Selector */}
           <div className="flex items-center gap-4 mb-6">
@@ -199,11 +161,11 @@ const SingleProduct = () => {
               type="number"
               id="quantity"
               min="1"
-              max={checkStock(product.id)}
+              max={checkStock()}
               value={quantity}
               onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
               className="border border-gray-300 rounded-lg px-4 py-2 w-20"
-              disabled={checkStock(product.id) <= 0}
+              disabled={checkStock() <= 0}
             />
           </div>
 
@@ -218,15 +180,15 @@ const SingleProduct = () => {
             </button>
             <button
               onClick={handleAddToCart}
-              disabled={checkStock(product.id) <= 0}
+              disabled={checkStock() <= 0}
               className={`flex items-center gap-2 px-4 py-2 rounded transition-colors duration-300 ${
-                checkStock(product.id) <= 0
+                checkStock() <= 0
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-green-500 hover:bg-green-600 text-white"
               }`}
             >
               <FaShoppingCart />
-              {checkStock(product.id) <= 0 ? "Out of Stock" : "Add to Cart"}
+              {checkStock() <= 0 ? "Out of Stock" : "Add to Cart"}
             </button>
           </div>
 

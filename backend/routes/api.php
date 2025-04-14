@@ -18,11 +18,11 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::apiResource('/produits', ProduitController::class);
+Route::apiResource('/categories', CategoryController::class);
 
 
 
 // Route::prefix('admin')->group(function () {
-    Route::apiResource('categories', CategoryController::class);
     Route::apiResource('commandes', CommandeController::class);
     Route::apiResource('factures', FactureController::class);
     Route::apiResource('produits', ProduitController::class);

@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   RiMenu3Line,
   RiCloseLine,
@@ -16,9 +16,50 @@ import { useTranslation } from "react-i18next";
 const Navbar = () => {
   const { t } = useTranslation();
   const buttonRef = useRef(null);
+  const navigate = useNavigate();
   const [toggleMenu, setToggleMenu] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
   const [userMenuOpen, setUserMenuOpen] = useState(false); // State for user menu dropdown
+  const [user, setUser] = useState(null); // State to track the logged-in user
+
+  // Function to update the user state from localStorage
+  const updateUserFromLocalStorage = () => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    // Initialize user state on component mount
+    updateUserFromLocalStorage();
+
+    // Add event listener for localStorage changes
+    const handleStorageChange = () => {
+      updateUserFromLocalStorage();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    // Clear user data from localStorage and update state
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("user");
+    setUser(null);
+    setUserMenuOpen(false);
+
+    // Trigger a custom event to notify other components
+    window.dispatchEvent(new Event("storage"));
+
+    navigate("/"); // Redirect to the home page
+  };
 
   const navLinks = [
     { to: "/", text: t("nav.1") }, // Home
@@ -50,11 +91,6 @@ const Navbar = () => {
       duration: 0.3,
       ease: "power2.out",
     });
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false); // Simulate logout
-    setUserMenuOpen(false); // Close the dropdown
   };
 
   return (
@@ -100,39 +136,42 @@ const Navbar = () => {
 
         {/* User Icon with Dropdown */}
         <div className="relative">
-          <button
-            onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className="flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-          >
-            <RiUser3Line className="h-5 w-5" />
-          </button>
-          {userMenuOpen && (
-            <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-lg rounded-md overflow-hidden">
-              {isLoggedIn ? (
-                <button
-                  onClick={handleLogout}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Logout
-                </button>
-              ) : (
-                <>
+          {user ? (
+            <div>
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+              >
+                <RiUser3Line className="h-5 w-5" />
+                <span className="ml-2">{user.first_name}</span>
+              </button>
+              {userMenuOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-lg rounded-md overflow-hidden">
                   <Link
-                    to="/login"
+                    to="/edit-profile"
                     onClick={() => setUserMenuOpen(false)}
                     className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
-                    Login
+                    Edit Profile
                   </Link>
-                  <Link
-                    to="/signup"
-                    onClick={() => setUserMenuOpen(false)}
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
-                    Signup
-                  </Link>
-                </>
+                    Logout
+                  </button>
+                </div>
               )}
+            </div>
+          ) : (
+            <div>
+              <Link
+                to="/login"
+                className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                Login
+              </Link>
+             
             </div>
           )}
         </div>

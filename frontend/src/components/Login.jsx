@@ -27,14 +27,18 @@ const Login = () => {
     try {
       const response = await axios.post("http://localhost:8000/api/login", {
         email,
-        mdp: password, // Use 'mdp' instead of 'password'
+        password, // Use 'password' as expected by the backend
       });
 
-      // Save the token in localStorage
+      // Save the token and user in localStorage
       localStorage.setItem("auth_token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      // Redirect to the dashboard or home page
-      navigate("/dashboard");
+      // Trigger a custom event to notify other components
+      window.dispatchEvent(new Event("storage"));
+
+      // Redirect to the home page
+      navigate("/");
     } catch (err) {
       if (err.response && err.response.data.message) {
         setError(err.response.data.message);

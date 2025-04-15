@@ -13,6 +13,7 @@ import images from "../constants/images";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 
+
 const Navbar = () => {
   const { t } = useTranslation();
   const buttonRef = useRef(null);
@@ -147,6 +148,17 @@ const Navbar = () => {
               </button>
               {userMenuOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-lg rounded-md overflow-hidden">
+                  {
+                    user.role =="admin" && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        Admin Panel
+                      </Link>
+                    )
+                  }
                   <Link
                     to="/edit-profile"
                     onClick={() => setUserMenuOpen(false)}

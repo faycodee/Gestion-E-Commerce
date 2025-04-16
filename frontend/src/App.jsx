@@ -17,6 +17,8 @@ import Signup from "./components/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Categories from "./components/Categories";
 import Faq from "./components/FAQ";
+import Favourites from "./components/Favourites";
+import Panier from "./components/Panier";
 
 const App = () => (
   <BrowserRouter>
@@ -43,6 +45,8 @@ const App = () => (
         <Route path="/shop" element={<Shop />} />
         <Route path="/categories" element={<Categories/>} />
         <Route path="/faq" element={<Faq/>} />
+        <Route path="/favourites" element={<Favourites/>} />
+        <Route path="/panier" element={<Panier/>} />
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

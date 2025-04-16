@@ -3,18 +3,20 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Panier;
 use App\Models\User;
+use App\Models\Panier;
 
 class PanierSeeder extends Seeder
 {
     public function run()
     {
-        // Create 10 sample paniers for demonstration
-        for ($i = 1; $i <= 10; $i++) {
+        // Fetch all users
+        $users = User::all();
+
+        foreach ($users as $user) {
             Panier::create([
-                'montant' => rand(100, 1000), // Random montant between 100 and 1000
-                'user_id' => User::inRandomOrder()->first()->id, // Assign a random user
+                'user_id' => $user->id,
+                'montant' => rand(100, 1000), // Random montant
             ]);
         }
     }

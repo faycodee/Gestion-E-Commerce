@@ -17,6 +17,8 @@ use App\Http\Controllers\User\UserCommandeController;
 use App\Http\Controllers\User\FavouriteController;
 use App\Http\Controllers\User\PanierController;
 use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\LignePanierController;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -38,6 +40,11 @@ Route::apiResource('/favourites', FavouriteController::class);
 Route::apiResource('/paniers', PanierController::class);
 Route::apiResource('/profile', ProfileController::class);
 
+Route::prefix('ligne-panier')->group(function () {
+    Route::get('/{panierId}', [LignePanierController::class, 'index']); // Get all items in a panier
+    Route::post('/', [LignePanierController::class, 'store']); // Add a product to a panier
+    Route::delete('/{id}', [LignePanierController::class, 'destroy']); // Remove a product from a panier
+});
 
 // Route::prefix('admin')->group(function () {
     Route::apiResource('/commandes', CommandeController::class);

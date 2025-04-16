@@ -1,25 +1,47 @@
-import React from "react";
+import React from 'react';
 
-const Table = () => {
+const Table = ({ orders }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mt-4">
-      <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">Customer List</h3>
-      <table className="w-full text-left">
-        <thead>
+    <div className="overflow-x-auto rounded-lg shadow-md">
+      <table className="min-w-full text-sm text-left">
+        <thead className="bg-gray-100">
           <tr>
-            <th className="py-2">First Name</th>
-            <th className="py-2">Last Name</th>
-            <th className="py-2">Email</th>
-            <th className="py-2">Joined On</th>
+            <th className="p-4 font-medium">Client</th>
+            <th className="p-4 font-medium">Order ID</th>
+            <th className="p-4 font-medium">Amount</th>
+            <th className="p-4 font-medium">Status</th>
+            <th className="p-4 font-medium">Date</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td className="py-2">Chandler</td>
-            <td className="py-2">Jacobi</td>
-            <td className="py-2">chandlerjacobi@test.net</td>
-            <td className="py-2">03/02/2020</td>
-          </tr>
+        <tbody className="bg-white">
+          {orders.map((order, idx) => (
+            <tr key={idx} className="border-t hover:bg-gray-50">
+              <td className="p-4 flex items-center gap-2">
+                <img
+                  src={order.image}
+                  alt={order.name}
+                  className="w-8 h-8 rounded-full"
+                />
+                <span>{order.name}</span>
+              </td>
+              <td className="p-4">#{order.id}</td>
+              <td className="p-4">${order.amount}</td>
+              <td className="p-4">
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                    order.status === 'Paid'
+                      ? 'bg-green-100 text-green-600'
+                      : order.status === 'Completed'
+                      ? 'bg-orange-100 text-orange-600'
+                      : 'bg-red-100 text-red-600'
+                  }`}
+                >
+                  {order.status}
+                </span>
+              </td>
+              <td className="p-4">{order.date}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

@@ -9,6 +9,7 @@ class UserController extends Controller
     public function index()
     {
         $users = DB::table('users')->get();
+        
         return response()->json($users);
     }
     public function store(Request $request)

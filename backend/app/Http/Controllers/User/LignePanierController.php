@@ -29,25 +29,42 @@ class LignePanierController extends Controller
     /**
      * Add a product to the ligne_panier table.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'panier_id' => 'required|integer|exists:paniers,id',
-            'produit_id' => 'required|integer|exists:produits,id',
-            'quantity' => 'required|integer|min:1',
-        ]);
 
-        DB::table('ligne_panier')->insert([
-            'panier_id' => $request->panier_id,
-            'produit_id' => $request->produit_id,
-            'quantity' => $request->quantity,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return response()->json(['message' => 'Product added to panier successfully'], 201);
-    }
-
+     public function store(Request $request)
+     {
+         $request->validate([
+             'panier_id' => 'required|integer|exists:paniers,id',
+             'produit_id' => 'required|integer|exists:produits,id',
+             'quantity' => 'required|integer|min:1',
+         ]);
+     
+         // Check if the product already exists in the panier
+         $existingLignePanier = DB::table('ligne_panier')
+             ->where('panier_id', $request->panier_id)
+             ->where('produit_id', $request->produit_id)
+             ->first();
+     
+         if ($existingLignePanier) {
+             // Update the quantity if the product already exists
+             DB::table('ligne_panier')
+                 ->where('id', $existingLignePanier->id)
+                 ->update([
+                     'quantity' => $existingLignePanier->quantity + $request->quantity,
+                     'updated_at' => now(),
+                 ]);
+         } else {
+             // Insert a new entry if the product does not exist
+             DB::table('ligne_panier')->insert([
+                 'panier_id' => $request->panier_id,
+                 'produit_id' => $request->produit_id,
+                 'quantity' => $request->quantity,
+                 'created_at' => now(),
+                 'updated_at' => now(),
+             ]);
+         }
+     
+         return response()->json(['message' => 'Product added to panier successfully'], 201);
+     }
     /**
      * Remove a product from the ligne_panier table.
      */

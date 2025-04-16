@@ -63,55 +63,87 @@ const Shop = () => {
 
       setAlert({
         show: true,
-        message: `${product.nom} added to Favorites!`,	
+        message: `${product.nom} added to Favorites!`,
         type: "success",
       });
     } else {
-    setAlert({
+      setAlert({
         show: true,
-        message: `${product.nom} is already in Favorites!`,	
+        message: `${product.nom} is already in Favorites!`,
         type: "info",
       });
     }
   };
 
-  const addToCart = (product) => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const availableQuantity = checkStock(product.id);
+  const addToCart = async (product) => {
+    try {
+      const userId = JSON.parse(localStorage.getItem("user"))?.id;
 
-    if (availableQuantity <= 0) {
-      setAlert({
-        show: true,
-        message: "This product is out of stock",
-        type: "error",
-      });
-      return;
-    }
-
-    const existingItem = cart.find((item) => item.id === product.id);
-    if (existingItem) {
-      if (existingItem.quantity >= availableQuantity) {
+      if (!userId) {
         setAlert({
           show: true,
-          message: "Maximum available quantity reached for this product",
+          message: "You must be logged in to add products to the cart.",
           type: "error",
         });
         return;
       }
-      existingItem.quantity += 1;
-      localStorage.setItem("cart", JSON.stringify(cart));
-      setAlert({
-        show: true,
-        message: `Quantity updated for ${product.nom}`,
-        type: "success",
+
+      const availableQuantity = checkStock(product.id);
+      if (availableQuantity <= 0) {
+        setAlert({
+          show: true,
+          message: "This product is out of stock",
+          type: "error",
+        });
+        return;
+      }
+
+      const panierResponse = await axios.get(
+        "http://127.0.0.1:8000/api/paniers"
+      );
+      const userPanier = panierResponse.data.find(
+        (panier) => panier.user_id === userId
+      );
+
+      if (!userPanier) {
+        setAlert({
+          show: true,
+          message: "No cart found for the current user.",
+          type: "error",
+        });
+        return;
+      }
+
+      console.log("Sending request to add product to cart:", {
+        panier_id: userPanier.id,
+        produit_id: product.id,
+        quantity: 1,
       });
-    } else {
-      cart.push({ ...product, quantity: 1 });
-      localStorage.setItem("cart", JSON.stringify(cart));
+
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/ligne-panier`,
+        {
+          panier_id: userPanier.id,
+          produit_id: product.id,
+          quantity: 1,
+        }
+      );
+
+      console.log("Response from server:", response);
+
+      if (response.status === 201) {
+        setAlert({
+          show: true,
+          message: `${product.nom} added to Cart!`,
+          type: "success",
+        });
+      }
+    } catch (error) {
+      console.error("Error adding product to cart:", error.response || error);
       setAlert({
         show: true,
-        message: `${product.nom} added to Cart!`,
-        type: "success",
+        message: "Failed to add product to cart. Please try again.",
+        type: "error",
       });
     }
   };
@@ -167,11 +199,12 @@ const Shop = () => {
       )}
 
       <div className="text-center mb-8 mt-[50px]">
-      <h1
-            className="text-[90px] font-bold mb-[10px] text-primary dark:text-darkPrimary"
-            style={{ fontFamily: "Impact, Haettenschweiler" }}
-          >
-          Our Shop</h1>
+        <h1
+          className="text-[90px] font-bold mb-[10px] text-primary dark:text-darkPrimary"
+          style={{ fontFamily: "Impact, Haettenschweiler" }}
+        >
+          Our Shop
+        </h1>
         <p className="text-gray-600 mt-2">
           Explore our wide range of products and find what suits you best.
         </p>

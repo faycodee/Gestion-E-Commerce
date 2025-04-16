@@ -23,6 +23,7 @@ class LignePanierSeeder extends Seeder
                 LignePanier::create([
                     'produit_id' => $produit->id,
                     'panier_id' => $panier->id,
+                    'quantity' => rand(1, 5), // Random quantity between 1 and 5
                 ]);
             }
         }

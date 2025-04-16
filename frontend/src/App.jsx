@@ -15,19 +15,21 @@ import Signup from "./components/Signup";
 
 // Import ProtectedRoute
 import ProtectedRoute from "./components/ProtectedRoute";
+import Categories from "./components/Categories";
 
 const App = () => (
   <BrowserRouter>
     <CustomCursor />
     <DarkLightToggle />
     <div className="bg-background dark:bg-darkBackground">
+    <Navbar />
       <Routes>
         {/* Public Routes */}
         <Route
           path="/"
           element={
             <>
-              <Navbar />
+          
               <Home />
               <MarqueeComponent r={"-2deg"} />
               <About />
@@ -38,6 +40,7 @@ const App = () => (
           }
         />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/categories" element={<Categories/>} />
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

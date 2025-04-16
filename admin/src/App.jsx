@@ -1,15 +1,56 @@
 
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-function App() {
+// المكونات
+import Login from "./components/Login";
+// import Login from "./components/components/components/";
+import Dashboard from "./components/Dashboard";
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
+import Orders from "./components/Orders";
+import AllProducts from "./components/AllProducts";
+import AddProduct from "./components/AddProduct";
+import Customers from "./components/Customers";
+import Chats from "./components/Charts";
+import EditProduct from "./components/EditProduct";
 
+const App = () => {
+  const isAuthenticated = !!localStorage.getItem("auth_token");
 
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-    </>
-  )
-}
+    <Router>
+      {isAuthenticated && (
+        <div className="flex">
+          <Sidebar />
+          <div className="flex-1">
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/products" element={<AllProducts />} />
+              <Route path="/products/add" element={<AddProduct />} />
+              <Route path="/orders" element={<Orders/>} />
+              <Route path="/customers" element={<Customers/>} />
+              <Route path="/settings" element={<h1>Settings Page</h1>} />
+              <Route path="/chats" element={<Chats/>} />
+              <Route path="/profile" element={<>Manage your Profile</>} />
+              <Route path="/edit-product/:id" element={<EditProduct />} />
 
-export default App
+            </Routes>
+          </div>
+        </div>
+      )}
+
+      {!isAuthenticated && (
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      )}
+    </Router>
+  );
+};
+
+export default App;
+

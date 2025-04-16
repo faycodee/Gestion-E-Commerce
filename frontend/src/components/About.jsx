@@ -22,9 +22,7 @@ export default function OverviewSection() {
     partners: 0,
   });
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", Mode === "dark");
-  }, [Mode]);
+
 
   return (
     <section className="min-h-screen py-20 bg-gradient-to-b transition-colors duration-300 bg-background dark:bg-darkBackground">

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\CommandeController;
 use App\Http\Controllers\Admin\FactureController;
 use App\Http\Controllers\Admin\ReductionController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Public\PubProduitController;
 use App\Http\Controllers\Public\PubCategoryController;
 use App\Http\Controllers\User\AvisController;
@@ -25,6 +26,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 Route::apiResource('/produits', ProduitController::class);
 Route::apiResource('/categories', CategoryController::class);
+Route::apiResource('/faqs', FaqController::class);
 Route::get('/Pubcategory', [PubCategoryController::class, 'index']);
 Route::get('/Pubcategory/{id}', [PubCategoryController::class, 'show']);
 Route::get('/Pubproduity', [PubProduitController::class, 'index']);

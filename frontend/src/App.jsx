@@ -13,10 +13,8 @@ import SingleProduct from "./components/SingleProduct";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 
-// Import Admin Components
-import Dashboard from "./admin/Dashboard";
-import Sidebar from "./admin/Sidebar";
-import NavbarAdmin from "./admin/Navbar";
+// Import ProtectedRoute
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => (
   <BrowserRouter>
@@ -44,19 +42,7 @@ const App = () => (
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        {/* Admin Routes */}
-        <Route
-          path="/admin"
-          element={
-            <div className="flex h-screen">
-              <Sidebar />
-              <div className="flex-1 flex flex-col">
-                <NavbarAdmin />
-                <Dashboard />
-              </div>
-            </div>
-          }
-        />
+      
       </Routes>
     </div>
   </BrowserRouter>

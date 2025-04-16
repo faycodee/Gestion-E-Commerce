@@ -1,7 +1,7 @@
 import React from "react";
 import { RiDashboardLine, RiShoppingBagLine, RiUser3Line, RiChat3Line, RiSettings3Line, RiLogoutBoxLine } from "react-icons/ri";
 
-const Sidebar = () => {
+const Sidebar = () => { 
   return (
     <div className="w-64 h-screen bg-gray-100 dark:bg-gray-900 p-4 flex flex-col justify-between">
       <div>

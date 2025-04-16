@@ -60,9 +60,18 @@ const Shop = () => {
     if (!favorites.some((fav) => fav.id === product.id)) {
       favorites.push(product);
       localStorage.setItem("favorites", JSON.stringify(favorites));
-      alert(`${product.nom} added to Favorites!`);
+
+      setAlert({
+        show: true,
+        message: `${product.nom} added to Favorites!`,	
+        type: "success",
+      });
     } else {
-      alert(`${product.nom} is already in Favorites!`);
+    setAlert({
+        show: true,
+        message: `${product.nom} is already in Favorites!`,	
+        type: "info",
+      });
     }
   };
 
@@ -109,7 +118,7 @@ const Shop = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center  bg-background dark:bg-darkBackground">
         <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
@@ -117,7 +126,7 @@ const Shop = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center  bg-background dark:bg-darkBackground">
         <div className="text-red-500 text-center">
           <p className="text-xl font-semibold">{error}</p>
           <button
@@ -148,7 +157,7 @@ const Shop = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
+    <div className="min-h-screen p-8  bg-background dark:bg-darkBackground">
       {alert.show && (
         <Alert
           message={alert.message}
@@ -158,7 +167,11 @@ const Shop = () => {
       )}
 
       <div className="text-center mb-8 mt-[50px]">
-        <h1 className="text-4xl font-bold text-gray-800">Our Shop</h1>
+      <h1
+            className="text-[90px] font-bold mb-[10px] text-primary dark:text-darkPrimary"
+            style={{ fontFamily: "Impact, Haettenschweiler" }}
+          >
+          Our Shop</h1>
         <p className="text-gray-600 mt-2">
           Explore our wide range of products and find what suits you best.
         </p>

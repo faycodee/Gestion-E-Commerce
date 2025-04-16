@@ -12,16 +12,23 @@ import { gsap } from "gsap";
 import images from "../constants/images";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
+import { useSelector } from 'react-redux';
+  
 
 
 const Navbar = () => {
+  
   const { t } = useTranslation();
   const buttonRef = useRef(null);
+  const Mode = useSelector((state) => state.lightdark.mode);
+
   const navigate = useNavigate();
   const [toggleMenu, setToggleMenu] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false); // State for user menu dropdown
   const [user, setUser] = useState(null); // State to track the logged-in user
-
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", Mode === "dark");
+  }, [Mode]);
   // Function to update the user state from localStorage
   const updateUserFromLocalStorage = () => {
     const storedUser = localStorage.getItem("user");
@@ -125,7 +132,7 @@ const Navbar = () => {
         <button className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
           <LanguageSwitcher />
         </button>
-        <button className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+        <button  onClick={() => navigate("/favourites")} className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
           <RiHeartLine className="h-5 w-5" />
         </button>
         <button className="relative p-2 group"  onClick={() => navigate("/panier")}>

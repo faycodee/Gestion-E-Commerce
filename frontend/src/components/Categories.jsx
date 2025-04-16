@@ -12,7 +12,9 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/categories");
+        const response = await axios.get(
+          "http://localhost:8000/api/categories"
+        );
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -53,26 +55,12 @@ const Categories = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-800">Categories</h1>
-        <p className="text-gray-600 mt-2">
-          Browse through our wide range of categories.
-        </p>
-      </div>
+      
 
-      {/* Search Bar */}
-      <div className="mb-6 flex justify-center">
-        <input
-          type="text"
-          placeholder="Search for categories..."
-          className="border border-gray-300 rounded-lg px-4 py-2 w-full max-w-md"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+   
 
       {/* Categories Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-[70px]">
         {currentCategories.map((category) => (
           <div
             key={category.id}
@@ -80,7 +68,7 @@ const Categories = () => {
           >
             {/* Display category image */}
             <img
-              src={`http://localhost:8000/images/${category.icon}`}
+              src={`http://localhost:8000/${category.image}`}
               alt={category.nom}
               className="w-full h-48 object-cover"
             />
@@ -92,7 +80,7 @@ const Categories = () => {
                 {category.description}
               </p>
               <span className="text-sm text-gray-500">
-                Date: {category.date}
+                Created At: {new Date(category.created_at).toLocaleDateString()}
               </span>
             </div>
           </div>

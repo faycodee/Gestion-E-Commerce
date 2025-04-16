@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             CaracteristiqueSeeder::class,
             AvisSeeder::class,
             PaiementSeeder::class,
+            FaqSeeder::class,
         ]);
     }
 }

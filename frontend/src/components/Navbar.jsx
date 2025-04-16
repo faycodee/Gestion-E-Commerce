@@ -128,7 +128,7 @@ const Navbar = () => {
         <button className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
           <RiHeartLine className="h-5 w-5" />
         </button>
-        <button className="relative p-2 group">
+        <button className="relative p-2 group"  onClick={() => navigate("/panier")}>
           <RiShoppingBag2Line className="h-5 w-5 text-gray-600 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-white transition-colors duration-200" />
           <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center group-hover:bg-primary/90 transition-colors duration-200">
             0

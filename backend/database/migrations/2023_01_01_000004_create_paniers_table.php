@@ -6,16 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 class CreatePaniersTable extends Migration
 {
-    public function up()
-    {
-        Schema::disableForeignKeyConstraints();
-        Schema::create('paniers', function (Blueprint $table) {
-            $table->id();
-            $table->decimal('montant', 15, 2);
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->timestamps();
-        });
-    }
+   public function up()
+{
+    Schema::disableForeignKeyConstraints();
+    Schema::create('paniers', function (Blueprint $table) {
+        $table->id();
+        $table->decimal('montant', 15, 2);
+        $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->unique(); // Add unique constraint
+        $table->timestamps();
+    });
+}
 
     public function down()
     {

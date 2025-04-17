@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { gsap } from "gsap"; // Import GSAP
 
 const AddProduct = () => {
   const [form, setForm] = useState({
@@ -14,6 +16,18 @@ const AddProduct = () => {
 
   const [categories, setCategories] = useState([]);
   const [tvas, setTvas] = useState([]);
+  const navigate = useNavigate();
+
+  const formRef = useRef(null); // Ref pour le formulaire
+
+  // Animation GSAP
+  useEffect(() => {
+    gsap.fromTo(
+      formRef.current,
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+    );
+  }, []);
 
   // Fetch categories & TVA on mount
   useEffect(() => {
@@ -69,6 +83,9 @@ const AddProduct = () => {
         tva_id: "",
       });
       document.getElementById("image").value = "";
+
+      // Rediriger vers /products après ajout
+      navigate("/products");
     } catch (err) {
       if (err.response) {
         console.error("Erreur Laravel:", err.response.data);
@@ -80,7 +97,10 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto bg-white rounded shadow-md">
+    <div
+      ref={formRef} // Ref pour l'animation
+      className="p-6 max-w-xl mx-auto bg-white rounded shadow-md"
+    >
       <h2 className="text-2xl font-bold mb-6 text-center">Ajouter un produit</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -90,14 +110,14 @@ const AddProduct = () => {
           value={form.nom}
           onChange={handleChange}
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 transition"
         />
         <textarea
           name="description"
           placeholder="Description"
           value={form.description}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 transition"
         />
         <input
           type="number"
@@ -106,7 +126,7 @@ const AddProduct = () => {
           value={form.prix_HT}
           onChange={handleChange}
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 transition"
         />
         <input
           type="number"
@@ -115,7 +135,7 @@ const AddProduct = () => {
           value={form.quantity}
           onChange={handleChange}
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 transition"
         />
 
         {/* Catégorie dynamique */}
@@ -124,7 +144,7 @@ const AddProduct = () => {
           value={form.category_id}
           onChange={handleChange}
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 transition"
         >
           <option value="">-- Choisir une catégorie --</option>
           {categories.map((cat) => (
@@ -140,7 +160,7 @@ const AddProduct = () => {
           value={form.tva_id}
           onChange={handleChange}
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 transition"
         >
           <option value="">-- Choisir une TVA --</option>
           {tvas.map((tva) => (
@@ -156,7 +176,7 @@ const AddProduct = () => {
           id="image"
           accept="image/*"
           onChange={handleChange}
-          className="w-full p-2 border rounded bg-gray-50"
+          className="w-full p-2 border rounded bg-gray-50 focus:ring-2 focus:ring-blue-500 transition"
         />
 
         <button

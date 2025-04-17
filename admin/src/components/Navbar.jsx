@@ -15,12 +15,12 @@ const Navbar = () => {
     <div className="w-full h-16 bg-white flex items-center justify-between px-4 shadow-md relative">
       {/* Left: Search */}
       <div className="flex items-center gap-4">
-        <RiSearchLine className="text-gray-500" />
-        <input
+        {/* <RiSearchLine className="text-gray-500" /> */}
+        {/* <input
           type="text"
           placeholder="Search for projects"
           className="outline-none bg-transparent text-gray-700 placeholder:text-gray-400"
-        />
+        /> */}
       </div>
 
       {/* Right: Icons */}

@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str; // Import the Str class
+use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
@@ -19,9 +19,9 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
             'password' => bcrypt('password'), // password
-            'remember_token' => Str::random(10), // Generate a random token
-            'tele' => $this->faker->phoneNumber,
-            'adresse' => $this->faker->address,
+            'remember_token' => Str::random(10),
+            'tele' => $this->faker->phoneNumber, // Génération aléatoire de téléphone
+            'adresse' => $this->faker->address, // Génération aléatoire d'adresse
         ];
     }
 }

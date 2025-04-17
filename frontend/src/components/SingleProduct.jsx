@@ -10,22 +10,31 @@ const SingleProduct = () => {
   const [category, setCategory] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
+      setIsLoading(true);
       try {
         const response = await axios.get(
           `http://127.0.0.1:8000/api/produits/${id}`
         );
         setProduct(response.data);
 
-        // Fetch the category details based on the product's category_id
         const categoryResponse = await axios.get(
           `http://127.0.0.1:8000/api/categories/${response.data.category_id}`
         );
         setCategory(categoryResponse.data);
+
+        setError(null);
       } catch (error) {
+        setError(
+          "Failed to fetch product or category. Please try again later."
+        );
         console.error("Error fetching product or category:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -38,77 +47,173 @@ const SingleProduct = () => {
 
   const handleAddToFavorites = () => {
     const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-    const isAlreadyFavorite = favorites.some((fav) => fav.id === product.id);
-    if (!isAlreadyFavorite) {
+    if (!favorites.some((fav) => fav.id === product.id)) {
       favorites.push(product);
       localStorage.setItem("favorites", JSON.stringify(favorites));
       setAlert({
         show: true,
-        message: "Added to Favorites!",
+        message: `${product.nom} added to Favorites!`,
         type: "success",
       });
     } else {
       setAlert({
         show: true,
-        message: "Already in Favorites!",
+        message: `${product.nom} is already in Favorites!`,
         type: "info",
       });
     }
   };
 
-  const handleAddToCart = () => {
-    const availableQuantity = checkStock();
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItem = cart.find((item) => item.id === product.id);
+  const addToCart = async (product, quantity = 1) => {
+    try {
+      const userId = JSON.parse(localStorage.getItem("user"))?.id;
 
-    if (availableQuantity <= 0) {
-      setAlert({
-        show: true,
-        message: "This product is out of stock",
-        type: "error",
-      });
-      return;
-    }
-
-    if (quantity > availableQuantity) {
-      setAlert({
-        show: true,
-        message: `Only ${availableQuantity} items available in stock`,
-        type: "error",
-      });
-      return;
-    }
-
-    if (existingItem) {
-      if (existingItem.quantity + quantity > availableQuantity) {
+      if (!userId) {
         setAlert({
           show: true,
-          message: `Can't add ${quantity} more items. Only ${
-            availableQuantity - existingItem.quantity
-          } items available`,
+          message: "You must be logged in to add products to the cart.",
           type: "error",
         });
         return;
       }
-      existingItem.quantity += quantity;
-    } else {
-      cart.push({ ...product, quantity });
-    }
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    setAlert({
-      show: true,
-      message: `Added ${quantity} item(s) to Cart!`,
-      type: "success",
-    });
+      const availableQuantity = checkStock();
+      if (availableQuantity <= 0) {
+        setAlert({
+          show: true,
+          message: "This product is out of stock.",
+          type: "error",
+        });
+        return;
+      }
+
+      if (quantity > availableQuantity) {
+        setAlert({
+          show: true,
+          message: `Only ${availableQuantity} items available in stock.`,
+          type: "error",
+        });
+        return;
+      }
+
+      // Fetch the user's cart
+      const panierResponse = await axios.get(
+        "http://127.0.0.1:8000/api/paniers"
+      );
+      const userPanier = panierResponse.data.find(
+        (panier) => panier.user_id === userId
+      );
+
+      if (!userPanier) {
+        setAlert({
+          show: true,
+          message: "No cart found for the current user.",
+          type: "error",
+        });
+        return;
+      }
+
+      let existingProduct = null;
+
+      try {
+        // Check if the product already exists in the user's cart
+        const lignePanierResponse = await axios.get(
+          `http://127.0.0.1:8000/api/ligne-panier/${userPanier.id}`
+        );
+        existingProduct = lignePanierResponse.data.find(
+          (item) => item.produit_id === product.id
+        );
+      } catch (error) {
+        if (error.response?.status === 404) {
+          console.warn(
+            "No items found in the cart. Proceeding to add the product."
+          );
+        } else {
+          throw error; // Re-throw other errors
+        }
+        
+      }
+
+      if (existingProduct) {
+        // Update the quantity of the existing product
+        const newQuantity = existingProduct.quantity + quantity;
+
+        if (newQuantity > availableQuantity) {
+          setAlert({
+            show: true,
+            message: `Can't add ${quantity} more items. Only ${
+              availableQuantity - existingProduct.quantity
+            } items available.`,
+            type: "error",
+          });
+          return;
+        }
+
+        await axios.put(
+          `http://127.0.0.1:8000/api/ligne-panier/${existingProduct.id}`,
+          { quantity: newQuantity }
+        );
+
+        setAlert({
+          show: true,
+          message: `Quantity of ${product.nom} updated to ${newQuantity} in your cart!`,
+          type: "success",
+        });
+      } else {
+        // Add the product to the cart
+        await axios.post(`http://127.0.0.1:8000/api/ligne-panier`, {
+          panier_id: userPanier.id,
+          produit_id: product.id,
+          quantity: quantity,
+        });
+
+        setAlert({
+          show: true,
+          message: `Added ${quantity} item(s) of ${product.nom} to your cart!`,
+          type: "success",
+        });
+      }
+
+      window.dispatchEvent(new Event("cartUpdated"));
+    } catch (error) {
+      console.error(
+        "Error adding product to cart:",
+        error.response?.data || error.message
+      );
+      setAlert({
+        show: true,
+        message: "Failed to add product to cart. Please try again.",
+        type: "error",
+      });
+    }
   };
 
-  if (!product || !category) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-red-500 text-center">
+          <p className="text-xl font-semibold">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8 ">
+    <div className="bg-gray-100 min-h-screen p-8">
       {alert.show && (
         <Alert
           message={alert.message}
@@ -118,7 +223,6 @@ const SingleProduct = () => {
       )}
 
       <div className="max-w-6xl mx-auto bg-white mt-[100px] shadow-lg rounded-lg p-6 flex flex-col md:flex-row gap-8">
-        {/* Product Image */}
         <div className="flex-shrink-0">
           <img
             src={`http://127.0.0.1:8000/storage/${product.image}`}
@@ -127,7 +231,6 @@ const SingleProduct = () => {
           />
         </div>
 
-        {/* Product Details */}
         <div className="flex-grow">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
             {product.nom}
@@ -140,19 +243,11 @@ const SingleProduct = () => {
             Available Stock: {checkStock()} items
           </p>
 
-          {/* Category Details */}
           <div className="mb-4">
             <h2 className="text-lg font-bold text-gray-800">Category:</h2>
             <p className="text-gray-600">{category.nom}</p>
-            {/* <p className="text-gray-500">{category.description}</p>
-            <img
-              src={`http://127.0.0.1:8000/storage/${category.image}`}
-              alt={category.nom}
-              className="w-32 h-32 object-cover rounded-lg mt-2"
-            /> */}
           </div>
 
-          {/* Quantity Selector */}
           <div className="flex items-center gap-4 mb-6">
             <label htmlFor="quantity" className="text-gray-700 font-medium">
               Quantity:
@@ -169,7 +264,6 @@ const SingleProduct = () => {
             />
           </div>
 
-          {/* Action Buttons */}
           <div className="flex items-center gap-4">
             <button
               onClick={handleAddToFavorites}
@@ -179,7 +273,7 @@ const SingleProduct = () => {
               Add to Favorites
             </button>
             <button
-              onClick={handleAddToCart}
+              onClick={() => addToCart(product, quantity)}
               disabled={checkStock() <= 0}
               className={`flex items-center gap-2 px-4 py-2 rounded transition-colors duration-300 ${
                 checkStock() <= 0
@@ -192,7 +286,6 @@ const SingleProduct = () => {
             </button>
           </div>
 
-          {/* Back to Shop Button */}
           <div className="mt-6">
             <Link
               to="/shop"

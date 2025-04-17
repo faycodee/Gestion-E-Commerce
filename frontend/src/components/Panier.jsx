@@ -5,15 +5,17 @@ import { gsap } from "gsap";
 const Panier = () => {
   const [lignePaniers, setLignePaniers] = useState([]);
   const [products, setProducts] = useState([]);
+  const [tvas, setTvas] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedItems, setSelectedItems] = useState([]); // State for selected items
 
   const userId = JSON.parse(localStorage.getItem("user"))?.id; // Get the logged-in user's ID
   const tableRef = useRef(null);
   const totalsRef = useRef(null);
 
   useEffect(() => {
-    const fetchPanierWithProducts = async () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
 
@@ -51,19 +53,23 @@ const Panier = () => {
         );
         setProducts(productsResponse.data);
 
+        // Fetch TVA details
+        const tvaResponse = await axios.get("http://localhost:8000/api/tvas");
+        setTvas(tvaResponse.data);
+
         setError(null);
       } catch (err) {
         setError(
-          "Failed to fetch the cart or products. Please try again later."
+          "Failed to fetch the cart, products, or TVA. Please try again later."
         );
-        console.error("Error fetching panier or products:", err);
+        console.error("Error fetching data:", err);
       } finally {
         setIsLoading(false);
       }
     };
 
     if (userId) {
-      fetchPanierWithProducts();
+      fetchData();
     } else {
       setError("You must be logged in to view your cart.");
       setIsLoading(false);
@@ -93,6 +99,10 @@ const Panier = () => {
     return products.find((product) => product.id === productId) || {};
   };
 
+  const getTvaDetails = (tvaId) => {
+    return tvas.find((tva) => tva.id === tvaId) || { taux: 0 };
+  };
+
   const calculateTotal = () => {
     return lignePaniers.reduce((total, item) => {
       const productDetails = getProductDetails(item.produit_id);
@@ -101,9 +111,14 @@ const Panier = () => {
     }, 0);
   };
 
-  const calculateTVA = (total) => {
-    const tvaRate = 0.2; // Example TVA rate of 20%
-    return total * tvaRate;
+  const calculateTVA = () => {
+    return lignePaniers.reduce((totalTva, item) => {
+      const productDetails = getProductDetails(item.produit_id);
+      const tvaDetails = getTvaDetails(productDetails.tva_id);
+      const price = parseFloat(productDetails.prix_HT || 0);
+      const tvaRate = parseFloat(tvaDetails.taux || 0) / 100;
+      return totalTva + price * (item.quantity || 1) * tvaRate;
+    }, 0);
   };
 
   const removeFromLignePanier = async (itemId) => {
@@ -127,6 +142,59 @@ const Panier = () => {
       window.dispatchEvent(new Event("cartUpdated"));
     } catch (error) {
       console.error("Error removing item from cart:", error);
+    }
+  };
+
+  const updateQuantity = async (itemId, newQuantity) => {
+    try {
+      if (newQuantity < 1) {
+        setError("Quantity must be at least 1.");
+        return;
+      }
+
+      // Update the quantity in the backend
+      await axios.put(`http://localhost:8000/api/ligne-panier/${itemId}`, {
+        quantity: newQuantity,
+      });
+
+      // Update the quantity in the frontend state
+      setLignePaniers((prevItems) =>
+        prevItems.map((item) =>
+          item.id === itemId ? { ...item, quantity: newQuantity } : item
+        )
+      );
+
+      // Dispatch cart update event
+      window.dispatchEvent(new Event("cartUpdated"));
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      setError("Failed to update quantity. Please try again.");
+    }
+  };
+
+  const handleCheckboxChange = (itemId) => {
+    setSelectedItems((prevSelected) =>
+      prevSelected.includes(itemId)
+        ? prevSelected.filter((id) => id !== itemId)
+        : [...prevSelected, itemId]
+    );
+  };
+
+  const deleteSelectedItems = async () => {
+    try {
+      for (const itemId of selectedItems) {
+        await axios.delete(`http://localhost:8000/api/ligne-panier/${itemId}`);
+      }
+
+      setLignePaniers((prevItems) =>
+        prevItems.filter((item) => !selectedItems.includes(item.id))
+      );
+
+      setSelectedItems([]); // Clear selected items
+      window.dispatchEvent(new Event("cartUpdated"));
+    } catch (error) {
+      console.error("Error deleting selected items:", error);
+      setError("Failed to delete selected items. Please try again.");
     }
   };
 
@@ -163,7 +231,7 @@ const Panier = () => {
   }
 
   const total = calculateTotal();
-  const tva = calculateTVA(total);
+  const tva = calculateTVA();
   const grandTotal = total + tva;
 
   return (
@@ -182,6 +250,22 @@ const Panier = () => {
           <table className="w-full">
             <thead>
               <tr className="bg-gray-800 text-white">
+                <th className="px-6 py-4 text-left">
+                  <input
+                    type="checkbox"
+                    onChange={(e) =>
+                      setSelectedItems(
+                        e.target.checked
+                          ? lignePaniers.map((item) => item.id)
+                          : []
+                      )
+                    }
+                    checked={
+                      selectedItems.length === lignePaniers.length &&
+                      lignePaniers.length > 0
+                    }
+                  />
+                </th>
                 <th className="px-6 py-4 text-left">Product</th>
                 <th className="px-6 py-4 text-left">Details</th>
                 <th className="px-6 py-4 text-center">Price</th>
@@ -192,12 +276,20 @@ const Panier = () => {
             <tbody>
               {lignePaniers.map((item) => {
                 const productDetails = getProductDetails(item.produit_id);
+                const tvaDetails = getTvaDetails(productDetails.tva_id);
                 return (
                   <tr
                     key={item.id}
                     id={`cart-item-${item.id}`}
                     className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200"
                   >
+                    <td className="px-6 py-4 text-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedItems.includes(item.id)}
+                        onChange={() => handleCheckboxChange(item.id)}
+                      />
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-4">
                         <img
@@ -214,6 +306,9 @@ const Panier = () => {
                       <p className="text-sm text-gray-600">
                         {productDetails.description}
                       </p>
+                      <p className="text-sm text-gray-500">
+                        TVA: {tvaDetails.nom} ({tvaDetails.taux}%)
+                      </p>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className="font-semibold">
@@ -221,9 +316,15 @@ const Panier = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <span className="px-4 py-2 bg-gray-100 rounded-full">
-                        {item.quantity || 1}
-                      </span>
+                      <input
+                        type="number"
+                        min="1"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          updateQuantity(item.id, parseInt(e.target.value) || 1)
+                        }
+                        className="border border-gray-300 rounded-lg px-4 py-2 w-20 text-center"
+                      />
                     </td>
                     <td className="px-6 py-4 text-center">
                       <button
@@ -241,6 +342,20 @@ const Panier = () => {
         </div>
       </div>
 
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={deleteSelectedItems}
+          disabled={selectedItems.length === 0}
+          className={`${
+            selectedItems.length === 0
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-red-500 hover:bg-red-600"
+          } text-white px-4 py-2 rounded-lg transition-colors duration-200`}
+        >
+          Delete Selected
+        </button>
+      </div>
+
       {/* Enhanced Cart Totals Section */}
       <div
         ref={totalsRef}
@@ -256,7 +371,7 @@ const Panier = () => {
               <span className="font-medium">{total.toFixed(2)} MAD</span>
             </div>
             <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">TVA (20%)</span>
+              <span className="text-gray-600">Total TVA</span>
               <span className="font-medium">{tva.toFixed(2)} MAD</span>
             </div>
             <div className="flex justify-between py-2 font-bold text-lg">

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class UserCommandeController extends Controller
+class CommandeController extends Controller
 {
     // عرض جميع الطلبات
     public function index()

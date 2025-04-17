@@ -137,6 +137,9 @@ const Shop = () => {
           message: `${product.nom} added to Cart!`,
           type: "success",
         });
+
+        // Dispatch cartUpdated event
+        window.dispatchEvent(new Event("cartUpdated"));
       }
     } catch (error) {
       console.error("Error adding product to cart:", error.response || error);

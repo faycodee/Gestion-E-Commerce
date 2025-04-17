@@ -73,12 +73,10 @@ const Navbar = () => {
             `http://localhost:8000/api/ligne-panier/${userPanier.id}`
           );
 
-          const totalQuantity = lignePanierResponse.data.reduce(
-            (sum, item) => sum + (item.quantity || 1),
-            0
-          );
+          // Count the number of unique products in the cart
+          const uniqueProductCount = lignePanierResponse.data.length;
 
-          setCartItemCount(totalQuantity);
+          setCartItemCount(uniqueProductCount);
         }
       } catch (error) {
         console.error("Error fetching cart count:", error);

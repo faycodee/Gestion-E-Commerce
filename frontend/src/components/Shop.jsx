@@ -75,7 +75,7 @@ const Shop = () => {
     }
   };
 
-  const addToCart = async (product) => {
+  const addToCart = async (product, quantity = 1) => {
     try {
       const userId = JSON.parse(localStorage.getItem("user"))?.id;
 
@@ -92,12 +92,22 @@ const Shop = () => {
       if (availableQuantity <= 0) {
         setAlert({
           show: true,
-          message: "This product is out of stock",
+          message: "This product is out of stock.",
           type: "error",
         });
         return;
       }
 
+      if (quantity > availableQuantity) {
+        setAlert({
+          show: true,
+          message: `Only ${availableQuantity} items available in stock.`,
+          type: "error",
+        });
+        return;
+      }
+
+      // Fetch the user's cart
       const panierResponse = await axios.get(
         "http://127.0.0.1:8000/api/paniers"
       );
@@ -114,35 +124,64 @@ const Shop = () => {
         return;
       }
 
-      console.log("Sending request to add product to cart:", {
-        panier_id: userPanier.id,
-        produit_id: product.id,
-        quantity: 1,
-      });
+      let existingProduct = null;
 
-      const response = await axios.post(
-        `http://127.0.0.1:8000/api/ligne-panier`,
-        {
-          panier_id: userPanier.id,
-          produit_id: product.id,
-          quantity: 1,
+      try {
+        // Check if the product already exists in the user's cart
+        const lignePanierResponse = await axios.get(
+          `http://127.0.0.1:8000/api/ligne-panier/${userPanier.id}`
+        );
+        existingProduct = lignePanierResponse.data.find(
+          (item) => item.produit_id === product.id
+        );
+      } catch (error) {
+        if (error.response?.status === 404) {
+          // No items in the cart, proceed to add the product
+          console.warn(
+            "No items found in the cart. Proceeding to add the product."
+          );
+        } else {
+          throw error; // Re-throw other errors
         }
-      );
+      }
 
-      console.log("Response from server:", response);
-
-      if (response.status === 201) {
+      if (existingProduct) {
+        // Show an alert if the product already exists in the cart
         setAlert({
           show: true,
-          message: `${product.nom} added to Cart!`,
-          type: "success",
+          message: `${product.nom} is already in your cart.`,
+          type: "info",
         });
+        return;
+      } else {
+        // Add the product to the cart
+        const addResponse = await axios.post(
+          `http://127.0.0.1:8000/api/ligne-panier`,
+          {
+            panier_id: userPanier.id,
+            produit_id: product.id,
+            quantity: quantity,
+          }
+        );
 
-        // Dispatch cartUpdated event
-        window.dispatchEvent(new Event("cartUpdated"));
+        if (addResponse.status === 201) {
+          setAlert({
+            show: true,
+            message: `Added ${quantity} item(s) of ${product.nom} to your cart!`,
+            type: "success",
+          });
+        } else {
+          throw new Error("Failed to add product to cart.");
+        }
       }
+
+      // Dispatch cartUpdated event
+      window.dispatchEvent(new Event("cartUpdated"));
     } catch (error) {
-      console.error("Error adding product to cart:", error.response || error);
+      console.error(
+        "Error adding product to cart:",
+        error.response?.data || error.message
+      );
       setAlert({
         show: true,
         message: "Failed to add product to cart. Please try again.",

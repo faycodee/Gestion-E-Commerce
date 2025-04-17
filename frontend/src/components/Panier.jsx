@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import { gsap } from "gsap";
 
 const Panier = () => {
   const [lignePaniers, setLignePaniers] = useState([]);
@@ -8,6 +9,8 @@ const Panier = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const userId = JSON.parse(localStorage.getItem("user"))?.id; // Get the logged-in user's ID
+  const tableRef = useRef(null);
+  const totalsRef = useRef(null);
 
   useEffect(() => {
     const fetchPanierWithProducts = async () => {
@@ -67,6 +70,25 @@ const Panier = () => {
     }
   }, [userId]);
 
+  useEffect(() => {
+    if (tableRef.current && totalsRef.current) {
+      gsap.from(tableRef.current, {
+        y: 50,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+      });
+
+      gsap.from(totalsRef.current, {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        delay: 0.3,
+        ease: "power3.out",
+      });
+    }
+  }, [isLoading]);
+
   const getProductDetails = (productId) => {
     return products.find((product) => product.id === productId) || {};
   };
@@ -82,6 +104,30 @@ const Panier = () => {
   const calculateTVA = (total) => {
     const tvaRate = 0.2; // Example TVA rate of 20%
     return total * tvaRate;
+  };
+
+  const removeFromLignePanier = async (itemId) => {
+    try {
+      const itemRow = document.getElementById(`cart-item-${itemId}`);
+
+      // Animate row removal
+      await gsap.to(itemRow, {
+        height: 0,
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.inOut",
+      });
+
+      await axios.delete(`http://localhost:8000/api/ligne-panier/${itemId}`);
+      setLignePaniers((prevItems) =>
+        prevItems.filter((item) => item.id !== itemId)
+      );
+
+      // Dispatch cart update event
+      window.dispatchEvent(new Event("cartUpdated"));
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+    }
   };
 
   if (isLoading) {
@@ -121,96 +167,107 @@ const Panier = () => {
   const grandTotal = total + tva;
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
+    <div className="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen p-8">
       <div className="text-center mb-8 mt-[50px]">
-        <h1 className="text-4xl font-bold text-gray-800">My Cart</h1>
-        <p className="text-gray-600 mt-2">
-          Here are the products in your cart.
-        </p>
+        <h1 className="text-4xl font-bold text-gray-800 mb-2">My Cart</h1>
+        <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
       </div>
 
-      {/* Table of Products */}
-      <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <table className="table-auto w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border border-gray-300 px-4 py-2">Image</th>
-              <th className="border border-gray-300 px-4 py-2">Product Name</th>
-              <th className="border border-gray-300 px-4 py-2">Description</th>
-              <th className="border border-gray-300 px-4 py-2">Price (MAD)</th>
-              <th className="border border-gray-300 px-4 py-2">Quantity</th>
-              <th className="border border-gray-300 px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lignePaniers.map((item) => {
-              const productDetails = getProductDetails(item.produit_id);
-              return (
-                <tr key={item.id} className="text-center">
-                  <td className="border border-gray-300 px-4 py-2">
-                    <img
-                      src={productDetails.image || "placeholder.jpg"}
-                      alt={productDetails.nom || "Product"}
-                      className="w-16 h-16 object-cover mx-auto"
-                    />
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {productDetails.nom || "N/A"}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {productDetails.description || "N/A"}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {productDetails.prix_HT || "N/A"}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.quantity || 1}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <button
-                      onClick={() => removeFromLignePanier(item.id)}
-                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                    >
-                      Remove
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      {/* Enhanced Table of Products */}
+      <div
+        ref={tableRef}
+        className="max-w-6xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden"
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-800 text-white">
+                <th className="px-6 py-4 text-left">Product</th>
+                <th className="px-6 py-4 text-left">Details</th>
+                <th className="px-6 py-4 text-center">Price</th>
+                <th className="px-6 py-4 text-center">Quantity</th>
+                <th className="px-6 py-4 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lignePaniers.map((item) => {
+                const productDetails = getProductDetails(item.produit_id);
+                return (
+                  <tr
+                    key={item.id}
+                    id={`cart-item-${item.id}`}
+                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-4">
+                        <img
+                          src={productDetails.image || "placeholder.jpg"}
+                          alt={productDetails.nom}
+                          className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                        />
+                        <span className="font-medium">
+                          {productDetails.nom}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm text-gray-600">
+                        {productDetails.description}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="font-semibold">
+                        {productDetails.prix_HT} MAD
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="px-4 py-2 bg-gray-100 rounded-full">
+                        {item.quantity || 1}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => removeFromLignePanier(item.id)}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 transform hover:scale-105"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {/* Cart Totals Section */}
-      <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6 mt-8">
-        <h2 className="text-2xl font-bold mb-4">Cart Totals</h2>
-        <table className="table-auto w-full border-collapse border border-gray-300">
-          <tbody>
-            <tr>
-              <td className="border border-gray-300 px-4 py-2">
-                Cart Subtotal
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {total.toFixed(2)} MAD
-              </td>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 px-4 py-2">TVA (20%)</td>
-              <td className="border border-gray-300 px-4 py-2">
-                {tva.toFixed(2)} MAD
-              </td>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 px-4 py-2">Total</td>
-              <td className="border border-gray-300 px-4 py-2 font-bold">
-                {grandTotal.toFixed(2)} MAD
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <button className="mt-4 bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
-          Proceed to Checkout
-        </button>
+      {/* Enhanced Cart Totals Section */}
+      <div
+        ref={totalsRef}
+        className="max-w-md mx-auto mt-8 bg-white shadow-xl rounded-lg overflow-hidden"
+      >
+        <div className="p-6">
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">
+            Cart Summary
+          </h2>
+          <div className="space-y-4">
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-gray-600">Subtotal</span>
+              <span className="font-medium">{total.toFixed(2)} MAD</span>
+            </div>
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-gray-600">TVA (20%)</span>
+              <span className="font-medium">{tva.toFixed(2)} MAD</span>
+            </div>
+            <div className="flex justify-between py-2 font-bold text-lg">
+              <span>Total</span>
+              <span>{grandTotal.toFixed(2)} MAD</span>
+            </div>
+          </div>
+          <button className="w-full mt-6 bg-primary hover:bg-primary-dark text-white py-3 rounded-lg transition-all duration-200 transform hover:scale-105">
+            Proceed to Checkout
+          </button>
+        </div>
       </div>
     </div>
   );

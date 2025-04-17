@@ -32,6 +32,7 @@ const App = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/products" element={<AllProducts />} />
               <Route path="/products/add" element={<AddProduct />} />
+              <Route path="/edit-product/:id" element={<EditProduct />} />
               <Route path="/orders" element={<Orders/>} />
               <Route path="/customers" element={<Customers/>} />
               <Route path="/add-user" element={<AddUser />} />
@@ -39,7 +40,6 @@ const App = () => {
               <Route path="/settings" element={<h1>Settings Page</h1>} />
               <Route path="/chats" element={<Chats/>} />
               <Route path="/profile" element={<>Manage your Profile</>} />
-              <Route path="/edit-product/:id" element={<EditProduct />} />
 
             </Routes>
           </div>

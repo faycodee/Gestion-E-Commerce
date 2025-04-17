@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password', 60);
             $table->string('tele', 20)->nullable(); // Ajout de la colonne téléphone
-            $table->string('adresse', 250)->nullable(); // Ajout de la colonne adresse
+            $table->string('adresse', 250)->nullable();
             $table->timestamps();
         });
     }

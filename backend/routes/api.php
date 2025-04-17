@@ -44,6 +44,7 @@ Route::apiResource('/profile', ProfileController::class);
 Route::prefix('ligne-panier')->group(function () {
     Route::get('/{panierId}', [LignePanierController::class, 'index']); // Get all items in a panier
     Route::post('/', [LignePanierController::class, 'store']); // Add a product to a panier
+    Route::put('/{id}', [LignePanierController::class, 'update']); // Remove a product from a panier
     Route::delete('/{id}', [LignePanierController::class, 'destroy']); // Remove a product from a panier
 });
 

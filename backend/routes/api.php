@@ -52,3 +52,11 @@ Route::prefix('ligne-panier')->group(function () {
     Route::apiResource('/reductions', ReductionController::class);
     Route::apiResource('/users', UserController::class);
 // });
+
+// routes/api.php
+
+use App\Models\Category;
+use App\Models\TVA;
+
+Route::get('/categories', fn () => Category::all());
+Route::get('/tvas', fn () => TVA::all());

@@ -51,7 +51,7 @@ class ProduitController extends Controller
         $imagePath = $request->file('image')->store('produits', 'public');
     }
 
-    DB::table('produits')->insert([
+    $id = DB::table('produits')->insertGetId([
         'nom' => $request->nom,
         'description' => $request->description,
         'prix_HT' => $request->prix_HT,
@@ -62,8 +62,12 @@ class ProduitController extends Controller
         'created_at' => now(),
         'updated_at' => now(),
     ]);
-       
-        return response()->json(['message' => 'Product created successfully', 'id' => $id], 201);
+    
+    return response()->json([
+        'message' => "Produit ID $id ajouté avec succès"
+    ]);
+    
+    
     }
 
     /**

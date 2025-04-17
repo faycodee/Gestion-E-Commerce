@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const AddProduct = () => {
@@ -11,6 +11,25 @@ const AddProduct = () => {
     category_id: "",
     tva_id: "",
   });
+
+  const [categories, setCategories] = useState([]);
+  const [tvas, setTvas] = useState([]);
+
+  // Fetch categories & TVA on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const catRes = await axios.get("http://127.0.0.1:8000/api/categories");
+        const tvaRes = await axios.get("http://127.0.0.1:8000/api/tvas");
+        setCategories(catRes.data);
+        setTvas(tvaRes.data);
+      } catch (error) {
+        console.error("Erreur lors du chargement des catégories/TVA:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -25,23 +44,21 @@ const AddProduct = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("nom", form.nom);
-    formData.append("description", form.description);
-    formData.append("prix_HT", form.prix_HT);
-    formData.append("quantity", form.quantity);
-    formData.append("category_id", form.category_id);
-    formData.append("tva_id", form.tva_id);
-    if (form.image) {
-      formData.append("image", form.image);
-    }
+    Object.entries(form).forEach(([key, value]) => {
+      if (key === "image" && value) {
+        formData.append("image", value);
+      } else {
+        formData.append(key, value);
+      }
+    });
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/produits", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const response = await axios.post("http://127.0.0.1:8000/api/produits", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("✅ Produit ajouté avec succès");
+      alert(`✅ ${response.data.message}`);
+
+      // Reset form
       setForm({
         nom: "",
         description: "",
@@ -56,19 +73,20 @@ const AddProduct = () => {
       if (err.response) {
         console.error("Erreur Laravel:", err.response.data);
         alert("❌ Erreur: " + (err.response.data.message || "Vérifiez les champs."));
-      } 
+      } else {
+        alert("❌ Erreur réseau.");
+      }
     }
-    
   };
 
   return (
     <div className="p-6 max-w-xl mx-auto bg-white rounded shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">Add New Product</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Ajouter un produit</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
           name="nom"
-          placeholder="Product Name"
+          placeholder="Nom du produit"
           value={form.nom}
           onChange={handleChange}
           required
@@ -84,7 +102,7 @@ const AddProduct = () => {
         <input
           type="number"
           name="prix_HT"
-          placeholder="Price (HT)"
+          placeholder="Prix HT"
           value={form.prix_HT}
           onChange={handleChange}
           required
@@ -93,13 +111,14 @@ const AddProduct = () => {
         <input
           type="number"
           name="quantity"
-          placeholder="Quantity"
+          placeholder="Quantité"
           value={form.quantity}
           onChange={handleChange}
           required
           className="w-full p-2 border rounded"
         />
-        {/* Category ID */}
+
+        {/* Catégorie dynamique */}
         <select
           name="category_id"
           value={form.category_id}
@@ -107,12 +126,15 @@ const AddProduct = () => {
           required
           className="w-full p-2 border rounded"
         >
-          <option value="">-- Select Category --</option>
-          <option value="1">Catégorie 1</option>
-          <option value="2">Catégorie 2</option>
+          <option value="">-- Choisir une catégorie --</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.nom}
+            </option>
+          ))}
         </select>
 
-        {/* TVA ID */}
+        {/* TVA dynamique */}
         <select
           name="tva_id"
           value={form.tva_id}
@@ -120,12 +142,14 @@ const AddProduct = () => {
           required
           className="w-full p-2 border rounded"
         >
-          <option value="">-- Select TVA --</option>
-          <option value="1">TVA 20%</option>
-          <option value="2">TVA 7%</option>
+          <option value="">-- Choisir une TVA --</option>
+          {tvas.map((tva) => (
+            <option key={tva.id} value={tva.id}>
+              {tva.nom} ({tva.taux}%)
+            </option>
+          ))}
         </select>
 
-        {/* Image */}
         <input
           type="file"
           name="image"
@@ -139,7 +163,7 @@ const AddProduct = () => {
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
         >
-          Add Product
+          Ajouter le produit
         </button>
       </form>
     </div>

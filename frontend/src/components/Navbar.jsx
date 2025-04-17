@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   RiMenu3Line,
@@ -12,12 +12,10 @@ import { gsap } from "gsap";
 import images from "../constants/images";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
-import { useSelector } from 'react-redux';
-  
-
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Navbar = () => {
-  
   const { t } = useTranslation();
   const buttonRef = useRef(null);
   const Mode = useSelector((state) => state.lightdark.mode);
@@ -26,6 +24,8 @@ const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false); // State for user menu dropdown
   const [user, setUser] = useState(null); // State to track the logged-in user
+  const [cartItemCount, setCartItemCount] = useState(0);
+
   useEffect(() => {
     document.documentElement.classList.toggle("dark", Mode === "dark");
   }, [Mode]);
@@ -56,17 +56,65 @@ const Navbar = () => {
     };
   }, []);
 
+  // Move fetchCartCount to useCallback to prevent recreating on every render
+  const fetchCartCount = useCallback(async () => {
+    const userId = JSON.parse(localStorage.getItem("user"))?.id;
+    if (userId) {
+      try {
+        const panierResponse = await axios.get(
+          "http://localhost:8000/api/paniers"
+        );
+        const userPanier = panierResponse.data.find(
+          (panier) => panier.user_id === userId
+        );
+
+        if (userPanier) {
+          const lignePanierResponse = await axios.get(
+            `http://localhost:8000/api/ligne-panier/${userPanier.id}`
+          );
+
+          const totalQuantity = lignePanierResponse.data.reduce(
+            (sum, item) => sum + (item.quantity || 1),
+            0
+          );
+
+          setCartItemCount(totalQuantity);
+        }
+      } catch (error) {
+        console.error("Error fetching cart count:", error);
+        setCartItemCount(0);
+      }
+    } else {
+      setCartItemCount(0);
+    }
+  }, []);
+
+  // Update the useEffect to listen for cart updates
+  useEffect(() => {
+    fetchCartCount();
+
+    // Listen for cart updates
+    window.addEventListener("cartUpdated", fetchCartCount);
+    // Listen for storage changes (login/logout)
+    window.addEventListener("storage", fetchCartCount);
+
+    return () => {
+      window.removeEventListener("cartUpdated", fetchCartCount);
+      window.removeEventListener("storage", fetchCartCount);
+    };
+  }, [fetchCartCount]);
+
   const handleLogout = () => {
-    // Clear user data from localStorage and update state
     localStorage.removeItem("auth_token");
     localStorage.removeItem("user");
     setUser(null);
     setUserMenuOpen(false);
+    setCartItemCount(0); // Reset cart count on logout
 
-    // Trigger a custom event to notify other components
+    // Trigger storage event to notify other components
     window.dispatchEvent(new Event("storage"));
 
-    navigate("/"); // Redirect to the home page
+    navigate("/");
   };
 
   const navLinks = [
@@ -132,13 +180,19 @@ const Navbar = () => {
         <button className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
           <LanguageSwitcher />
         </button>
-        <button  onClick={() => navigate("/favourites")} className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+        <button
+          onClick={() => navigate("/favourites")}
+          className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+        >
           <RiHeartLine className="h-5 w-5" />
         </button>
-        <button className="relative p-2 group"  onClick={() => navigate("/panier")}>
+        <button
+          className="relative p-2 group"
+          onClick={() => navigate("/panier")}
+        >
           <RiShoppingBag2Line className="h-5 w-5 text-gray-600 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-white transition-colors duration-200" />
           <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center group-hover:bg-primary/90 transition-colors duration-200">
-            0
+            {cartItemCount}
           </span>
         </button>
 
@@ -155,7 +209,6 @@ const Navbar = () => {
               </button>
               {userMenuOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-lg rounded-md overflow-hidden">
-                 
                   <Link
                     to="/edit-profile"
                     onClick={() => setUserMenuOpen(false)}
@@ -180,7 +233,6 @@ const Navbar = () => {
               >
                 Login
               </Link>
-             
             </div>
           )}
         </div>

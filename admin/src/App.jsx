@@ -14,6 +14,8 @@ import AddProduct from "./components/AddProduct";
 import Customers from "./components/Customers";
 import Chats from "./components/Charts";
 import EditProduct from "./components/EditProduct";
+import AddUser from "./components/AddUser";
+import EditUser from "./components/EditUser";
 
 const App = () => {
   const isAuthenticated = !!localStorage.getItem("auth_token");
@@ -32,6 +34,8 @@ const App = () => {
               <Route path="/products/add" element={<AddProduct />} />
               <Route path="/orders" element={<Orders/>} />
               <Route path="/customers" element={<Customers/>} />
+              <Route path="/add-user" element={<AddUser />} />
+              <Route path="/edit-user/:id" element={<EditUser />} />
               <Route path="/settings" element={<h1>Settings Page</h1>} />
               <Route path="/chats" element={<Chats/>} />
               <Route path="/profile" element={<>Manage your Profile</>} />

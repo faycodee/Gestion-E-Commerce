@@ -43,4 +43,9 @@ class Produit extends Model
     {
         return $this->hasMany(LignePanier::class);
     }
+    public function lignesCommande()
+{
+    return $this->hasMany(LigneCommande::class);
+}
+
 }

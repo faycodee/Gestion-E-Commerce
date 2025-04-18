@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { gsap } from "gsap";
+import PopUp from "./PopUp"; // Import the PopUp component
 
 const Panier = () => {
   const [lignePaniers, setLignePaniers] = useState([]);
@@ -9,6 +10,7 @@ const Panier = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedItems, setSelectedItems] = useState([]); // State for selected items
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false); // State to manage PopUp visibility
 
   const userId = JSON.parse(localStorage.getItem("user"))?.id; // Get the logged-in user's ID
   const tableRef = useRef(null);
@@ -234,6 +236,10 @@ const Panier = () => {
   const tva = calculateTVA();
   const grandTotal = total + tva;
 
+  const handleCheckout = () => {
+    setIsPopUpOpen(true); // Open the PopUp
+  };
+
   return (
     <div className="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen p-8">
       <div className="text-center mb-8 mt-[50px]">
@@ -379,11 +385,23 @@ const Panier = () => {
               <span>{grandTotal.toFixed(2)} MAD</span>
             </div>
           </div>
-          <button className="w-full mt-6 bg-primary hover:bg-primary-dark text-white py-3 rounded-lg transition-all duration-200 transform hover:scale-105">
+          <button
+            onClick={handleCheckout}
+            className="w-full mt-6 bg-primary hover:bg-primary-dark text-white py-3 rounded-lg transition-all duration-200 transform hover:scale-105"
+          >
             Proceed to Checkout
           </button>
         </div>
       </div>
+
+      {/* PopUp Component */}
+      {isPopUpOpen && (
+        <PopUp
+          onClose={() => setIsPopUpOpen(false)} // Close the PopUp
+          products={lignePaniers} // Pass cart items
+          total={total} // Pass total amount
+        />
+      )}
     </div>
   );
 };

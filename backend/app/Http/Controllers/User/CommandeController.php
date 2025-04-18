@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\LigneCommande;
 
 class CommandeController extends Controller
 {
@@ -34,7 +35,7 @@ class CommandeController extends Controller
             'commentaire' => 'nullable|string',
         ]);
 
-        DB::table('commandes')->insert([
+        $commande = DB::table('commandes')->insertGetId([
             'user_id' => $request->user_id,
             'status' => $request->status,
             'commentaire' => $request->commentaire,
@@ -42,7 +43,16 @@ class CommandeController extends Controller
             'updated_at' => now(),
         ]);
 
-        return response()->json(['message' => 'Commande created successfully'], 201);
+        foreach ($request->products as $product) {
+            LigneCommande::create([
+                'commande_id' => $commande,
+                'produit_id' => $product['produit_id'],
+                'quantite' => $product['quantite'],
+                'prix_unitaire' => $product['prix_unitaire'],
+            ]);
+        }
+
+        return response()->json(['message' => 'Commande and LigneCommandes created successfully'], 201);
     }
 
     // تحديث طلب باستخدام ID

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             ReductionProduitSeeder::class,
             PanierSeeder::class,
             LignePanierSeeder::class,
+            LigneCommandeSeeder::class,
             LivraisonSeeder::class,
             FavouriteSeeder::class,
             CaracteristiqueSeeder::class,

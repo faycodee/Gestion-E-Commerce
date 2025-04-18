@@ -13,7 +13,7 @@ class CategoryFactory extends Factory
     {
         return [
             'nom' => $this->faker->word,
-            'description' => $this->faker->sentence,
+            'description' => $this->faker->text(255), 
             'image' => $this->faker->imageUrl(),
         ];
     }

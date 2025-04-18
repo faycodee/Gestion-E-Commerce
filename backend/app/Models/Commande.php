@@ -32,4 +32,9 @@ class Commande extends Model
     {
         return $this->hasMany(Facture::class);
     }
+
+    public function lignesCommande()
+    {
+        return $this->hasMany(LigneCommande::class);
+    }
 }

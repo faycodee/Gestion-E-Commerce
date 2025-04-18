@@ -1,4 +1,6 @@
 <?php
+use App\Models\Category;
+use App\Models\TVA;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +20,9 @@ use App\Http\Controllers\User\FavouriteController;
 use App\Http\Controllers\User\PanierController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\LignePanierController;
+use App\Http\Controllers\User\LigneCommandeController;
+
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -40,7 +45,7 @@ Route::apiResource('/commandes', CommandeController::class);
 Route::apiResource('/favourites', FavouriteController::class);
 Route::apiResource('/paniers', PanierController::class);
 Route::apiResource('/profile', ProfileController::class);
-
+Route::apiResource('/ligne-commandes', LigneCommandeController::class);
 Route::prefix('ligne-panier')->group(function () {
     Route::get('/{panierId}', [LignePanierController::class, 'index']); // Get all items in a panier
     Route::post('/', [LignePanierController::class, 'store']); // Add a product to a panier
@@ -57,8 +62,9 @@ Route::prefix('ligne-panier')->group(function () {
 
 // routes/api.php
 
-use App\Models\Category;
-use App\Models\TVA;
+
 
 Route::get('/categories', fn () => Category::all());
 Route::get('/tvas', fn () => TVA::all());
+
+

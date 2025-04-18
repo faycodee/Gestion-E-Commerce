@@ -10,7 +10,7 @@ const EditUser = () => {
     first_name: "",
     email: "",
     role: "",
-    telephone: "", // Téléphone
+    tele: "", // Téléphone
     adresse: "", // Adresse
   });
 
@@ -26,7 +26,7 @@ const EditUser = () => {
         first_name: res.data.first_name || "",
         email: res.data.email || "",
         role: res.data.role || "",
-        telephone: res.data.telephone || "", // Vérifiez que ce champ est renvoyé par l'API
+        tele: res.data.tele || "", // Vérifiez que ce champ est renvoyé par l'API
         adresse: res.data.adresse || "", // Vérifiez que ce champ est renvoyé par l'API
       });
     } catch (err) {
@@ -40,6 +40,7 @@ const EditUser = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(form); // Vérifiez les données envoyées
     try {
       await axios.put(`http://127.0.0.1:8000/api/users/${id}`, form);
       alert("✅ User updated successfully!");
@@ -80,9 +81,9 @@ const EditUser = () => {
         className="border p-2 w-full"
       />
       <input
-        name="telephone"
+        name="tele"
         placeholder="Téléphone"
-        value={form.telephone}
+        value={form.tele}
         onChange={handleChange}
         className="border p-2 w-full"
       />

@@ -16,7 +16,7 @@ class UserController extends Controller
     }
 
     public function store(Request $request)
-    { dd($request->all());
+    {
         $validated = $request->validate([
             'first_name' => 'required|string|max:50',
             'name' => 'required|string|max:250',
@@ -42,6 +42,7 @@ class UserController extends Controller
     
     public function show($id)
     {
+        \Log::info("Requested ID: " . $id); // تحقق من قيمة $id
         $user = DB::table('users')->find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
@@ -51,18 +52,21 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $data = $request->only(['first_name', 'name', 'email', 'role']);
-        $data['updated_at'] = now();
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:50',
+            'name' => 'required|string|max:250',
+            'email' => 'required|email|max:50',
+            'role' => 'required|in:user,admin',
+            'tele' => 'nullable|string|max:20', // تحقق من أن الحقل tele موجود هنا
+            'adresse' => 'nullable|string|max:250',
+        ]);
 
-        if ($request->has('password') && $request->password) {
-            $data['password'] = Hash::make($request->password);
-        }
-
-        $updated = DB::table('users')->where('id', $id)->update($data);
-
-        if (!$updated) {
+        $user = User::find($id);
+        if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
+
+        $user->update($validated);
 
         return response()->json(['message' => 'User updated successfully']);
     }

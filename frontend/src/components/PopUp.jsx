@@ -1,79 +1,111 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-// import StripeCheckout from "react-stripe-checkout";
 
 const PopUp = ({ onClose, products, total }) => {
   const [formData, setFormData] = useState({
     name: "",
-    phone: "",
-    address: "",
-    city: "",
+    tele: "",
+    adresse: "",
+    commentaire: "",
   });
-  const [paymentMethod, setPaymentMethod] = useState("cod"); // Default to Cash on Delivery
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    // Fetch user data from the API
+    const fetchUserData = async () => {
+      const userId = JSON.parse(localStorage.getItem("user"))?.id;
+      if (!userId) {
+        alert("You must be logged in to place an order.");
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/users/${userId}`
+        );
+        const user = response.data;
+
+        // Pre-fill the form with user data
+        setFormData({
+          name: user.name || "",
+          tele: user.tele || "",
+          adresse: user.adresse || "",
+          commentaire: "",
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        alert("Failed to fetch user data.");
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-//   const handleStripePayment = async (token) => {
-//     try {
-//       setIsSubmitting(true);
-//       // Send payment details to the backend
-//       await axios.post("http://localhost:8000/api/stripe-payment", {
-//         token,
-//         amount: total * 100, // Stripe expects the amount in cents
-//       });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-//       // Proceed with order submission
-//       await submitOrder("Stripe");
-//     } catch (error) {
-//       console.error("Stripe payment failed:", error);
-//       alert("Payment failed. Please try again.");
-//     } finally {
-//       setIsSubmitting(false);
-//     }
-//   };
-
-  const submitOrder = async (paymentType) => {
     try {
-      setIsSubmitting(true);
+      const userId = JSON.parse(localStorage.getItem("user"))?.id;
 
-      // Send order details to Google Sheets
-    //   await axios.post("https://sheet.best/api/", {
-    //     ...formData,
-    //     total,
-    //     paymentMethod: paymentType,
-    //     products: products.map((p) => `${p.nom} (x${p.quantity})`).join(", "),
-    //   });
-      console.log("Order details:", {
-        ...formData,
-        total,
-        paymentMethod: paymentType,
-        products: products.map((p) => `${p.nom} (x${p.quantity})`).join(", "),
+      if (!userId) {
+        alert("You must be logged in to place an order.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Update user tele and adresse if missing
+
+      await axios.put(`http://localhost:8000/api/users/${userId}`, {
+        tele: formData.tele,
+        adresse: formData.adresse,
       });
-      
 
-    //   // Send WhatsApp notification to admin
-    //   await axios.post("http://localhost:8000/api/whatsapp-notify", {
-    //     message: `New Order: ${formData.name}, ${formData.phone}, ${formData.address}, ${formData.city}. Total: ${total} MAD.`,
-    //   });
+      // Create the order
+      const orderResponse = await axios.post(
+        "http://localhost:8000/api/commandes",
+        {
+          user_id: userId,
+          commentaire: formData.commentaire,
+          date_achat: new Date().toISOString().split("T")[0], // Format date as YYYY-MM-DD
+          statut: "Pending",
+        }
+      );
+
+      const commandeId = orderResponse.data.id;
+
+      // Create ligne_commandes for each product in the cart
+      for (const product of products) {
+        await axios.post("http://localhost:8000/api/ligne-commandes", {
+          commande_id: commandeId,
+          produit_id: product.produit_id,
+          quantite: product.quantity,
+          prix_unitaire: Number(product.produit_prix),
+        });
+      }
+
+      // // Append order details to Google Sheets
+      // await axios.post("http://localhost:8000/api/google-sheets/append", {
+      //   user_id: userId,
+      //   name: formData.name,
+      //   tele: formData.tele,
+      //   adresse: formData.adresse,
+      //   total,
+      //   products,
+      // });
 
       alert("Order placed successfully!");
-      onClose();
+      onClose(); // Close the popup
     } catch (error) {
-      console.error("Order submission failed:", error);
+      console.error("Error placing order:", error);
       alert("Failed to place the order. Please try again.");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (paymentMethod === "cod") {
-      submitOrder("Cash on Delivery");
     }
   };
 
@@ -90,15 +122,15 @@ const PopUp = ({ onClose, products, total }) => {
               value={formData.name}
               onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-lg px-4 py-2"
-              required
+              disabled // Name is not editable
             />
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Phone</label>
             <input
               type="text"
-              name="phone"
-              value={formData.phone}
+              name="tele"
+              value={formData.tele}
               onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-lg px-4 py-2"
               required
@@ -108,44 +140,23 @@ const PopUp = ({ onClose, products, total }) => {
             <label className="block text-gray-700">Address</label>
             <input
               type="text"
-              name="address"
-              value={formData.address}
+              name="adresse"
+              value={formData.adresse}
               onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-lg px-4 py-2"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">City</label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
+            <label className="block text-gray-700">Commentaire</label>
+            <textarea
+              name="commentaire"
+              value={formData.commentaire}
               onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-lg px-4 py-2"
-              required
+              rows="3"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Payment Method</label>
-            <select
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            >
-              <option value="cod">Cash on Delivery</option>
-              <option value="stripe">Stripe</option>
-            </select>
-          </div>
-          {paymentMethod === "stripe" && (
-            <StripeCheckout
-              stripeKey="YOUR_STRIPE_PUBLIC_KEY"
-              token={handleStripePayment}
-              amount={total * 100}
-              name="E-Commerce Checkout"
-              currency="MAD"
-            />
-          )}
           <button
             type="submit"
             disabled={isSubmitting}

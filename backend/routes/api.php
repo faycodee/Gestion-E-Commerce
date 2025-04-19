@@ -21,6 +21,7 @@ use App\Http\Controllers\User\PanierController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\LignePanierController;
 use App\Http\Controllers\User\LigneCommandeController;
+use App\Http\Controllers\Admin\GoogleSheetsController;
 
 
 
@@ -66,5 +67,7 @@ Route::prefix('ligne-panier')->group(function () {
 
 Route::get('/categories', fn () => Category::all());
 Route::get('/tvas', fn () => TVA::all());
+
+Route::post('/google-sheets/append', [GoogleSheetsController::class, 'appendToSheet']);
 
 

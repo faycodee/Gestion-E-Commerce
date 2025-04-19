@@ -12,10 +12,10 @@ class Commande extends Model
     protected $table = 'commandes';
 
     protected $fillable = [
+        'user_id',
+        'commentaire',
         'date_achat',
         'statut',
-        'commentaire',
-        'user_id',
     ];
 
     public function user()

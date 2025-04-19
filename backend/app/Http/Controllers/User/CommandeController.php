@@ -22,37 +22,42 @@ class CommandeController extends Controller
         $commande = DB::table('commandes')->where('id', $id)->first();
         if (!$commande) {
             return response()->json(['message' => 'Commande not found'], 404);
-        }
+           }
         return response()->json($commande);
     }
 
     // إضافة طلب جديد
     public function store(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required|integer',
-            'status' => 'required|string',
-            'commentaire' => 'nullable|string',
-        ]);
+        try {
+            // $validated = $request->validate([
+            //     'user_id' => 'required|integer|exists:users,id',
+            //     'status' => 'required|string',
+            //     'commentaire' => 'nullable|string',
+            // ]);
 
-        $commande = DB::table('commandes')->insertGetId([
-            'user_id' => $request->user_id,
-            'status' => $request->status,
-            'commentaire' => $request->commentaire,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        foreach ($request->products as $product) {
-            LigneCommande::create([
-                'commande_id' => $commande,
-                'produit_id' => $product['produit_id'],
-                'quantite' => $product['quantite'],
-                'prix_unitaire' => $product['prix_unitaire'],
+            $commande = DB::table('commandes')->insertGetId([
+                'user_id' => $request->user_id,
+                'status' => $request->status,
+                'commentaire' => $request->commentaire,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
-        }
 
-        return response()->json(['message' => 'Commande and LigneCommandes created successfully'], 201);
+            foreach ($request->products as $product) {
+                LigneCommande::create([
+                    'commande_id' => $commande,
+                    'produit_id' => $product['produit_id'],
+                    'quantite' => $product['quantite'],
+                    'prix_unitaire' => $product['prix_unitaire'],
+                ]);
+            }
+
+            return response()->json(['message' => 'Commande and LigneCommandes created successfully'], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation failed: ', $e->errors());
+            return response()->json(['errors' => $e->errors()], 422);
+        }
     }
 
     // تحديث طلب باستخدام ID

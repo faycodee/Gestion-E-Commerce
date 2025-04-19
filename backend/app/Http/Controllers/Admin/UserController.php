@@ -52,20 +52,23 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validate only the fields that are being updated
         $validated = $request->validate([
-            'first_name' => 'required|string|max:50',
-            'name' => 'required|string|max:250',
-            'email' => 'required|email|max:50',
-            'role' => 'required|in:user,admin',
-            'tele' => 'nullable|string|max:20', // تحقق من أن الحقل tele موجود هنا
-            'adresse' => 'nullable|string|max:250',
+            'first_name' => 'sometimes|required|string|max:50',
+            'name' => 'sometimes|required|string|max:250',
+            'email' => 'sometimes|required|email|max:50',
+            'role' => 'sometimes|required|in:user,admin',
+            'tele' => 'sometimes|nullable|string|max:20', // Allow updating tele
+            'adresse' => 'sometimes|nullable|string|max:250', // Allow updating adresse
         ]);
 
+        // Find the user by ID
         $user = User::find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
 
+        // Update only the provided fields
         $user->update($validated);
 
         return response()->json(['message' => 'User updated successfully']);

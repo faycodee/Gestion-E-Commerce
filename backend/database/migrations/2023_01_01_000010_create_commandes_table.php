@@ -12,8 +12,8 @@ class CreateCommandesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('commentaire', 255); // Increase length to 255
             $table->date('date_achat');
+            $table->string('commentaire', 255)->nullable();
             $table->string('statut', 50);
             $table->timestamps();
         });

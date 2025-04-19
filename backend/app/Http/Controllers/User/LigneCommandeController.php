@@ -18,7 +18,6 @@ class LigneCommandeController extends Controller
     {
         // Fetch all LigneCommande records with related Commande and Produit
         $ligneCommandes = LigneCommande::get();
-        // $ligneCommandes = LigneCommande::with(['commande', 'produit'])->get();
 
         return response()->json($ligneCommandes);
     }

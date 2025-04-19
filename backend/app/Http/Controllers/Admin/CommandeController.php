@@ -2,60 +2,75 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Commande;
+
 class CommandeController extends Controller
 {
+    // Fetch all commandes
     public function index()
     {
-        $commandes = DB::table('commandes')->get();
+        $commandes = Commande::all();
         return response()->json($commandes);
     }
+
+    // Store a new commande
     public function store(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required|integer',
-            'total'   => 'required|numeric',
-            'status'  => 'required|string',
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'commentaire' => 'nullable|string|max:255',
+            'date_achat' => 'required|date',
+            'statut' => 'required|string|max:50',
         ]);
-        $id = DB::table('commandes')->insertGetId([
-            'user_id'    => $request->user_id,
-            'total'      => $request->total,
-            'status'     => $request->status,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        return response()->json(['id' => $id], 201);
+
+        $commande = Commande::create($validated);
+
+        return response()->json(['id' => $commande->id, 'message' => 'Commande created successfully'], 201);
     }
+
+    // Show a specific commande by ID
     public function show($id)
     {
-        $commande = DB::table('commandes')->find($id);
+        $commande = Commande::find($id);
+
         if (!$commande) {
             return response()->json(['error' => 'Commande not found'], 404);
         }
+
         return response()->json($commande);
     }
+
+    // Update an existing commande
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'total'  => 'sometimes|required|numeric',
-            'status' => 'sometimes|required|string',
-        ]);
-        $updated = DB::table('commandes')->where('id', $id)->update([
-            'total'      => $request->total,
-            'status'     => $request->status,
-            'updated_at' => now(),
-        ]);
-        if (!$updated) {
+        $commande = Commande::find($id);
+
+        if (!$commande) {
             return response()->json(['error' => 'Commande not found'], 404);
         }
+
+        $validated = $request->validate([
+            'commentaire' => 'nullable|string|max:255',
+            'date_achat' => 'sometimes|required|date',
+            'statut' => 'sometimes|required|string|max:50',
+        ]);
+
+        $commande->update($validated);
+
         return response()->json(['message' => 'Commande updated successfully']);
     }
+
+    // Delete a specific commande
     public function destroy($id)
     {
-        $deleted = DB::table('commandes')->where('id', $id)->delete();
-        if (!$deleted) {
+        $commande = Commande::find($id);
+
+        if (!$commande) {
             return response()->json(['error' => 'Commande not found'], 404);
         }
+
+        $commande->delete();
+
         return response()->json(['message' => 'Commande deleted successfully']);
     }
 }

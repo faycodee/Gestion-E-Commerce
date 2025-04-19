@@ -11,14 +11,16 @@ import {
   Settings,
   LogOut,
   List,
-  Percent, // Importation de l'icône Percent pour la TVA
+  Percent,
+  Tag, // Importation de l'icône Tag pour les Réductions
 } from "lucide-react";
 
 const Sidebar = () => {
   const location = useLocation();
   const [showProducts, setShowProducts] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
-  const [showTva, setShowTva] = useState(false); // State for TVA dropdown
+  const [showTva, setShowTva] = useState(false);
+  const [showReductions, setShowReductions] = useState(false); // State for Réductions dropdown
 
   const isActive = (path) => location.pathname === path;
 
@@ -171,6 +173,43 @@ const Sidebar = () => {
                 }`}
               >
                 Gestion des TVA
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Dropdown for Réductions */}
+        <div className="relative">
+          <button
+            onClick={() => setShowReductions(!showReductions)}
+            className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100"
+          >
+            <span className="flex items-center gap-2">
+              <Tag className="w-5 h-5" /> Réductions
+            </span>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                showReductions ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          {showReductions && (
+            <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
+              <Link
+                to="/reductions/list"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/reductions/list") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                Liste des Réductions
+              </Link>
+              <Link
+                to="/reductions/add"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/reductions/add") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                Ajouter Réduction
               </Link>
             </div>
           )}

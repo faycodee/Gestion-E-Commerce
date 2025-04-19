@@ -14,7 +14,7 @@ class TvaController extends Controller
     public function index()
     {
         try {
-            $tvas = DB::table('tvas')->get();
+            $tvas = DB::table('tvas')->paginate(10);
             return response()->json($tvas, 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erreur lors de la récupération des TVA', 'error' => $e->getMessage()], 500);

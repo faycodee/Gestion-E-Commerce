@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid"; // Importer les icônes
 
 const Customers = () => {
   const [users, setUsers] = useState([]);
@@ -127,18 +128,18 @@ const Customers = () => {
                 <td className="px-4 py-2">{user.tele || "N/A"}</td>
                 <td className="px-4 py-2">{user.adresse || "N/A"}</td>
                 <td className="px-4 py-2">{user.role}</td>
-                <td className="px-4 py-2 space-x-2">
+                <td className="px-4 py-2 space-x-2 flex items-center">
                   <button
                     onClick={() => handleEdit(user.id)}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-full"
                   >
-                    Edit
+                    <PencilIcon className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => handleDelete(user.id)}
-                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                    className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full"
                   >
-                    Delete
+                    <TrashIcon className="h-5 w-5" />
                   </button>
                 </td>
               </tr>

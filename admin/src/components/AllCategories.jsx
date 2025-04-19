@@ -96,17 +96,15 @@ const AllCategories = () => {
               <td className="border border-gray-300 px-4 py-2 flex gap-2">
                 <button
                   onClick={() => navigate(`/categories/edit/${category.id}`)}
-                  className="flex items-center bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition duration-200"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-full"
                 >
-                  <PencilIcon className="h-5 w-5 mr-1" />
-                  Modifier
+                  <PencilIcon className="h-5 w-5" />
                 </button>
                 <button
                   onClick={() => handleDelete(category.id)}
-                  className="flex items-center bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition duration-200"
+                  className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full"
                 >
-                  <TrashIcon className="h-5 w-5 mr-1" />
-                  Supprimer
+                  <TrashIcon className="h-5 w-5" />
                 </button>
               </td>
             </tr>

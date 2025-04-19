@@ -38,7 +38,8 @@ const Login = () => {
       window.dispatchEvent(new Event("storage"));
 
       // Redirect to the home page
-      navigate("/");
+      window.location.href = "/";
+
     } catch (err) {
       if (err.response && err.response.data.message) {
         setError(err.response.data.message);

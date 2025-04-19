@@ -20,7 +20,9 @@ import AddCategory from "./components/AddCategory";
 import EditCategory from "./components/EditCategory";
 
 const App = () => {
-  const isAuthenticated = !!localStorage.getItem("auth_token");
+  const token = localStorage.getItem("auth_token");
+const isAuthenticated = token && token !== "undefined" && token !== "null";
+
 
   return (
     <Router>

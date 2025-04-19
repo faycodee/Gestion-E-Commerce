@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom"; // استيراد useNavigate
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { gsap } from "gsap";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid"; // Importer les icônes
 
 const AllCategories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [categoriesPerPage] = useState(5); // Nombre de catégories par page
+  const [categoriesPerPage] = useState(5);
   const tableRef = useRef(null);
-  const navigate = useNavigate(); // تعريف navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Appel API pour récupérer les catégories
@@ -94,16 +95,18 @@ const AllCategories = () => {
               </td>
               <td className="border border-gray-300 px-4 py-2 flex gap-2">
                 <button
-                  onClick={() => handleDelete(category.id)}
-                  className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                  onClick={() => navigate(`/categories/edit/${category.id}`)}
+                  className="flex items-center bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition duration-200"
                 >
-                  Supprimer
+                  <PencilIcon className="h-5 w-5 mr-1" />
+                  Modifier
                 </button>
                 <button
-                  onClick={() => navigate(`/categories/edit/${category.id}`)} // استخدام navigate
-                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                  onClick={() => handleDelete(category.id)}
+                  className="flex items-center bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition duration-200"
                 >
-                  Modifier
+                  <TrashIcon className="h-5 w-5 mr-1" />
+                  Supprimer
                 </button>
               </td>
             </tr>

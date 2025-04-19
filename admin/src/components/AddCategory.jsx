@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // لإعادة التوجيه
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { gsap } from "gsap";
 
@@ -7,9 +7,10 @@ const AddCategory = () => {
   const [nom, setNom] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" });
+  const [errors, setErrors] = useState({});
   const formRef = useRef(null);
-  const navigate = useNavigate(); // استخدم useNavigate لإعادة التوجيه
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Animation GSAP
@@ -20,89 +21,147 @@ const AddCategory = () => {
     );
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
+    setMessage({ text: "", type: "" });
 
-    const formData = new FormData();
-    formData.append("nom", nom);
-    formData.append("description", description);
-    formData.append("image", image);
+    try {
+      const formData = new FormData();
+      formData.append("nom", nom);
+      formData.append("description", description);
+      if (image) {
+        formData.append("image", image);
+      }
 
-    axios
-      .post("http://localhost:8000/api/categories", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        setMessage("Catégorie ajoutée avec succès !");
-        setNom("");
-        setDescription("");
-        setImage(null);
+      const response = await axios.post(
+        "http://localhost:8000/api/categories",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-        // إعادة التوجيه إلى /categories بعد الإضافة
-        setTimeout(() => {
-          navigate("/categories");
-        }, 1000); // انتظر ثانية واحدة قبل إعادة التوجيه
-      })
-      .catch((error) => {
-        console.error("Erreur lors de l'ajout de la catégorie :", error);
-        setMessage("Erreur lors de l'ajout de la catégorie.");
+      setMessage({
+        text: "✅ Catégorie ajoutée avec succès !",
+        type: "success",
       });
+
+      // Réinitialiser le formulaire
+      setNom("");
+      setDescription("");
+      setImage(null);
+
+      // Redirection après 2 secondes
+      setTimeout(() => {
+        navigate("/categories");
+      }, 2000);
+    } catch (error) {
+      if (error.response?.status === 422) {
+        const validationErrors = error.response.data.errors;
+        setErrors(validationErrors);
+        setMessage({
+          text: "❌ Veuillez corriger les erreurs ci-dessous.",
+          type: "error",
+        });
+      } else {
+        setMessage({
+          text: "❌ Une erreur est survenue lors de l'ajout de la catégorie.",
+          type: "error",
+        });
+      }
+    }
   };
 
   const handleCancel = () => {
-    navigate("/categories"); // إعادة التوجيه إلى /categories عند الضغط على Cancel
+    navigate("/categories");
   };
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Add Category</h1>
-      {message && <p className="mb-4 text-green-600">{message}</p>}
+      <h1 className="text-2xl font-bold mb-4 text-center">Ajouter une nouvelle catégorie</h1>
+
+      {message.text && (
+        <div
+          className={`mb-4 p-3 rounded ${
+            message.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
+
       <form
         ref={formRef}
         onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-6 rounded-lg shadow-md"
+        className="space-y-4 bg-white p-6 rounded-lg shadow-md max-w-lg mx-auto"
       >
         <div>
-          <label className="block text-sm font-medium text-gray-700">Nom</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Nom de la catégorie
+          </label>
           <input
             type="text"
             value={nom}
             onChange={(e) => setNom(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            required
+            className={`mt-1 block w-full border rounded-md shadow-sm p-2 ${
+              errors.nom ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.nom && (
+            <p className="mt-1 text-sm text-red-600">{errors.nom}</p>
+          )}
         </div>
+
         <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            className={`mt-1 block w-full border rounded-md shadow-sm p-2 ${
+              errors.description ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.description && (
+            <p className="mt-1 text-sm text-red-600">{errors.description}</p>
+          )}
         </div>
+
         <div>
-          <label className="block text-sm font-medium text-gray-700">Image</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Image
+          </label>
           <input
             type="file"
             onChange={(e) => setImage(e.target.files[0])}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            className={`mt-1 block w-full border rounded-md shadow-sm p-2 ${
+              errors.image ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.image && (
+            <p className="mt-1 text-sm text-red-600">{errors.image}</p>
+          )}
         </div>
+
         <div className="flex justify-between">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition duration-200"
           >
-            Add Category
+            Ajouter la catégorie
           </button>
           <button
             type="button"
             onClick={handleCancel}
-            className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+            className="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition duration-200"
           >
-            Cancel
+            Annuler
           </button>
         </div>
       </form>

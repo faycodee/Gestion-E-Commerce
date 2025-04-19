@@ -1,88 +1,68 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { gsap } from "gsap";
 
 const EditCategory = () => {
-  const { id } = useParams(); // Récupérer l'ID de la catégorie
-  const navigate = useNavigate();
-  const formRef = useRef(null); // Ref pour l'animation GSAP
-  const [form, setForm] = useState({
-    nom: "",
-    description: "",
-    image: null,
-  });
+  const [nom, setNom] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState(null);
+  const [imageActuelle, setImageActuelle] = useState("");
   const [message, setMessage] = useState("");
+  const formulaireRef = useRef(null);
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
-    // Animation GSAP pour le formulaire
-    gsap.fromTo(
-      formRef.current,
-      { opacity: 0, y: 50 },
-      { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
-    );
+    // Récupérer les données de la catégorie existante
+    axios
+      .get(`http://localhost:8000/api/categories/${id}`)
+      .then((response) => {
+        const categorie = response.data;
+        setNom(categorie.nom);
+        setDescription(categorie.description);
+        setImageActuelle(categorie.image);
+      })
+      .catch((error) => {
+        console.error("Erreur lors du chargement de la catégorie :", error);
+        setMessage("Erreur lors du chargement des données de la catégorie.");
+      });
 
-    // Récupérer les données de la catégorie
-    fetchCategory();
+    // Animation GSAP
+    gsap.fromTo(
+      formulaireRef.current,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }
+    );
   }, [id]);
 
-  const fetchCategory = async () => {
-    try {
-      const res = await axios.get(`http://localhost:8000/api/categories/${id}`);
-      setForm({
-        nom: res.data.nom,
-        description: res.data.description,
-        image: null, // L'image sera mise à jour uniquement si elle est modifiée
-      });
-    } catch (err) {
-      console.error("Erreur lors de la récupération de la catégorie :", err);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "image") {
-      setForm({ ...form, image: files[0] }); // Gérer le fichier pour l'image
-    } else {
-      setForm({ ...form, [name]: value });
-    }
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("nom", form.nom); // إزالة المسافات الزائدة
-    formData.append("description", form.description);
-    if (form.image) {
-      formData.append("image", form.image);
+    formData.append("nom", nom);
+    formData.append("description", description);
+    if (image) {
+      formData.append("image", image);
     }
+    formData.append("_method", "PUT"); // Laravel nécessite cela pour les requêtes PUT avec FormData
 
-    // عرض البيانات في وحدة التحكم قبل الإرسال
-    console.log("Données envoyées au serveur:");
-    for (let pair of formData.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`);
-    }
-
-    try {
-      await axios.put(`http://localhost:8000/api/categories/${id}`, formData, {
+    axios
+      .post(`http://localhost:8000/api/categories/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+      })
+      .then((response) => {
+        setMessage("✅ Catégorie mise à jour avec succès !");
+        setTimeout(() => {
+          navigate("/categories");
+        }, 1000);
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la mise à jour de la catégorie :", error);
+        setMessage("❌ Erreur lors de la mise à jour de la catégorie.");
       });
-      setMessage("✅ La catégorie a été modifiée avec succès !");
-      setTimeout(() => {
-        navigate("/categories"); // Rediriger vers /categories après succès
-      }, 1000);
-    } catch (err) {
-      console.error("Erreur lors de la modification de la catégorie :", err);
-      if (err.response && err.response.data) {
-        console.log("Détails de l'erreur :", err.response.data);
-        setMessage(`❌ Erreur: ${err.response.data.message || "Validation échouée."}`);
-      } else {
-        setMessage("❌ Une erreur s'est produite lors de la modification de la catégorie.");
-      }
-    }
   };
 
   const handleCancel = () => {
@@ -90,51 +70,74 @@ const EditCategory = () => {
   };
 
   return (
-    <form
-      ref={formRef} // Ref pour l'animation
-      onSubmit={handleSubmit}
-      className="space-y-4 p-6 max-w-xl mx-auto bg-white rounded shadow-md"
-    >
-      <h2 className="text-2xl font-bold mb-6 text-center">Modifier la Catégorie</h2>
-      {message && <p className="text-center text-green-600">{message}</p>}
-      <input
-        type="text"
-        name="nom"
-        placeholder="Nom"
-        value={form.nom}
-        onChange={handleChange}
-        className="border p-2 w-full rounded focus:ring-2 focus:ring-blue-500 transition"
-        required
-      />
-      <textarea
-        name="description"
-        placeholder="Description"
-        value={form.description}
-        onChange={handleChange}
-        className="border p-2 w-full rounded focus:ring-2 focus:ring-blue-500 transition"
-      />
-      <input
-        type="file"
-        name="image"
-        onChange={handleChange}
-        className="border p-2 w-full rounded focus:ring-2 focus:ring-blue-500 transition"
-      />
-      <div className="flex gap-4">
-        <button
-          type="submit"
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition"
-        >
-          Modifier
-        </button>
-        <button
-          type="button"
-          onClick={handleCancel}
-          className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded transition"
-        >
-          Annuler
-        </button>
-      </div>
-    </form>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+        Modifier la Catégorie
+      </h1>
+      {message && (
+        <p className="mb-4 text-center text-green-600 font-medium">{message}</p>
+      )}
+      <form
+        ref={formulaireRef}
+        onSubmit={handleSubmit}
+        className="space-y-6 bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto"
+      >
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Nom de la catégorie
+          </label>
+          <input
+            type="text"
+            value={nom}
+            onChange={(e) => setNom(e.target.value)}
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Image
+          </label>
+          {imageActuelle && (
+            <img
+              src={imageActuelle}
+              alt="Catégorie actuelle"
+              className="w-32 h-32 object-cover mb-4 rounded-md shadow-md"
+            />
+          )}
+          <input
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        <div className="flex justify-between">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
+          >
+            Modifier
+          </button>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="bg-gray-300 text-gray-700 px-6 py-2 rounded-md shadow-md hover:bg-gray-400 transition duration-300"
+          >
+            Annuler
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

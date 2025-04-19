@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Table from './Table';
-import orders from '../data/orders';
 
 const Orders = () => {
   const [filter, setFilter] = useState('All');

@@ -23,6 +23,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = DB::table('categories')->where('id', $id)->first();
+
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
         }
@@ -35,14 +36,21 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'nom' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
         ]);
 
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('categories', 'public');
+        }
+
         $id = DB::table('categories')->insertGetId([
-            'nom' => $request->nom,
-            'description' => $request->description,
+            'nom' => $validatedData['nom'],
+            'description' => $validatedData['description'],
+            'image' => $imagePath,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -55,20 +63,26 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $category = DB::table('categories')->where('id', $id)->first();
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
+        ]);
 
+        $category = DB::table('categories')->where('id', $id)->first();
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
         }
 
-        $request->validate([
-            'nom' => 'string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        $imagePath = $category->image;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('categories', 'public');
+        }
 
         DB::table('categories')->where('id', $id)->update([
-            'nom' => $request->nom ?? $category->nom,
-            'description' => $request->description ?? $category->description,
+            'nom' => $validatedData['nom'],
+            'description' => $validatedData['description'],
+            'image' => $imagePath,
             'updated_at' => now(),
         ]);
 

@@ -120,7 +120,7 @@ const Navbar = () => {
     { to: "/shop", text: t("nav.2") }, // Shop
     { to: "/categories", text: t("nav.3") }, // Category
     { to: "/faq", text: t("nav.4") }, // FAQ
-    { to: "/contact", text: t("nav.5") }, // Contact
+
   ];
 
   const handleMouseEnter = () => {

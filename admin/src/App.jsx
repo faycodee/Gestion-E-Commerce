@@ -42,7 +42,7 @@ const isAuthenticated = token && token !== "undefined" && token !== "null";
               <Route path="/products/add" element={<AddProduct />} />
               <Route path="/edit-product/:id" element={<EditProduct />} />
               <Route path="/orders" element={<Orders/>} />
-              <Route path="/orders/:ligne-commande" element={<Ligne_orders/>} />
+              <Route path="/orders/:commande_id" element={<Ligne_orders/>} />
               <Route path="/customers" element={<Customers/>} />
               <Route path="/add-user" element={<AddUser />} />
               <Route path="/edit-user/:id" element={<EditUser />} />

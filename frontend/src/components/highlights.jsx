@@ -4,6 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
+import Alert from "./Alert";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,6 +12,7 @@ const Highlights = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [alert, setAlert] = useState({ show: false, message: "", type: "" });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,25 +45,143 @@ const Highlights = () => {
     });
   }, [products]);
 
+  const checkStock = (productId) => {
+    const product = products.find((prod) => prod.id === productId);
+    return product ? product.quantity : 0;
+  };
+
   const addToFavorites = (product) => {
     const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
     if (!favorites.some((fav) => fav.id === product.id)) {
       favorites.push(product);
       localStorage.setItem("favorites", JSON.stringify(favorites));
-      alert(`${product.nom} added to Favorites!`);
+
+      setAlert({
+        show: true,
+        message: `${product.nom} added to Favorites!`,
+        type: "success",
+      });
     } else {
-      alert(`${product.nom} is already in Favorites!`);
+      setAlert({
+        show: true,
+        message: `${product.nom} is already in Favorites!`,
+        type: "info",
+      });
     }
   };
 
-  const addToCart = (product) => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    if (!cart.some((item) => item.id === product.id)) {
-      cart.push(product);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      alert(`${product.nom} added to Cart!`);
-    } else {
-      alert(`${product.nom} is already in Cart!`);
+  const addToCart = async (product, quantity = 1) => {
+    try {
+      const userId = JSON.parse(localStorage.getItem("user"))?.id;
+
+      if (!userId) {
+        setAlert({
+          show: true,
+          message: "You must be logged in to add products to the cart.",
+          type: "error",
+        });
+        return;
+      }
+
+      const availableQuantity = checkStock(product.id);
+      if (availableQuantity <= 0) {
+        setAlert({
+          show: true,
+          message: "This product is out of stock.",
+          type: "error",
+        });
+        return;
+      }
+
+      if (quantity > availableQuantity) {
+        setAlert({
+          show: true,
+          message: `Only ${availableQuantity} items available in stock.`,
+          type: "error",
+        });
+        return;
+      }
+
+      // Fetch the user's cart
+      const panierResponse = await axios.get(
+        "http://127.0.0.1:8000/api/paniers"
+      );
+      const userPanier = panierResponse.data.find(
+        (panier) => panier.user_id === userId
+      );
+
+      if (!userPanier) {
+        setAlert({
+          show: true,
+          message: "No cart found for the current user.",
+          type: "error",
+        });
+        return;
+      }
+
+      let existingProduct = null;
+
+      try {
+        // Check if the product already exists in the user's cart
+        const lignePanierResponse = await axios.get(
+          `http://127.0.0.1:8000/api/ligne-panier/${userPanier.id}`
+        );
+        existingProduct = lignePanierResponse.data.find(
+          (item) => item.produit_id === product.id
+        );
+      } catch (error) {
+        if (error.response?.status === 404) {
+          // No items in the cart, proceed to add the product
+          console.warn(
+            "No items found in the cart. Proceeding to add the product."
+          );
+        } else {
+          throw error; // Re-throw other errors
+        }
+      }
+
+      if (existingProduct) {
+        // Show an alert if the product already exists in the cart
+        setAlert({
+          show: true,
+          message: `${product.nom} is already in your cart.`,
+          type: "info",
+        });
+        return;
+      } else {
+        // Add the product to the cart
+        const addResponse = await axios.post(
+          `http://127.0.0.1:8000/api/ligne-panier`,
+          {
+            panier_id: userPanier.id,
+            produit_id: product.id,
+            quantity: quantity,
+          }
+        );
+
+        if (addResponse.status === 201) {
+          setAlert({
+            show: true,
+            message: `Added ${quantity} item(s) of ${product.nom} to your cart!`,
+            type: "success",
+          });
+        } else {
+          throw new Error("Failed to add product to cart.");
+        }
+      }
+
+      // Dispatch cartUpdated event
+      window.dispatchEvent(new Event("cartUpdated"));
+    } catch (error) {
+      console.error(
+        "Error adding product to cart:",
+        error.response?.data || error.message
+      );
+      setAlert({
+        show: true,
+        message: "Failed to add product to cart. Please try again.",
+        type: "error",
+      });
     }
   };
 
@@ -90,20 +210,27 @@ const Highlights = () => {
   }
 
   return (
-    <div className="py-8  bg-background dark:bg-darkBackground">
+    <div className="py-8 bg-background dark:bg-darkBackground">
+      {alert.show && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert({ ...alert, show: false })}
+        />
+      )}
       {products.length === 0 ? (
         <div className="text-center py-10">
           <p className="text-gray-600 text-lg">No products available.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
           {products.map((product) => (
             <div
               key={product.id}
               className="highlight-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
             >
               <img
-                src={product.image || "/images/default.jpg"} // Use the image field
+                src={product.image || "/images/default.jpg"}
                 alt={product.nom}
                 className="w-full h-48 object-cover"
               />

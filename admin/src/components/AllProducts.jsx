@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa"; // Import des icônes
+import {
+  EyeIcon,
+  PencilIcon,
+  TrashIcon,
+  ShoppingBagIcon, // Importation de l'icône ShoppingBag
+} from "@heroicons/react/24/solid"; // Importation des icônes Heroicons
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const AllProducts = () => {
@@ -85,7 +90,10 @@ const AllProducts = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-3xl font-bold mb-6 text-center">🛍️ Tous les Produits</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center flex items-center justify-center gap-2">
+        <ShoppingBagIcon className="h-8 w-8 text-blue-600" />
+        Tous les Produits
+      </h2>
 
       {/* Barre de recherche et filtres */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -138,7 +146,7 @@ const AllProducts = () => {
                 onClick={() => alert(`Voir le produit ${p.nom}`)}
                 className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-full"
               >
-                <FaEye />
+                <EyeIcon className="h-5 w-5" />
               </button>
 
               {/* Bouton Modifier */}
@@ -146,7 +154,7 @@ const AllProducts = () => {
                 onClick={() => handleEdit(p.id)} // Appelle handleEdit pour rediriger
                 className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-full"
               >
-                <FaEdit />
+                <PencilIcon className="h-5 w-5" />
               </button>
 
               {/* Bouton Supprimer */}
@@ -154,7 +162,7 @@ const AllProducts = () => {
                 onClick={() => handleDelete(p.id)}
                 className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full"
               >
-                <FaTrash />
+                <TrashIcon className="h-5 w-5" />
               </button>
             </div>
           </div>

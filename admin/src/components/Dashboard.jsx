@@ -10,30 +10,36 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import {
+  UserGroupIcon,
+  CurrencyDollarIcon,
+  ShoppingCartIcon,
+  ChatBubbleLeftEllipsisIcon,
+} from "@heroicons/react/24/solid"; // Importation des icônes Heroicons
 
 const stats = [
   {
     title: "Total customers",
     value: 765,
-    icon: "👥",
+    icon: <UserGroupIcon className="h-6 w-6" />,
     color: "bg-orange-100 text-orange-500",
   },
   {
     title: "Total income",
     value: "$ 6,760.89",
-    icon: "💰",
+    icon: <CurrencyDollarIcon className="h-6 w-6" />,
     color: "bg-green-100 text-green-600",
   },
   {
     title: "New Orders",
     value: 150,
-    icon: "🛒",
+    icon: <ShoppingCartIcon className="h-6 w-6" />,
     color: "bg-blue-100 text-blue-600",
   },
   {
     title: "Unread Chats",
     value: 15,
-    icon: "💬",
+    icon: <ChatBubbleLeftEllipsisIcon className="h-6 w-6" />,
     color: "bg-cyan-100 text-cyan-600",
   },
 ];

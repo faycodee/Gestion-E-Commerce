@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const TvaManagement = () => {
   const [nom, setNom] = useState("");
   const [periodeTva, setPeriodeTva] = useState("");
   const [taux, setTaux] = useState("");
+  const navigate = useNavigate(); // Initialisation de useNavigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,10 +20,15 @@ const TvaManagement = () => {
       setNom("");
       setPeriodeTva("");
       setTaux("");
+      navigate("/tva/list"); // Redirection vers /tva/list
     } catch (err) {
       console.error("Erreur lors de l'ajout de la TVA :", err);
       alert("❌ Une erreur s'est produite.");
     }
+  };
+
+  const handleCancel = () => {
+    navigate("/tva/list"); // Redirection vers /tva/list
   };
 
   return (
@@ -59,12 +66,21 @@ const TvaManagement = () => {
             required
           />
         </div>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Ajouter
-        </button>
+        <div className="flex gap-4">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Ajouter
+          </button>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+          >
+            Annuler
+          </button>
+        </div>
       </form>
     </div>
   );

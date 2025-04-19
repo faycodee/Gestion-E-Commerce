@@ -18,6 +18,10 @@ import EditUser from "./components/EditUser";
 import AllCategories from "./components/AllCategories";
 import AddCategory from "./components/AddCategory";
 import EditCategory from "./components/EditCategory";
+import AddTva from "./components/AddTva";
+import TvaList from "./components/TvaList";
+import Ligne_orders from "./components/ligne_Orders";
+import TvaManagement from "./components/TvaManagement";
 
 const App = () => {
   const token = localStorage.getItem("auth_token");
@@ -38,12 +42,16 @@ const isAuthenticated = token && token !== "undefined" && token !== "null";
               <Route path="/products/add" element={<AddProduct />} />
               <Route path="/edit-product/:id" element={<EditProduct />} />
               <Route path="/orders" element={<Orders/>} />
+              <Route path="/orders/:ligne-commande" element={<Ligne_orders/>} />
               <Route path="/customers" element={<Customers/>} />
               <Route path="/add-user" element={<AddUser />} />
               <Route path="/edit-user/:id" element={<EditUser />} />
               <Route path="/categories" element={<AllCategories/>} />
               <Route path="/categories/add" element={<AddCategory />} />
               <Route path="/categories/edit/:id" element={<EditCategory />} />
+              <Route path="/tva" element={<AddTva />} />
+              <Route path="/tva/list" element={<TvaList />} />
+              <Route path="/tva/manage" element={<TvaManagement />} />
               
               <Route path="/settings" element={<h1>Settings Page</h1>} />
               <Route path="/chats" element={<Chats/>} />

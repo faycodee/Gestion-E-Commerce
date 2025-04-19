@@ -13,8 +13,12 @@ class TvaController extends Controller
      */
     public function index()
     {
-        $tvas = DB::table('tvas')->get();
-        return response()->json($tvas, 200);
+        try {
+            $tvas = DB::table('tvas')->get();
+            return response()->json($tvas, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur lors de la récupération des TVA', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -23,18 +27,24 @@ class TvaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'rate' => 'required|numeric|min:0',
+            'nom' => 'required|string|max:255',
+            'periode_TVA' => 'required|string|max:255',
+            'taux' => 'required|numeric|min:0',
         ]);
 
-        $id = DB::table('tvas')->insertGetId([
-            'name' => $request->input('name'),
-            'rate' => $request->input('rate'),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        try {
+            $id = DB::table('tvas')->insertGetId([
+                'nom' => $request->input('nom'),
+                'periode_TVA' => $request->input('periode_TVA'),
+                'taux' => $request->input('taux'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-        return response()->json(['message' => 'TVA created successfully', 'id' => $id], 201);
+            return response()->json(['message' => 'TVA créée avec succès', 'id' => $id], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur lors de la création de la TVA', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -42,13 +52,17 @@ class TvaController extends Controller
      */
     public function show($id)
     {
-        $tva = DB::table('tvas')->where('id', $id)->first();
+        try {
+            $tva = DB::table('tvas')->where('id', $id)->first();
 
-        if (!$tva) {
-            return response()->json(['message' => 'TVA not found'], 404);
+            if (!$tva) {
+                return response()->json(['message' => 'TVA introuvable'], 404);
+            }
+
+            return response()->json($tva, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur lors de la récupération de la TVA', 'error' => $e->getMessage()], 500);
         }
-
-        return response()->json($tva, 200);
     }
 
     /**
@@ -56,19 +70,30 @@ class TvaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $tva = DB::table('tvas')->where('id', $id)->first();
-
-        if (!$tva) {
-            return response()->json(['message' => 'TVA not found'], 404);
-        }
-
-        DB::table('tvas')->where('id', $id)->update([
-            'name' => $request->input('name', $tva->name),
-            'rate' => $request->input('rate', $tva->rate),
-            'updated_at' => now(),
+        $request->validate([
+            'nom' => 'sometimes|required|string|max:255',
+            'periode_TVA' => 'sometimes|required|string|max:255',
+            'taux' => 'sometimes|required|numeric|min:0',
         ]);
 
-        return response()->json(['message' => 'TVA updated successfully'], 200);
+        try {
+            $tva = DB::table('tvas')->where('id', $id)->first();
+
+            if (!$tva) {
+                return response()->json(['message' => 'TVA introuvable'], 404);
+            }
+
+            DB::table('tvas')->where('id', $id)->update([
+                'nom' => $request->input('nom', $tva->nom),
+                'periode_TVA' => $request->input('periode_TVA', $tva->periode_TVA),
+                'taux' => $request->input('taux', $tva->taux),
+                'updated_at' => now(),
+            ]);
+
+            return response()->json(['message' => 'TVA mise à jour avec succès'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur lors de la mise à jour de la TVA', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -76,14 +101,18 @@ class TvaController extends Controller
      */
     public function destroy($id)
     {
-        $tva = DB::table('tvas')->where('id', $id)->first();
+        try {
+            $tva = DB::table('tvas')->where('id', $id)->first();
 
-        if (!$tva) {
-            return response()->json(['message' => 'TVA not found'], 404);
+            if (!$tva) {
+                return response()->json(['message' => 'TVA introuvable'], 404);
+            }
+
+            DB::table('tvas')->where('id', $id)->delete();
+
+            return response()->json(['message' => 'TVA supprimée avec succès'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur lors de la suppression de la TVA', 'error' => $e->getMessage()], 500);
         }
-
-        DB::table('tvas')->where('id', $id)->delete();
-
-        return response()->json(['message' => 'TVA deleted successfully'], 200);
     }
 }

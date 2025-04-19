@@ -1,11 +1,24 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { ChevronDown, Home, ShoppingCart, Package, Users, MessageSquare, User, Settings, LogOut, List } from "lucide-react";
+import {
+  ChevronDown,
+  Home,
+  ShoppingCart,
+  Package,
+  Users,
+  MessageSquare,
+  User,
+  Settings,
+  LogOut,
+  List,
+  Percent, // Importation de l'icône Percent pour la TVA
+} from "lucide-react";
 
 const Sidebar = () => {
   const location = useLocation();
   const [showProducts, setShowProducts] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
+  const [showTva, setShowTva] = useState(false); // State for TVA dropdown
 
   const isActive = (path) => location.pathname === path;
 
@@ -39,7 +52,11 @@ const Sidebar = () => {
             <span className="flex items-center gap-2">
               <Package className="w-5 h-5" /> Products
             </span>
-            <ChevronDown className={`w-4 h-4 transition-transform ${showProducts ? "rotate-180" : ""}`} />
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                showProducts ? "rotate-180" : ""
+              }`}
+            />
           </button>
           {showProducts && (
             <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
@@ -54,7 +71,9 @@ const Sidebar = () => {
               <Link
                 to="/products/add"
                 className={`block px-4 py-2 hover:bg-gray-50 ${
-                  isActive("/products/add") ? "font-semibold text-indigo-600" : ""
+                  isActive("/products/add")
+                    ? "font-semibold text-indigo-600"
+                    : ""
                 }`}
               >
                 Add Product
@@ -90,7 +109,11 @@ const Sidebar = () => {
             <span className="flex items-center gap-2">
               <List className="w-5 h-5" /> Categories
             </span>
-            <ChevronDown className={`w-4 h-4 transition-transform ${showCategories ? "rotate-180" : ""}`} />
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                showCategories ? "rotate-180" : ""
+              }`}
+            />
           </button>
           {showCategories && (
             <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
@@ -105,10 +128,49 @@ const Sidebar = () => {
               <Link
                 to="/categories/add"
                 className={`block px-4 py-2 hover:bg-gray-50 ${
-                  isActive("/categories/add") ? "font-semibold text-indigo-600" : ""
+                  isActive("/categories/add")
+                    ? "font-semibold text-indigo-600"
+                    : ""
                 }`}
               >
                 Add Category
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Dropdown for TVA */}
+        <div className="relative">
+          <button
+            onClick={() => setShowTva(!showTva)}
+            className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100"
+          >
+            <span className="flex items-center gap-2">
+              <Percent className="w-5 h-5" /> TVA
+            </span>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                showTva ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          {showTva && (
+            <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
+              <Link
+                to="/tva/list"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/tva/list") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                Liste des TVA
+              </Link>
+              <Link
+                to="/tva/manage"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/tva/manage") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                Gestion des TVA
               </Link>
             </div>
           )}
@@ -124,10 +186,16 @@ const Sidebar = () => {
         >
           <User className="w-5 h-5" /> Profile
         </Link>
-        <Link to="/settings" className="flex items-center gap-2 p-2 text-gray-700">
+        <Link
+          to="/settings"
+          className="flex items-center gap-2 p-2 text-gray-700"
+        >
           <Settings className="w-5 h-5" /> Settings
         </Link>
-        <Link to="/logout" className="flex items-center gap-2 p-2 text-gray-700">
+        <Link
+          to="/logout"
+          className="flex items-center gap-2 p-2 text-gray-700"
+        >
           <LogOut className="w-5 h-5" /> Logout
         </Link>
 

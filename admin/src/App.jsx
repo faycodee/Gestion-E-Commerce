@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
@@ -16,6 +15,9 @@ import Chats from "./components/Charts";
 import EditProduct from "./components/EditProduct";
 import AddUser from "./components/AddUser";
 import EditUser from "./components/EditUser";
+import AllCategories from "./components/AllCategories";
+import AddCategory from "./components/AddCategory";
+import EditCategory from "./components/EditCategory";
 
 const App = () => {
   const isAuthenticated = !!localStorage.getItem("auth_token");
@@ -37,6 +39,10 @@ const App = () => {
               <Route path="/customers" element={<Customers/>} />
               <Route path="/add-user" element={<AddUser />} />
               <Route path="/edit-user/:id" element={<EditUser />} />
+              <Route path="/categories" element={<AllCategories/>} />
+              <Route path="/categories/add" element={<AddCategory />} />
+              <Route path="/categories/edit/:id" element={<EditCategory />} />
+              
               <Route path="/settings" element={<h1>Settings Page</h1>} />
               <Route path="/chats" element={<Chats/>} />
               <Route path="/profile" element={<>Manage your Profile</>} />

@@ -1,10 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Home, ShoppingCart, Package, Users, MessageSquare, User, Settings, LogOut, List } from "lucide-react";
 
 const Sidebar = () => {
   const location = useLocation();
   const [showProducts, setShowProducts] = useState(false);
+  const [showCategories, setShowCategories] = useState(false);
 
   const isActive = (path) => location.pathname === path;
 
@@ -17,7 +18,7 @@ const Sidebar = () => {
             isActive("/") ? "bg-gray-100 font-semibold" : "text-gray-700"
           }`}
         >
-          🏠 Dashboard
+          <Home className="w-5 h-5" /> Dashboard
         </Link>
 
         <Link
@@ -26,16 +27,18 @@ const Sidebar = () => {
             isActive("/orders") ? "bg-gray-100 font-semibold" : "text-gray-700"
           }`}
         >
-          🛒 Orders
+          <ShoppingCart className="w-5 h-5" /> Orders
         </Link>
 
-        {/* Dropdown */}
+        {/* Dropdown for Products */}
         <div className="relative">
           <button
             onClick={() => setShowProducts(!showProducts)}
             className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100"
           >
-            <span className="flex items-center gap-2">🚚 Products</span>
+            <span className="flex items-center gap-2">
+              <Package className="w-5 h-5" /> Products
+            </span>
             <ChevronDown className={`w-4 h-4 transition-transform ${showProducts ? "rotate-180" : ""}`} />
           </button>
           {showProducts && (
@@ -56,7 +59,6 @@ const Sidebar = () => {
               >
                 Add Product
               </Link>
-              
             </div>
           )}
         </div>
@@ -67,7 +69,7 @@ const Sidebar = () => {
             isActive("/customers") ? "bg-gray-100 font-semibold" : "text-gray-700"
           }`}
         >
-          👥 Customers
+          <Users className="w-5 h-5" /> Customers
         </Link>
 
         <Link
@@ -76,8 +78,41 @@ const Sidebar = () => {
             isActive("/chats") ? "bg-gray-100 font-semibold" : "text-gray-700"
           }`}
         >
-          💬 Chats
+          <MessageSquare className="w-5 h-5" /> Chats
         </Link>
+
+        {/* Dropdown for Categories */}
+        <div className="relative">
+          <button
+            onClick={() => setShowCategories(!showCategories)}
+            className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100"
+          >
+            <span className="flex items-center gap-2">
+              <List className="w-5 h-5" /> Categories
+            </span>
+            <ChevronDown className={`w-4 h-4 transition-transform ${showCategories ? "rotate-180" : ""}`} />
+          </button>
+          {showCategories && (
+            <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
+              <Link
+                to="/categories"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/categories") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                All Categories
+              </Link>
+              <Link
+                to="/categories/add"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/categories/add") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                Add Category
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2">
@@ -87,13 +122,13 @@ const Sidebar = () => {
             isActive("/profile") ? "bg-gray-100 font-semibold" : "text-gray-700"
           }`}
         >
-          👤 Profile
+          <User className="w-5 h-5" /> Profile
         </Link>
         <Link to="/settings" className="flex items-center gap-2 p-2 text-gray-700">
-          ⚙️ Settings
+          <Settings className="w-5 h-5" /> Settings
         </Link>
         <Link to="/logout" className="flex items-center gap-2 p-2 text-gray-700">
-          🔓 Logout
+          <LogOut className="w-5 h-5" /> Logout
         </Link>
 
         <button className="w-full mt-2 bg-violet-600 hover:bg-violet-700 text-white font-medium py-2 px-4 rounded-full">

@@ -1,16 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
-import { FaGoogle, FaFacebookF, FaLinkedinIn } from "react-icons/fa"; // Import social icons
-import { RiLockPasswordLine, RiMailLine } from "react-icons/ri"; // Import input field icons
-import axios from "axios"; // Import Axios
+import {
+  FaGoogle,
+  FaFacebookF,
+  FaLinkedinIn,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
+import { RiMailLine } from "react-icons/ri";
+import axios from "axios";
 
 const Login = () => {
   const containerRef = useRef(null);
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     gsap.fromTo(
@@ -22,104 +33,126 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setIsLoading(true);
+    setError("");
 
     try {
       const response = await axios.post("http://localhost:8000/api/login", {
         email,
-        password, // Use 'password' as expected by the backend
+        password,
       });
 
-      // Save the token and user in localStorage
+      setSuccessMessage("Connexion réussie !");
       localStorage.setItem("auth_token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      // Trigger a custom event to notify other components
-      window.dispatchEvent(new Event("storage"));
-
-      // Redirect to the home page
-      window.location.href = "/";
-
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1000);
     } catch (err) {
-      if (err.response && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError("An error occurred. Please try again.");
-      }
+      setError(
+        err.response?.data?.message ||
+          "Une erreur est survenue lors de la connexion."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div
       ref={containerRef}
-      className="flex items-center justify-center min-h-screen bg-background dark:bg-darkBackground"
+      className="flex items-center justify-center min-h-screen bg-gray-100"
     >
-      <div className="flex flex-col md:flex-row bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-        {/* Left Side */}
+      <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-xl overflow-hidden max-w-4xl w-full m-4">
+        {/* Section droite - Formulaire */}
         <div className="p-8 md:w-1/2">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-            Sign In
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">Connexion</h2>
+
           <div className="flex space-x-4 mb-6">
-            <button className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-              <FaGoogle className="text-red-500" />
+            <button className="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition">
+              <FaGoogle className="text-red-500 text-xl" />
             </button>
-            <button className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-              <FaFacebookF className="text-blue-600" />
+            <button className="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition">
+              <FaFacebookF className="text-blue-600 text-xl" />
             </button>
-            <button className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-              <FaLinkedinIn className="text-blue-500" />
+            <button className="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition">
+              <FaLinkedinIn className="text-blue-500 text-xl" />
             </button>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            or use your email account:
-          </p>
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-          <form onSubmit={handleLogin}>
-            <div className="relative mb-4">
-              <RiMailLine className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" />
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
+              {successMessage}
+            </div>
+          )}
+
+          {/* Formulaire de connexion */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="relative">
+              <RiMailLine className="absolute right-3 top-3 text-gray-400 text-xl" />
               <input
                 type="email"
-                placeholder="Email"
+                placeholder="Adresse e-mail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 p-2 border rounded-md dark:bg-gray-700 dark:text-white"
+                className="w-full pr-10 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 required
               />
             </div>
-            <div className="relative mb-4">
-              <RiLockPasswordLine className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" />
+
+            <div className="relative">
               <input
-                type="password"
-                placeholder="Password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Mot de passe"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 p-2 border rounded-md dark:bg-gray-700 dark:text-white"
+                className="w-full pr-10 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
+
             <Link
               to="/forgot-password"
-              className="text-sm text-primary hover:underline"
+              className="block text-sm text-primary hover:underline text-left"
             >
-              Forgot Your Password?
+              Mot de passe oublié ?
             </Link>
+
             <button
               type="submit"
-              className="w-full mt-4 p-2 bg-primary text-white rounded-md hover:bg-primary/90"
+              disabled={isLoading}
+              className={`w-full p-3 text-white rounded-lg transition ${
+                isLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-primary hover:bg-primary/90"
+              }`}
             >
-              Sign In
+              {isLoading ? "Connexion en cours..." : "Se connecter"}
             </button>
           </form>
         </div>
 
-        {/* Right Side */}
-        <div className="p-8 md:w-1/2 bg-primary text-white flex flex-col items-center justify-center">
-          <h2 className="text-2xl font-bold mb-4">Hello, Friend!</h2>
-          <p className="mb-6 text-center">
-            Login with your personal details to use all of our features.
+        {/* Section gauche - Bienvenue */}
+        <div className="p-8 md:w-1/2 bg-primary text-white flex flex-col items-center justify-center text-center">
+          <h2 className="text-3xl font-bold mb-6">Bienvenue !</h2>
+          <p className="mb-8 text-lg">
+            Connectez-vous pour accéder à votre compte et commencer votre
+            aventure avec nous.
           </p>
-        
         </div>
       </div>
     </div>

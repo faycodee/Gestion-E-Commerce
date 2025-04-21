@@ -1,30 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  RiSearchLine,
   RiNotification3Line,
   RiUser3Line,
 } from "react-icons/ri";
 import { FiLogOut } from "react-icons/fi";
 import { AiOutlineSetting, AiOutlineUser } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [showNotif, setShowNotif] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // استرجاع بيانات المستخدم من localStorage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    // إضافة تأكيد قبل تسجيل الخروج
+    const confirmLogout = window.confirm("Voulez-vous vraiment vous déconnecter?");
+    
+    if (confirmLogout) {
+      // حذف بيانات المستخدم من localStorage
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("user");
+
+      alert("✅ Vous avez été déconnecté !");
+      
+      // بدلاً من استخدام navigate، نقوم بإعادة تحميل الصفحة
+      // هذا سيضمن إعادة تحميل كامل التطبيق وتطبيق حالة المصادقة الجديدة
+      window.location.href = "/login";
+    }
+    // إذا اختار المستخدم "Cancel"، لن يتم تنفيذ أي إجراء
+  };
 
   return (
     <div className="w-full h-16 bg-white flex items-center justify-between px-4 shadow-md relative">
-      {/* Left: Search */}
-      <div className="flex items-center gap-4">
-        {/* <RiSearchLine className="text-gray-500" /> */}
-        {/* <input
-          type="text"
-          placeholder="Search for projects"
-          className="outline-none bg-transparent text-gray-700 placeholder:text-gray-400"
-        /> */}
-      </div>
-
       {/* Right: Icons */}
-      <div className="flex items-center gap-4 relative">
+      <div className="flex items-center gap-4 relative ml-auto">
         {/* Notifications */}
         <div className="relative">
           <RiNotification3Line
@@ -61,13 +79,16 @@ const Navbar = () => {
             <div className="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-lg p-3 space-y-2 z-20">
               <div className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 p-2 rounded cursor-pointer">
                 <AiOutlineUser />
-                <span>Profile</span>
+                <span>{user ? user.first_name : "Profile"}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 p-2 rounded cursor-pointer">
                 <AiOutlineSetting />
                 <span>Settings</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 p-2 rounded cursor-pointer">
+              <div
+                className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                onClick={handleLogout}
+              >
                 <FiLogOut />
                 <span>Log out</span>
               </div>

@@ -19,6 +19,7 @@ import Categories from "./components/Categories";
 import Faq from "./components/FAQ";
 import Favourites from "./components/Favourites";
 import Panier from "./components/Panier";
+import Livraison from "./components/Livraison";
 
 const App = () => (
   <BrowserRouter>
@@ -47,6 +48,7 @@ const App = () => (
         <Route path="/faq" element={<Faq/>} />
         <Route path="/favourites" element={<Favourites/>} />
         <Route path="/panier" element={<Panier/>} />
+        <Route path="/livraison" element={<Livraison/>} />
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

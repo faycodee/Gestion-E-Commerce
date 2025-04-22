@@ -23,6 +23,7 @@ use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\LignePanierController;
 use App\Http\Controllers\User\LigneCommandeController;
 use App\Http\Controllers\Admin\GoogleSheetsController;
+use App\Http\Controllers\Admin\LivraisonController;
 
 
 
@@ -71,3 +72,9 @@ Route::get('/tvas', fn () => TVA::all());
 
 
 Route::post('/googlesheets/append', [GoogleSheetsController::class, 'appendToSheet']);
+
+Route::get('/livraisons', [LivraisonController::class, 'index']);
+Route::post('/livraisons', [LivraisonController::class, 'store']);
+Route::get('/livraisons/{id}', [LivraisonController::class, 'show']);
+Route::put('/livraisons/{id}', [LivraisonController::class, 'update']);
+Route::delete('/livraisons/{id}', [LivraisonController::class, 'destroy']);

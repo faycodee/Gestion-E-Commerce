@@ -7,6 +7,7 @@ import {
   RiSearchLine,
   RiUser3Line,
   RiHeartLine,
+  RiTruckLine,
 } from "react-icons/ri";
 import { gsap } from "gsap";
 import images from "../constants/images";
@@ -120,7 +121,6 @@ const Navbar = () => {
     { to: "/shop", text: t("nav.2") }, // Shop
     { to: "/categories", text: t("nav.3") }, // Category
     { to: "/faq", text: t("nav.4") }, // FAQ
-
   ];
 
   const handleMouseEnter = () => {
@@ -183,6 +183,12 @@ const Navbar = () => {
           className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
         >
           <RiHeartLine className="h-5 w-5" />
+        </button>
+        <button
+          onClick={() => navigate("/livraison")}
+          className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+        >
+          <RiTruckLine className="h-5 w-5" />
         </button>
         <button
           className="relative p-2 group"

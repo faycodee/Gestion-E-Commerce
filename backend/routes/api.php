@@ -2,6 +2,7 @@
 use App\Models\Category;
 use App\Models\TVA;
 
+use App\Services\GoogleSheetsServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
@@ -68,6 +69,5 @@ Route::prefix('ligne-panier')->group(function () {
 Route::get('/categories', fn () => Category::all());
 Route::get('/tvas', fn () => TVA::all());
 
-Route::post('/google-sheets/append', [GoogleSheetsController::class, 'appendToSheet']);
 
-
+Route::post('/googlesheets/append', [GoogleSheetsController::class, 'appendToSheet']);

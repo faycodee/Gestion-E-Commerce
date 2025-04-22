@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9fbaecff828e8777bbc8ff8d70e89ba7",
+    "content-hash": "e3bc3cb26d791ffbc743238f6de8a19c",
     "packages": [
         {
             "name": "brick/math",
@@ -3862,6 +3862,46 @@
                 }
             ],
             "time": "2024-04-27T21:32:50+00:00"
+        },
+        {
+            "name": "sheetdb/sheetdb-php",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sheetdb/sheetdb-php.git",
+                "reference": "1cc8d76e6377adcce71f8c58f3de1f2e3a146e8d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sheetdb/sheetdb-php/zipball/1cc8d76e6377adcce71f8c58f3de1f2e3a146e8d",
+                "reference": "1cc8d76e6377adcce71f8c58f3de1f2e3a146e8d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SheetDB\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "SheetDB",
+                    "email": "support@sheetdb.io"
+                }
+            ],
+            "description": "PHP Library for accessing google spreadsheet content via SheetDB. https://sheetdb.io",
+            "support": {
+                "issues": "https://github.com/sheetdb/sheetdb-php/issues",
+                "source": "https://github.com/sheetdb/sheetdb-php/tree/1.0.3"
+            },
+            "time": "2020-04-11T14:38:40+00:00"
         },
         {
             "name": "symfony/clock",

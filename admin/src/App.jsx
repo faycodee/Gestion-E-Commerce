@@ -25,7 +25,6 @@ import TvaManagement from "./components/TvaManagement";
 import AllReduction from "./components/AllReduction";
 import AddReduction from "./components/AddReduction";
 import EditeReduction from "./components/EditeReduction";
-import SettingsForm from "./components/SettingsForm";
 
 const App = () => {
   const token = localStorage.getItem("auth_token");
@@ -60,8 +59,6 @@ const App = () => {
               <Route path="/reductions/list" element={<AllReduction />} />
               <Route path="/reductions/add" element={<AddReduction />} />
               <Route path="/reductions/edit/:id" element={<EditeReduction />} />
-
-              <Route path="/settings" element={<SettingsForm/>} />
               <Route path="/chats" element={<Chats />} />
               <Route path="/profile" element={<>Manage your Profile</>} />
             </Routes>

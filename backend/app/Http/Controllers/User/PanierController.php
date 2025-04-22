@@ -19,20 +19,22 @@ class PanierController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|integer',
-            'produit_id' => 'required|integer',
-            'quantity' => 'required|integer',
+            'user_id' => 'required|integer|unique:paniers',
+           
         ]);
 
-        DB::table('paniers')->insert([
+        $panier = DB::table('paniers')->insert([
             'user_id' => $request->user_id,
-            'produit_id' => $request->produit_id,
-            'quantity' => $request->quantity,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'montant' => $request->montant,
+          
         ]);
 
-        return response()->json(['message' => 'Produit added to panier successfully'], 201);
+        // Fetch the created panier to return it
+        $createdPanier = DB::table('paniers')
+            ->where('user_id', $request->user_id)
+            ->first();
+
+        return response()->json($createdPanier, 201);
     }
 
     // حذف منتج من سلة التسوق

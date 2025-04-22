@@ -98,30 +98,51 @@ const Shop = () => {
         return;
       }
 
-      if (quantity > availableQuantity) {
-        setAlert({
-          show: true,
-          message: `Only ${availableQuantity} items available in stock.`,
-          type: "error",
-        });
-        return;
-      }
-
       // Fetch the user's cart
       const panierResponse = await axios.get(
         "http://127.0.0.1:8000/api/paniers"
       );
-      const userPanier = panierResponse.data.find(
+      let userPanier = panierResponse.data.find(
         (panier) => panier.user_id === userId
       );
 
+      // Replace the cart creation block with this updated version:
       if (!userPanier) {
-        setAlert({
-          show: true,
-          message: "No cart found for the current user.",
-          type: "error",
-        });
-        return;
+        try {
+          // Create a new cart for the user with required fields
+          const createPanierResponse = await axios.post(
+            "http://127.0.0.1:8000/api/paniers",
+            {
+              user_id: userId,
+              montant: 0,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            }
+          );
+
+          if (createPanierResponse.status === 201) {
+            userPanier = createPanierResponse.data;
+          } else {
+            throw new Error("Failed to create cart");
+          }
+        } catch (error) {
+          console.error(
+            "Error creating cart:",
+            error.response?.data || error.message
+          );
+          setAlert({
+            show: true,
+            message:
+              error.response?.data?.message ||
+              "Failed to create a new cart. Please try again.",
+            type: "error",
+          });
+          return;
+        }
       }
 
       let existingProduct = null;
@@ -136,23 +157,43 @@ const Shop = () => {
         );
       } catch (error) {
         if (error.response?.status === 404) {
-          // No items in the cart, proceed to add the product
           console.warn(
             "No items found in the cart. Proceeding to add the product."
           );
         } else {
-          throw error; // Re-throw other errors
+          throw error;
         }
       }
 
       if (existingProduct) {
-        // Show an alert if the product already exists in the cart
-        setAlert({
-          show: true,
-          message: `${product.nom} is already in your cart.`,
-          type: "info",
-        });
-        return;
+        // Update the quantity of the existing product
+        const newQuantity = existingProduct.quantity + quantity;
+
+        // Check if the new quantity exceeds available stock
+        if (newQuantity > availableQuantity) {
+          setAlert({
+            show: true,
+            message: `Only ${availableQuantity} items available in stock.`,
+            type: "error",
+          });
+          return;
+        }
+
+        // Update the quantity
+        const updateResponse = await axios.put(
+          `http://127.0.0.1:8000/api/ligne-panier/${existingProduct.id}`,
+          {
+            quantity: newQuantity,
+          }
+        );
+
+        if (updateResponse.status === 200) {
+          setAlert({
+            show: true,
+            message: `Updated quantity of ${product.nom} in your cart!`,
+            type: "success",
+          });
+        }
       } else {
         // Add the product to the cart
         const addResponse = await axios.post(
@@ -179,12 +220,12 @@ const Shop = () => {
       window.dispatchEvent(new Event("cartUpdated"));
     } catch (error) {
       console.error(
-        "Error adding product to cart:",
+        "Error managing cart:",
         error.response?.data || error.message
       );
       setAlert({
         show: true,
-        message: "Failed to add product to cart. Please try again.",
+        message: "Failed to update cart. Please try again.",
         type: "error",
       });
     }

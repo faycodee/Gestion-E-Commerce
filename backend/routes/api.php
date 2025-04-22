@@ -2,6 +2,7 @@
 use App\Models\Category;
 use App\Models\TVA;
 
+use App\Services\GoogleSheetsServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\LignePanierController;
 use App\Http\Controllers\User\LigneCommandeController;
 use App\Http\Controllers\Admin\GoogleSheetsController;
+use App\Http\Controllers\Admin\LivraisonController;
 
 
 
@@ -68,6 +70,11 @@ Route::prefix('ligne-panier')->group(function () {
 Route::get('/categories', fn () => Category::all());
 Route::get('/tvas', fn () => TVA::all());
 
-Route::post('/google-sheets/append', [GoogleSheetsController::class, 'appendToSheet']);
 
+Route::post('/googlesheets/append', [GoogleSheetsController::class, 'appendToSheet']);
 
+Route::get('/livraisons', [LivraisonController::class, 'index']);
+Route::post('/livraisons', [LivraisonController::class, 'store']);
+Route::get('/livraisons/{id}', [LivraisonController::class, 'show']);
+Route::put('/livraisons/{id}', [LivraisonController::class, 'update']);
+Route::delete('/livraisons/{id}', [LivraisonController::class, 'destroy']);

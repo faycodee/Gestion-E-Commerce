@@ -7,6 +7,10 @@ import {
   RiSearchLine,
   RiUser3Line,
   RiHeartLine,
+<<<<<<< HEAD
+=======
+  RiTruckLine,
+>>>>>>> 4e98e80c8e7f6a3af11cb06abd295dfb4b52baed
 } from "react-icons/ri";
 import { gsap } from "gsap";
 import images from "../constants/images";
@@ -120,7 +124,10 @@ const Navbar = () => {
     { to: "/shop", text: t("nav.2") }, // Shop
     { to: "/categories", text: t("nav.3") }, // Category
     { to: "/faq", text: t("nav.4") }, // FAQ
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4e98e80c8e7f6a3af11cb06abd295dfb4b52baed
   ];
 
   const handleMouseEnter = () => {
@@ -185,6 +192,15 @@ const Navbar = () => {
           <RiHeartLine className="h-5 w-5" />
         </button>
         <button
+<<<<<<< HEAD
+=======
+          onClick={() => navigate("/livraison")}
+          className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+        >
+          <RiTruckLine className="h-5 w-5" />
+        </button>
+        <button
+>>>>>>> 4e98e80c8e7f6a3af11cb06abd295dfb4b52baed
           className="relative p-2 group"
           onClick={() => navigate("/panier")}
         >

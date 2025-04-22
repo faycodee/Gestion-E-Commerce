@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { PencilIcon, TrashIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
 const TvaList = () => {
   const [tvas, setTvas] = useState([]);
@@ -8,6 +8,10 @@ const TvaList = () => {
   const [nom, setNom] = useState("");
   const [periodeTva, setPeriodeTva] = useState("");
   const [taux, setTaux] = useState("");
+  
+  // États pour la pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [tvasPerPage] = useState(10);
 
   useEffect(() => {
     fetchTvas();
@@ -61,6 +65,34 @@ const TvaList = () => {
       }
     }
   };
+
+  // Logique de pagination
+  const indexOfLastTva = currentPage * tvasPerPage;
+  const indexOfFirstTva = indexOfLastTva - tvasPerPage;
+  const currentTvas = tvas.slice(indexOfFirstTva, indexOfLastTva);
+  const totalPages = Math.ceil(tvas.length / tvasPerPage);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goToPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Génération des numéros de page à afficher
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
 
   return (
     <div className="p-6">
@@ -134,7 +166,7 @@ const TvaList = () => {
             </tr>
           </thead>
           <tbody>
-            {tvas.map((tva) => (
+            {currentTvas.map((tva) => (
               <tr key={tva.id} className="border-b">
                 <td className="py-2 px-4">{tva.nom}</td>
                 <td className="py-2 px-4">{tva.periode_TVA}</td>
@@ -166,6 +198,55 @@ const TvaList = () => {
             )}
           </tbody>
         </table>
+
+        {/* Navigation de pagination */}
+        {tvas.length > 0 && (
+          <div className="flex items-center justify-between mt-4 px-4">
+            
+            
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className={`p-2 rounded ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                <ChevronLeftIcon className="h-5 w-5" />
+              </button>
+              
+              <div className="flex space-x-1">
+                {pageNumbers.map(number => (
+                  <button
+                    key={number}
+                    onClick={() => goToPage(number)}
+                    className={`px-3 py-1 rounded ${
+                      currentPage === number
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                  >
+                    {number}
+                  </button>
+                ))}
+              </div>
+              
+              <button
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                className={`p-2 rounded ${
+                  currentPage === totalPages
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                <ChevronRightIcon className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

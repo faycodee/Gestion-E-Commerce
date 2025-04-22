@@ -217,27 +217,6 @@ const Sidebar = () => {
       </div>
 
       <div className="space-y-2">
-        <Link
-          to="/profile"
-          className={`flex items-center gap-2 p-2 rounded ${
-            isActive("/profile") ? "bg-gray-100 font-semibold" : "text-gray-700"
-          }`}
-        >
-          <User className="w-5 h-5" /> Profile
-        </Link>
-        <Link
-          to="/settings"
-          className="flex items-center gap-2 p-2 text-gray-700"
-        >
-          <Settings className="w-5 h-5" /> Settings
-        </Link>
-        <Link
-          to="/logout"
-          className="flex items-center gap-2 p-2 text-gray-700"
-        >
-          <LogOut className="w-5 h-5" /> Logout
-        </Link>
-
         <button className="w-full mt-2 bg-violet-600 hover:bg-violet-700 text-white font-medium py-2 px-4 rounded-full">
           Generate Report +
         </button>

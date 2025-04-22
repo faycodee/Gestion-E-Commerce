@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid"; // Importer les icônes
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 const Customers = () => {
   const [users, setUsers] = useState([]);
-  const [filterRole, setFilterRole] = useState(""); // État pour le filtre
-  const [currentPage, setCurrentPage] = useState(1); // Page actuelle
-  const [usersPerPage] = useState(5); // Nombre d'utilisateurs par page
+  const [filterRole, setFilterRole] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(10); // Changed from 5 to 10 users per page
   const navigate = useNavigate();
 
   useEffect(() => {

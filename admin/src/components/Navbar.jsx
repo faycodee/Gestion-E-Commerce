@@ -81,10 +81,7 @@ const Navbar = () => {
                 <AiOutlineUser />
                 <span>{user ? user.first_name : "Profile"}</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 p-2 rounded cursor-pointer">
-                <AiOutlineSetting />
-                <span>Settings</span>
-              </div>
+              
               <div
                 className="flex items-center gap-2 text-gray-700 hover:bg-gray-100 p-2 rounded cursor-pointer"
                 onClick={handleLogout}

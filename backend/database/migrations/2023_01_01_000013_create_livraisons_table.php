@@ -17,6 +17,10 @@ class CreateLivraisonsTable extends Migration
             $table->string('URL_suivi', 50);
             $table->decimal('poid', 15, 2);
             $table->string('estime_arrive', 50);
+<<<<<<< HEAD
+=======
+            $table->enum('status', ['pending', 'shipped', 'delivered', 'canceled'])->default('pending');
+>>>>>>> 4e98e80c8e7f6a3af11cb06abd295dfb4b52baed
             $table->foreignId('commande_id')->constrained('commandes')->onDelete('cascade');
             $table->timestamps();
         });

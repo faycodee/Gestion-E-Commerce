@@ -6,28 +6,28 @@ import { gsap } from "gsap"; // Import GSAP
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const formRef = useRef(null); // Ref pour l'animation GSAP
+  const formRef = useRef(null); // Ref for GSAP animation
   const [form, setForm] = useState({
     nom: "",
     description: "",
     prix_HT: "",
     quantity: "",
-    image: "",
+    image: null, // Updated to handle file uploads
     category_id: "",
     tva_id: "",
   });
-  const [categories, setCategories] = useState([]); // Liste des catégories
-  const [tvas, setTvas] = useState([]); // Liste des TVA
+  const [categories, setCategories] = useState([]); // List of categories
+  const [tvas, setTvas] = useState([]); // List of TVA
 
   useEffect(() => {
-    // Animation GSAP pour le formulaire
+    // GSAP animation for the form
     gsap.fromTo(
       formRef.current,
       { opacity: 0, y: 50 },
       { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
     );
 
-    // Récupération des données du produit, des catégories et des TVA
+    // Fetch product, categories, and TVA data
     fetchProduct();
     fetchCategoriesAndTvas();
   }, [id]);
@@ -35,7 +35,10 @@ const EditProduct = () => {
   const fetchProduct = async () => {
     try {
       const res = await axios.get(`http://127.0.0.1:8000/api/produits/${id}`);
-      setForm(res.data);
+      setForm({
+        ...res.data,
+        image: null, // Reset image to null for file input
+      });
     } catch (err) {
       console.error("Erreur lors du chargement du produit :", err);
     }
@@ -55,14 +58,30 @@ const EditProduct = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    const { name, value, files } = e.target;
+    if (name === "image") {
+      setForm({ ...form, image: files[0] }); // Handle file input
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) => {
+      if (key === "image" && value) {
+        formData.append("image", value); // Append image file
+      } else {
+        formData.append(key, value);
+      }
+    });
+
     try {
-      await axios.put(`http://127.0.0.1:8000/api/produits/${id}`, form);
+      await axios.post(`http://127.0.0.1:8000/api/produits/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       alert("✅ Produit modifié avec succès !");
       navigate("/products");
     } catch (err) {
@@ -77,7 +96,7 @@ const EditProduct = () => {
 
   return (
     <form
-      ref={formRef} // Ref pour l'animation
+      ref={formRef} // Ref for GSAP animation
       onSubmit={handleSubmit}
       className="space-y-4 p-6 max-w-xl mx-auto bg-white rounded shadow-md"
     >
@@ -114,7 +133,7 @@ const EditProduct = () => {
         className="border p-2 w-full rounded focus:ring-2 focus:ring-blue-500 transition"
       />
 
-      {/* Catégorie dynamique */}
+      {/* Dynamic Category */}
       <select
         name="category_id"
         value={form.category_id}
@@ -129,7 +148,7 @@ const EditProduct = () => {
         ))}
       </select>
 
-      {/* TVA dynamique */}
+      {/* Dynamic TVA */}
       <select
         name="tva_id"
         value={form.tva_id}
@@ -145,10 +164,10 @@ const EditProduct = () => {
       </select>
 
       <input
-        type="text"
+        type="file"
         name="image"
-        placeholder="URL de l'image"
-        value={form.image}
+        id="image"
+        accept="image/*"
         onChange={handleChange}
         className="border p-2 w-full rounded focus:ring-2 focus:ring-blue-500 transition"
       />

@@ -125,11 +125,12 @@ const AllProducts = () => {
             key={p.id}
             className="bg-white border rounded-lg shadow hover:shadow-lg transition p-4"
           >
-            <img
-              src={p.image || "https://via.placeholder.com/150"}
-              alt={p.nom}
-              className="w-full h-40 object-cover rounded mb-4"
-            />
+           <img
+  src={`http://127.0.0.1:8000/storage/${p.image}`}
+  alt={p.nom}
+  className="w-full h-40 object-cover rounded mb-4"
+/>
+
             <h3 className="text-lg font-semibold mb-2">{p.nom}</h3>
             <p className="text-gray-600 text-sm mb-4">{p.description}</p>
             <p className="text-blue-600 font-bold text-lg mb-2">{p.prix_HT} DH</p>

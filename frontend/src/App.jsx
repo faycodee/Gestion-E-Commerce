@@ -19,10 +19,8 @@ import Categories from "./components/Categories";
 import Faq from "./components/FAQ";
 import Favourites from "./components/Favourites";
 import Panier from "./components/Panier";
-<<<<<<< HEAD
-=======
+
 import Livraison from "./components/Livraison";
->>>>>>> 4e98e80c8e7f6a3af11cb06abd295dfb4b52baed
 
 const App = () => (
   <BrowserRouter>
@@ -51,10 +49,8 @@ const App = () => (
         <Route path="/faq" element={<Faq/>} />
         <Route path="/favourites" element={<Favourites/>} />
         <Route path="/panier" element={<Panier/>} />
-<<<<<<< HEAD
-=======
         <Route path="/livraison" element={<Livraison/>} />
->>>>>>> 4e98e80c8e7f6a3af11cb06abd295dfb4b52baed
+
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

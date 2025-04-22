@@ -26,7 +26,6 @@ use App\Http\Controllers\Admin\GoogleSheetsController;
 use App\Http\Controllers\Admin\LivraisonController;
 
 
-
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

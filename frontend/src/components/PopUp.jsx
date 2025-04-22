@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 const PopUp = ({ onClose, products, total }) => {
@@ -7,8 +7,21 @@ const PopUp = ({ onClose, products, total }) => {
     tele: "",
     adresse: "",
     commentaire: "",
+    city: "",
+    livraison: "no", // Default to "no"
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fraisExpedition, setFraisExpedition] = useState(0);
+  const popupRef = useRef(null); // Reference to the popup container
+
+  const cityPrices = {
+    fes: 100,
+    casablanca: 150,
+    rabat: 120,
+    marrakech: 130,
+    tangier: 140,
+    other: 200, // Default price for other cities
+  };
 
   useEffect(() => {
     // Fetch user data from the API
@@ -31,6 +44,8 @@ const PopUp = ({ onClose, products, total }) => {
           tele: user.tele || "",
           adresse: user.adresse || "",
           commentaire: "",
+          city: "",
+          livraison: "no",
         });
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -41,9 +56,28 @@ const PopUp = ({ onClose, products, total }) => {
     fetchUserData();
   }, []);
 
+  useEffect(() => {
+    // Close the popup when clicking outside of it
+    const handleOutsideClick = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        onClose(); // Close the popup
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [onClose]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    // Update frais_expedition based on city
+    if (name === "city") {
+      setFraisExpedition(cityPrices[value] || cityPrices.other);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -60,7 +94,6 @@ const PopUp = ({ onClose, products, total }) => {
       }
 
       // Update user tele and adresse if missing
-
       await axios.put(`http://localhost:8000/api/users/${userId}`, {
         tele: formData.tele,
         adresse: formData.adresse,
@@ -89,15 +122,22 @@ const PopUp = ({ onClose, products, total }) => {
         });
       }
 
-      // // Append order details to Google Sheets
-      // await axios.post("http://localhost:8000/api/google-sheets/append", {
-      //   user_id: userId,
-      //   name: formData.name,
-      //   tele: formData.tele,
-      //   adresse: formData.adresse,
-      //   total,
-      //   products,
-      // });
+      // If livraison is "yes", create a livraison
+      if (formData.livraison === "yes") {
+        await axios.post("http://localhost:8000/api/livraisons", {
+          frais_expedition: fraisExpedition,
+          nom_transporteur: "Standard Transporter", // Example transporter name
+          date_envoi: new Date().toISOString().split("T")[0], // Today's date
+          URL_suivi: "http://example.com/track", // Example tracking URL
+          poid: products.reduce(
+            (total, product) => total + product.quantity,
+            0
+          ), // Example weight calculation
+          estime_arrive: "3-5 days", // Example estimated arrival
+          status: "pending",
+          commande_id: commandeId,
+        });
+      }
 
       alert("Order placed successfully!");
       onClose(); // Close the popup
@@ -111,7 +151,10 @@ const PopUp = ({ onClose, products, total }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+      <div
+        ref={popupRef} // Attach the reference to the popup container
+        className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md"
+      >
         <h2 className="text-2xl font-bold mb-4">Checkout</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -147,6 +190,55 @@ const PopUp = ({ onClose, products, total }) => {
               required
             />
           </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">City</label>
+            <select
+              name="city"
+              value={formData.city}
+              onChange={handleInputChange}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2"
+              required
+            >
+              <option value="">Select a city</option>
+              <option value="fes">Fes</option>
+              <option value="casablanca">Casablanca</option>
+              <option value="rabat">Rabat</option>
+              <option value="marrakech">Marrakech</option>
+              <option value="tangier">Tangier</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Livraison</label>
+            <div className="flex items-center space-x-4">
+              <label>
+                <input
+                  type="radio"
+                  name="livraison"
+                  value="yes"
+                  checked={formData.livraison === "yes"}
+                  onChange={handleInputChange}
+                />{" "}
+                Yes
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="livraison"
+                  value="no"
+                  checked={formData.livraison === "no"}
+                  onChange={handleInputChange}
+                />{" "}
+                No
+              </label>
+            </div>
+          </div>
+          {formData.livraison === "yes" && (
+            <div className="mb-4">
+              <label className="block text-gray-700">Frais d'expédition</label>
+              <p className="text-gray-800 font-bold">{fraisExpedition} MAD</p>
+            </div>
+          )}
           <div className="mb-4">
             <label className="block text-gray-700">Commentaire</label>
             <textarea

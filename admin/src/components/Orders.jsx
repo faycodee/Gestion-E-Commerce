@@ -6,6 +6,7 @@ import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid"; // �
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]); // To store user details
   const [formData, setFormData] = useState({
     user_id: "",
     commentaire: "",
@@ -19,8 +20,14 @@ const Orders = () => {
   const formRef = useRef(null);
 
   useEffect(() => {
+    // Fetch orders
     axios.get("http://localhost:8000/api/commandes").then((response) => {
       setOrders(response.data);
+    });
+
+    // Fetch users
+    axios.get("http://localhost:8000/api/users").then((response) => {
+      setUsers(response.data);
     });
   }, []);
 
@@ -33,6 +40,11 @@ const Orders = () => {
       );
     }
   }, [editingOrderId]);
+
+  const getUserDetails = (userId, field) => {
+    const user = users.find((user) => user.id === userId);
+    return user ? user[field] || "N/A" : "N/A";
+  };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -181,6 +193,8 @@ const Orders = () => {
           <tr>
             <th className="border p-2">ID</th>
             <th className="border p-2">User ID</th>
+            <th className="border p-2">Téléphone</th>
+            <th className="border p-2">Adresse</th>
             <th className="border p-2">Commentaire</th>
             <th className="border p-2">Date Achat</th>
             <th className="border p-2">Statut</th>
@@ -192,6 +206,8 @@ const Orders = () => {
             <tr key={order.id}>
               <td className="border p-2">{order.id}</td>
               <td className="border p-2">{order.user_id}</td>
+              <td className="border p-2">{getUserDetails(order.user_id, "tele")}</td>
+              <td className="border p-2">{getUserDetails(order.user_id, "adresse")}</td>
               <td className="border p-2">{order.commentaire}</td>
               <td className="border p-2">{order.date_achat}</td>
               <td className="border p-2">{order.statut}</td>

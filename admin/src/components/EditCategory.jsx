@@ -36,33 +36,41 @@ const EditCategory = () => {
     );
   }, [id]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("nom", nom);
-    formData.append("description", description);
-    if (image) {
-      formData.append("image", image);
-    }
-    formData.append("_method", "PUT"); // Laravel nécessite cela pour les requêtes PUT avec FormData
+    try {
+      const formData = new FormData();
+      formData.append("nom", nom);
+      formData.append("description", description);
 
-    axios
-      .post(`http://localhost:8000/api/categories/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        setMessage("✅ Catégorie mise à jour avec succès !");
-        setTimeout(() => {
-          navigate("/categories");
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la mise à jour de la catégorie :", error);
-        setMessage("❌ Erreur lors de la mise à jour de la catégorie.");
-      });
+      // Only append image if a new one is selected
+      if (image instanceof File) {
+        formData.append("image", image);
+      }
+
+      // Add _method field for Laravel to handle PUT request
+      formData.append("_method", "PUT");
+
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/categories/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
+          },
+        }
+      );
+
+      setMessage("✅ Catégorie mise à jour avec succès !");
+      setTimeout(() => {
+        navigate("/categories");
+      }, 1000);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de la catégorie :", error);
+      setMessage("❌ Erreur lors de la mise à jour de la catégorie.");
+    }
   };
 
   const handleCancel = () => {
@@ -109,16 +117,24 @@ const EditCategory = () => {
             Image
           </label>
           {imageActuelle && (
-            <img
-              src={imageActuelle}
-              alt="Catégorie actuelle"
-              className="w-32 h-32 object-cover mb-4 rounded-md shadow-md"
-            />
+            <div className="mt-2">
+              <img
+                src={`http://127.0.0.1:8000/storage/${imageActuelle}`}
+                alt="Catégorie actuelle"
+                className="w-32 h-32 object-cover rounded-md shadow-md"
+              />
+            </div>
           )}
           <input
             type="file"
+            accept="image/*"
             onChange={(e) => setImage(e.target.files[0])}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            className="mt-2 block w-full text-sm text-gray-500
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-md file:border-0
+              file:text-sm file:font-semibold
+              file:bg-blue-50 file:text-blue-700
+              hover:file:bg-blue-100"
           />
         </div>
         <div className="flex justify-between">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProduitController extends Controller
 {
@@ -43,7 +44,7 @@ class ProduitController extends Controller
             'quantity' => 'required|integer',
             'category_id' => 'required|exists:categories,id',
             'tva_id' => 'required|exists:tvas,id',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image',
         ]);
 
         $imagePath = '';
@@ -80,7 +81,7 @@ class ProduitController extends Controller
             'quantity' => 'required|integer',
             'category_id' => 'required|exists:categories,id',
             'tva_id' => 'required|exists:tvas,id',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image',
         ]);
 
         $produit = DB::table('produits')->where('id', $id)->first();
@@ -89,9 +90,15 @@ class ProduitController extends Controller
             return response()->json(['message' => 'Product not found'], 404);
         }
 
-        $imagePath = $request->hasFile('image') 
-            ? $request->file('image')->store('produits', 'public') 
-            : $produit->image; // Keep the existing image if no new file is uploaded
+        $imagePath = $produit->image; // Keep existing image by default
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($produit->image && Storage::disk('public')->exists($produit->image)) {
+                Storage::disk('public')->delete($produit->image);
+            }
+            // Store new image
+            $imagePath = $request->file('image')->store('produits', 'public');
+        }
 
         DB::table('produits')->where('id', $id)->update([
             'nom' => $request->nom,

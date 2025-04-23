@@ -18,6 +18,7 @@ const EditProduct = () => {
   });
   const [categories, setCategories] = useState([]); // List of categories
   const [tvas, setTvas] = useState([]); // List of TVA
+  const [currentImage, setCurrentImage] = useState("");
 
   useEffect(() => {
     // GSAP animation for the form
@@ -36,9 +37,15 @@ const EditProduct = () => {
     try {
       const res = await axios.get(`http://127.0.0.1:8000/api/produits/${id}`);
       setForm({
-        ...res.data,
-        image: null, // Reset image to null for file input
+        nom: res.data.nom,
+        description: res.data.description,
+        prix_HT: res.data.prix_HT,
+        quantity: res.data.quantity,
+        category_id: res.data.category_id,
+        tva_id: res.data.tva_id,
+        image: null, // Reset image input
       });
+      setCurrentImage(res.data.image); // Store the current image path
     } catch (err) {
       console.error("Erreur lors du chargement du produit :", err);
     }
@@ -67,44 +74,59 @@ const EditProduct = () => {
   };
 
   const handleSubmit = async (e) => {
-    
     e.preventDefault();
 
-    // Validation: Check for empty fields
-    if (!form.nom || !form.description || !form.prix_HT || !form.quantity || !form.category_id || !form.tva_id) {
+    // Validation
+    if (
+      !form.nom ||
+      !form.description ||
+      !form.prix_HT ||
+      !form.quantity ||
+      !form.category_id ||
+      !form.tva_id
+    ) {
       alert("❌ Tous les champs obligatoires doivent être remplis.");
       return;
     }
 
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      if (key === "image" && value) {
-        formData.append("image", value); // Append image file
-      } else if (value !== undefined && value !== null) {
-        // Map frontend keys to backend keys if necessary
-        const backendKey = key; // لا تغير الاسم
-        formData.append(backendKey, value.toString());
-      }
-    });
-
-    // Debugging: Log FormData content
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
-
     try {
-      const response = await axios.put(`http://127.0.0.1:8000/api/produits/${id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const formData = new FormData();
+
+      // Append all form fields
+      formData.append("nom", form.nom);
+      formData.append("description", form.description);
+      formData.append("prix_HT", form.prix_HT);
+      formData.append("quantity", form.quantity);
+      formData.append("category_id", form.category_id);
+      formData.append("tva_id", form.tva_id);
+
+      // Only append image if a new one is selected
+      if (form.image instanceof File) {
+        formData.append("image", form.image);
+      }
+
+      // Add _method field for Laravel to handle PUT request
+      formData.append("_method", "PUT");
+
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/produits/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
+          },
+        }
+      );
+
       alert("✅ Produit modifié avec succès !");
       navigate("/products");
     } catch (err) {
-      if (err.response) {
-        console.error("Erreur Laravel:", err.response.data);
-        alert("❌ Erreur: " + (err.response.data.message || "Vérifiez les champs."));
-      } else {
-        alert("❌ Erreur réseau.");
-      }
+      console.error("Error:", err);
+      alert(
+        "❌ Erreur: " +
+          (err.response?.data?.message || "Une erreur est survenue")
+      );
     }
   };
 
@@ -118,7 +140,9 @@ const EditProduct = () => {
       onSubmit={handleSubmit}
       className="space-y-4 p-6 max-w-xl mx-auto bg-white rounded shadow-md"
     >
-      <h2 className="text-2xl font-bold mb-6 text-center">Modifier le Produit</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">
+        Modifier le Produit
+      </h2>
       <input
         type="text"
         name="nom"
@@ -180,15 +204,28 @@ const EditProduct = () => {
           </option>
         ))}
       </select>
-
-      <input
-        type="file"
-        name="image"
-        id="image"
-        accept="image/*"
-        onChange={handleChange}
-        className="border p-2 w-full rounded focus:ring-2 focus:ring-blue-500 transition"
-      />
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Image actuelle
+        </label>
+        {currentImage && (
+          <div className="mt-2 mb-4">
+            <img
+              src={`http://127.0.0.1:8000/storage/${currentImage}`}
+              alt="Image actuelle"
+              className="w-32 h-32 object-cover rounded-md shadow-md"
+            />
+          </div>
+        )}
+        <input
+          type="file"
+          name="image"
+          id="image"
+          accept="image/*"
+          onChange={handleChange}
+          className="border p-2 w-full rounded focus:ring-2 focus:ring-blue-500 transition"
+        />
+      </div>
 
       <div className="flex gap-4">
         <button

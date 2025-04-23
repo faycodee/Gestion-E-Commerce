@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage; // Add this import
 
 class CategoryController extends Controller
 {
@@ -38,11 +39,11 @@ class CategoryController extends Controller
     {
         $validatedData = $request->validate([
             'nom' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
+            'description' => 'required|string',
+            'image' => 'nullable|image', // Allow image uploads up to 2MB
         ]);
 
-        $imagePath = null;
+        $imagePath = '';
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('categories', 'public');
         }
@@ -65,17 +66,23 @@ class CategoryController extends Controller
     {
         $validatedData = $request->validate([
             'nom' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
+            'description' => 'required|string',
+            'image' => 'nullable|image',
         ]);
 
         $category = DB::table('categories')->where('id', $id)->first();
+        
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
         }
 
-        $imagePath = $category->image;
+        $imagePath = $category->image; // Keep existing image by default
         if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($category->image && Storage::disk('public')->exists($category->image)) {
+                Storage::disk('public')->delete($category->image);
+            }
+            // Store new image
             $imagePath = $request->file('image')->store('categories', 'public');
         }
 

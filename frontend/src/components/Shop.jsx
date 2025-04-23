@@ -43,12 +43,12 @@ const Shop = () => {
     });
   }, [products]);
 
-  const getProductImage = (productId) => {
-    const product = products.find((prod) => prod.id === productId);
-    return product
-      ? `http://127.0.0.1:8000/storage/${product.image}`
-      : "/images/default.jpg";
-  };
+  // const getProductImage = (productId) => {
+  //   const product = products.find((prod) => prod.id === productId);
+  //   return product
+  //     ? `http://127.0.0.1:8000/storage/${product.image}`
+  //     : "/images/default.jpg";
+  // };
 
   const checkStock = (productId) => {
     const product = products.find((prod) => prod.id === productId);
@@ -317,7 +317,8 @@ const Shop = () => {
               className="product-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
             >
               <img
-                src={getProductImage(product.id)}
+               
+                src={`http://127.0.0.1:8000/storage/${product.image}`}
                 alt={product.nom}
                 className="w-full h-48 object-cover"
               />

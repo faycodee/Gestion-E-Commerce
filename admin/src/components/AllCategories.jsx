@@ -83,7 +83,7 @@ const AllCategories = () => {
               <td className="border border-gray-300 px-4 py-2">
                 {category.image && (
                   <img
-                    src={category.image}
+                  src={`http://127.0.0.1:8000/storage/${category.image}`}
                     alt={category.nom}
                     className="w-16 h-16 object-cover rounded"
                   />

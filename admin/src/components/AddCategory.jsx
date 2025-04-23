@@ -30,16 +30,18 @@ const AddCategory = () => {
       const formData = new FormData();
       formData.append("nom", nom);
       formData.append("description", description);
+
       if (image) {
         formData.append("image", image);
       }
 
       const response = await axios.post(
-        "http://localhost:8000/api/categories",
+        "http://127.0.0.1:8000/api/categories",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Accept: "application/json",
           },
         }
       );
@@ -49,12 +51,15 @@ const AddCategory = () => {
         type: "success",
       });
 
-      // Réinitialiser le formulaire
+      // Reset form
       setNom("");
       setDescription("");
       setImage(null);
+      if (document.getElementById("imageInput")) {
+        document.getElementById("imageInput").value = "";
+      }
 
-      // Redirection après 2 secondes
+      // Redirect after 2 seconds
       setTimeout(() => {
         navigate("/categories");
       }, 2000);
@@ -81,7 +86,9 @@ const AddCategory = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">Ajouter une nouvelle catégorie</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        Ajouter une nouvelle catégorie
+      </h1>
 
       {message.text && (
         <div
@@ -138,7 +145,9 @@ const AddCategory = () => {
             Image
           </label>
           <input
+            id="imageInput"
             type="file"
+            accept="image/*"
             onChange={(e) => setImage(e.target.files[0])}
             className={`mt-1 block w-full border rounded-md shadow-sm p-2 ${
               errors.image ? "border-red-500" : "border-gray-300"

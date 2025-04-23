@@ -80,6 +80,61 @@ const PopUp = ({ onClose, products, total }) => {
     }
   };
 
+  const sendWhatsAppNotification = async (orderDetails) => {
+    try {
+      const response = await axios.post(
+        `https://graph.facebook.com/v17.0/${process.env.REACT_APP_WHATSAPP_BUSINESS_ACCOUNT_ID}/messages`,
+        {
+          messaging_product: "whatsapp",
+          to: process.env.REACT_APP_WHATSAPP_PHONE_NUMBER,
+          type: "template",
+          template: {
+            name: "order_notification",
+            language: {
+              code: "en",
+            },
+            components: [
+              {
+                type: "body",
+                parameters: [
+                  {
+                    type: "text",
+                    text: orderDetails.order_id,
+                  },
+                  {
+                    type: "text",
+                    text: orderDetails.customer_name,
+                  },
+                  {
+                    type: "text",
+                    text: orderDetails.customer_phone,
+                  },
+                
+                  {
+                    type: "text",
+                    text: orderDetails.address,
+                  },
+                 
+                ],
+              },
+            ],
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.REACT_APP_WHATSAPP_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("WhatsApp notification sent successfully:", response.data);
+    } catch (error) {
+      console.error("Error sending WhatsApp notification:", error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -121,6 +176,20 @@ const PopUp = ({ onClose, products, total }) => {
           prix_unitaire: Number(product.produit_prix),
         });
       }
+
+      // Calculate total with shipping if applicable
+      const finalTotal =
+        formData.livraison === "yes" ? total + fraisExpedition : total;
+
+      // Send WhatsApp notification
+      await sendWhatsAppNotification({
+        order_id: commandeId,
+        customer_name: formData.name,
+        customer_phone: formData.tele,
+        total: finalTotal,
+        address: formData.adresse,
+        city: formData.city,
+      });
 
       // If livraison is "yes", create a livraison
       if (formData.livraison === "yes") {

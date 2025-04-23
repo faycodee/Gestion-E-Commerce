@@ -35,70 +35,77 @@ class ProduitController extends Controller
      * Create a new product.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'nom' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'prix_HT' => 'required|numeric',
-        'quantity' => 'required|integer',
-        'category_id' => 'required|integer|exists:categories,id',
-        'tva_id' => 'required|integer|exists:tvas,id',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
+    {
+        $request->validate([
+            'nom' => 'required|string|max:255',
+            'description' => 'required|string',
+            'prix_HT' => 'required|numeric', // Match the frontend key
+            'quantity' => 'required|integer',
+            'category_id' => 'required|exists:categories,id',
+            'tva_id' => 'required|exists:tvas,id',
+            'image' => 'nullable|image|max:2048',
+        ]);
 
-    $imagePath = '';
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('produits', 'public');
-    }
+        $imagePath = '';
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('produits', 'public');
+        }
 
-    $id = DB::table('produits')->insertGetId([
-        'nom' => $request->nom,
-        'description' => $request->description,
-        'prix_HT' => $request->prix_HT,
-        'quantity' => $request->quantity,
-        'category_id' => $request->category_id,
-        'tva_id' => $request->tva_id,
-        'image' => $imagePath,
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-    
-    return response()->json([
-        'message' => "Produit ID $id ajouté avec succès"
-    ]);
-    
-    
+        $id = DB::table('produits')->insertGetId([
+            'nom' => $request->nom,
+            'description' => $request->description,
+            'prix_HT' => $request->prix_HT,
+            'quantity' => $request->quantity,
+            'category_id' => $request->category_id,
+            'tva_id' => $request->tva_id,
+            'image' => $imagePath,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        
+        return response()->json([
+            'message' => "Produit ID $id ajouté avec succès"
+        ]);
     }
 
     /**
      * Update an existing product.
      */
-    public function update(Request $request, $id) // ✅ زيد $id هنا
-{
-    $request->validate([
-        'nom' => 'required|string',
-        'description' => 'nullable|string',
-        'prix_HT' => 'required|numeric',
-        'quantity' => 'required|integer',
-        'category_id' => 'required|integer',
-        'tva_id' => 'required|integer',
-        'image' => 'nullable|string', // أو image إذا كتدير رفع ملفات
-    ]);
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nom' => 'required|string|max:255',
+            'description' => 'required|string',
+            'prix_HT' => 'required|numeric', // Match the frontend key
+            'quantity' => 'required|integer',
+            'category_id' => 'required|exists:categories,id',
+            'tva_id' => 'required|exists:tvas,id',
+            'image' => 'nullable|image|max:2048',
+        ]);
 
-    DB::table('produits')->where('id', $id)->update([
-        'nom' => $request->nom,
-        'description' => $request->description,
-        'prix_HT' => $request->prix_HT,
-        'quantity' => $request->quantity,
-        'category_id' => $request->category_id,
-        'tva_id' => $request->tva_id,
-        'image' => $request->image ?? '',
-        'updated_at' => now(),
-    ]);
+        $produit = DB::table('produits')->where('id', $id)->first();
 
-    return response()->json(['message' => 'Produit modifié avec succès']);
-}
+        if (!$produit) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
 
+        $imagePath = $request->hasFile('image') 
+            ? $request->file('image')->store('produits', 'public') 
+            : $produit->image; // Keep the existing image if no new file is uploaded
+
+        DB::table('produits')->where('id', $id)->update([
+            'nom' => $request->nom,
+            'description' => $request->description,
+            'prix_HT' => $request->prix_HT,
+            'quantity' => $request->quantity,
+            'category_id' => $request->category_id,
+            'tva_id' => $request->tva_id,
+            'image' => $imagePath,
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['message' => 'Produit modifié avec succès']);
+    }
 
     /**
      * Delete a product.

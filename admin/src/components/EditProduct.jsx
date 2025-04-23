@@ -67,26 +67,44 @@ const EditProduct = () => {
   };
 
   const handleSubmit = async (e) => {
+    
     e.preventDefault();
+
+    // Validation: Check for empty fields
+    if (!form.nom || !form.description || !form.prix_HT || !form.quantity || !form.category_id || !form.tva_id) {
+      alert("❌ Tous les champs obligatoires doivent être remplis.");
+      return;
+    }
 
     const formData = new FormData();
     Object.entries(form).forEach(([key, value]) => {
       if (key === "image" && value) {
         formData.append("image", value); // Append image file
-      } else {
-        formData.append(key, value);
+      } else if (value !== undefined && value !== null) {
+        // Map frontend keys to backend keys if necessary
+        const backendKey = key; // لا تغير الاسم
+        formData.append(backendKey, value.toString());
       }
     });
 
+    // Debugging: Log FormData content
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
     try {
-      await axios.post(`http://127.0.0.1:8000/api/produits/${id}`, formData, {
+      const response = await axios.put(`http://127.0.0.1:8000/api/produits/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("✅ Produit modifié avec succès !");
       navigate("/products");
     } catch (err) {
-      console.error("Erreur lors de la modification :", err);
-      alert("❌ Une erreur s'est produite lors de la modification du produit.");
+      if (err.response) {
+        console.error("Erreur Laravel:", err.response.data);
+        alert("❌ Erreur: " + (err.response.data.message || "Vérifiez les champs."));
+      } else {
+        alert("❌ Erreur réseau.");
+      }
     }
   };
 

@@ -400,6 +400,8 @@ const Panier = () => {
           onClose={() => setIsPopUpOpen(false)} // Close the PopUp
           products={lignePaniers} // Pass cart items
           total={total} // Pass total amount
+          Subtotal={total.toFixed(2)} // Pass total amount
+          TotalTVA={tva.toFixed(2)} // Pass total amount
         />
       )}
     </div>

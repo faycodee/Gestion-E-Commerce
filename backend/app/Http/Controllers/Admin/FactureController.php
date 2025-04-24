@@ -12,7 +12,7 @@ class FactureController extends Controller
 {
     public function index()
     {
-        $factures = Facture::with('commande')->get();
+        $factures = Facture::get();
         return response()->json($factures);
     }
 
@@ -22,12 +22,13 @@ class FactureController extends Controller
             'commande_id' => 'required|integer|exists:commandes,id',
             'montant_HT' => 'required|numeric|min:0',
             'payment_status' => 'required|string|in:pending,paid,cancelled',
+            
         ]);
 
-        // Calculate TVA (20% for example)
+        // Calculate TVA and TTC using provided rate
         $montantHT = $request->montant_HT;
-        $montantTVA = $montantHT * 0.20;
-        $montantTTC = $montantHT + $montantTVA;
+        $montantTVA =  $request->montant_TVA;
+        $montantTTC = round($montantHT + $montantTVA, 2);
 
         $facture = Facture::create([
             'commande_id' => $request->commande_id,

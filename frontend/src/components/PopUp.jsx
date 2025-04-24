@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const PopUp = ({ onClose, products, total }) => {
+const PopUp = ({ onClose, products, total, Subtotal, TotalTVA }) => {
   const [formData, setFormData] = useState({
     name: "",
     tele: "",
@@ -12,6 +12,7 @@ const PopUp = ({ onClose, products, total }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fraisExpedition, setFraisExpedition] = useState(0);
+  const [tvaRate, setTvaRate] = useState(0.2); // Default TVA rate
   const popupRef = useRef(null); // Reference to the popup container
 
   const cityPrices = {
@@ -24,15 +25,21 @@ const PopUp = ({ onClose, products, total }) => {
   };
 
   useEffect(() => {
-    // Fetch user data from the API
-    const fetchUserData = async () => {
-      const userId = JSON.parse(localStorage.getItem("user"))?.id;
-      if (!userId) {
-        alert("You must be logged in to place an order.");
-        return;
-      }
-
+    const fetchData = async () => {
       try {
+        // Fetch TVA rate
+        const tvaResponse = await axios.get("http://localhost:8000/api/tvas");
+        if (tvaResponse.data && tvaResponse.data.length > 0) {
+          setTvaRate(tvaResponse.data[0].taux / 100); // Convert percentage to decimal
+        }
+
+        // Fetch user data from the API
+        const userId = JSON.parse(localStorage.getItem("user"))?.id;
+        if (!userId) {
+          alert("You must be logged in to place an order.");
+          return;
+        }
+
         const response = await axios.get(
           `http://localhost:8000/api/users/${userId}`
         );
@@ -48,12 +55,12 @@ const PopUp = ({ onClose, products, total }) => {
           livraison: "no",
         });
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        alert("Failed to fetch user data.");
+        console.error("Error fetching data:", error);
+        alert("Failed to fetch necessary data.");
       }
     };
 
-    fetchUserData();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -77,61 +84,6 @@ const PopUp = ({ onClose, products, total }) => {
     // Update frais_expedition based on city
     if (name === "city") {
       setFraisExpedition(cityPrices[value] || cityPrices.other);
-    }
-  };
-
-  const sendWhatsAppNotification = async (orderDetails) => {
-    try {
-      const response = await axios.post(
-        `https://graph.facebook.com/v17.0/${process.env.REACT_APP_WHATSAPP_BUSINESS_ACCOUNT_ID}/messages`,
-        {
-          messaging_product: "whatsapp",
-          to: process.env.REACT_APP_WHATSAPP_PHONE_NUMBER,
-          type: "template",
-          template: {
-            name: "order_notification",
-            language: {
-              code: "en",
-            },
-            components: [
-              {
-                type: "body",
-                parameters: [
-                  {
-                    type: "text",
-                    text: orderDetails.order_id,
-                  },
-                  {
-                    type: "text",
-                    text: orderDetails.customer_name,
-                  },
-                  {
-                    type: "text",
-                    text: orderDetails.customer_phone,
-                  },
-                
-                  {
-                    type: "text",
-                    text: orderDetails.address,
-                  },
-                 
-                ],
-              },
-            ],
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_WHATSAPP_TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("WhatsApp notification sent successfully:", response.data);
-    } catch (error) {
-      console.error("Error sending WhatsApp notification:", error);
-      throw error;
     }
   };
 
@@ -177,18 +129,21 @@ const PopUp = ({ onClose, products, total }) => {
         });
       }
 
-      // Calculate total with shipping if applicable
-      const finalTotal =
-        formData.livraison === "yes" ? total + fraisExpedition : total;
 
-      // Send WhatsApp notification
-      await sendWhatsAppNotification({
-        order_id: commandeId,
-        customer_name: formData.name,
-        customer_phone: formData.tele,
-        total: finalTotal,
-        address: formData.adresse,
-        city: formData.city,
+     
+      console.log({
+        commande_id: commandeId,
+        montant_HT: montant_HT,
+        payment_status: "pending",
+        montant_TVA: TotalTVA,
+      });
+
+      // Create facture with proper calculations
+      await axios.post("http://localhost:8000/api/factures", {
+        commande_id: commandeId,
+        montant_HT: montant_HT,
+        payment_status: "pending",
+        montant_TVA: TotalTVA,
       });
 
       // If livraison is "yes", create a livraison

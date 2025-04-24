@@ -73,4 +73,5 @@ class CommandeController extends Controller
 
         return response()->json(['message' => 'Commande deleted successfully']);
     }
+    
 }

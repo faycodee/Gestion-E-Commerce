@@ -131,7 +131,6 @@ const SingleProduct = () => {
         } else {
           throw error; // Re-throw other errors
         }
-        
       }
 
       if (existingProduct) {
@@ -213,7 +212,7 @@ const SingleProduct = () => {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
+    <div className="bg-background dark:bg-darkBackground min-h-screen ">
       {alert.show && (
         <Alert
           message={alert.message}
@@ -222,77 +221,176 @@ const SingleProduct = () => {
         />
       )}
 
-      <div className="max-w-6xl mx-auto bg-white mt-[100px] shadow-lg rounded-lg p-6 flex flex-col md:flex-row gap-8">
-        <div className="flex-shrink-0">
-          <img
-            src={`http://127.0.0.1:8000/storage/${product.image}`}
-            alt={product.nom}
-            className="w-full md:w-96 h-auto object-cover rounded-lg"
-          />
-        </div>
-
-        <div className="flex-grow">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            {product.nom}
-          </h1>
-          <p className="text-gray-600 mb-4">{product.description}</p>
-          <p className="text-lg font-bold text-gray-900 mb-4">
-            Price: {product.prix_HT} MAD
-          </p>
-          <p className="text-gray-600 mb-4">
-            Available Stock: {checkStock()} items
-          </p>
-
-          <div className="mb-4">
-            <h2 className="text-lg font-bold text-gray-800">Category:</h2>
-            <p className="text-gray-600">{category.nom}</p>
+      <div className="">
+        <div className="flex flex-col lg:flex-row max-w-7xl mx-auto  px-4 sm:px-6 lg:px-8  ">
+          {/* Left column - Image gallery */}
+          <div className="flex flex-col p-10 mt-9">
+            <div className="bg-white rounded-lg p-4 shadow-lg">
+              <img
+                src={`http://127.0.0.1:8000/storage/${product.image}`}
+                alt={product.nom}
+                className="w-full h-[500px] object-cover rounded-lg"
+              />
+            </div>
           </div>
 
-          <div className="flex items-center gap-4 mb-6">
-            <label htmlFor="quantity" className="text-gray-700 font-medium">
-              Quantity:
-            </label>
-            <input
-              type="number"
-              id="quantity"
-              min="1"
-              max={checkStock()}
-              value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-              className="border border-gray-300 rounded-lg px-4 py-2 w-20"
-              disabled={checkStock() <= 0}
-            />
-          </div>
+          {/* Right column - Product info */}
+          <div className="px-4 sm:px-6 lg:px-8 w-full lg:w-1/2">
+            <div className="flex flex-col bg-white rounded-2xl p-6 shadow-lg h-[90vh] overflow-y-auto mt-[75px]">
+              {/* Breadcrumb */}
+              <nav className="mb-4">
+                <ol className="flex items-center space-x-2 text-sm text-gray-500">
+                  <li>
+                    <Link
+                      to="/shop"
+                      className="hover:text-blue-600 transition-colors"
+                    >
+                      Shop
+                    </Link>
+                  </li>
+                  <li>
+                    <svg
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </li>
+                  <li className="font-medium text-gray-700">{category?.nom}</li>
+                </ol>
+              </nav>
 
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleAddToFavorites}
-              className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-300"
-            >
-              <FaHeart />
-              Add to Favorites
-            </button>
-            <button
-              onClick={() => addToCart(product, quantity)}
-              disabled={checkStock() <= 0}
-              className={`flex items-center gap-2 px-4 py-2 rounded transition-colors duration-300 ${
-                checkStock() <= 0
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-green-500 hover:bg-green-600 text-white"
-              }`}
-            >
-              <FaShoppingCart />
-              {checkStock() <= 0 ? "Out of Stock" : "Add to Cart"}
-            </button>
-          </div>
+              <div className="space-y-6">
+                {/* Product Title */}
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {product.nom}
+                </h1>
 
-          <div className="mt-6">
-            <Link
-              to="/shop"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300"
-            >
-              Back to Shop
-            </Link>
+                {/* Pricing and Rating in one row */}
+                <div className="flex justify-between items-center">
+                  <div className="flex items-baseline space-x-2">
+                    <span className="text-3xl font-bold text-blue-600">
+                      ${product.prix_HT}
+                    </span>
+                    <span className="text-sm text-gray-400 line-through">
+                      ${(product.prix_HT * 1.2).toFixed(2)}
+                    </span>
+                    <span className="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">
+                      -20%
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map((rating) => (
+                        <span
+                          key={rating}
+                          className={`text-sm ${
+                            rating <= 4 ? "text-yellow-400" : "text-gray-300"
+                          }`}
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <span className="ml-2 text-xs text-gray-500">(4.0)</span>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    Description
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-600 leading-relaxed line-clamp-3">
+                    {product.description}
+                  </p>
+                </div>
+
+                {/* Stock Status */}
+                <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      checkStock() > 0 ? "bg-green-500" : "bg-red-500"
+                    } mr-2`}
+                  ></div>
+                  <span
+                    className={`text-sm font-medium ${
+                      checkStock() > 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {checkStock() > 0
+                      ? `${checkStock()} in stock`
+                      : "Out of stock"}
+                  </span>
+                </div>
+
+                {/* Quantity Selector */}
+                <div>
+                  <label className="text-sm font-medium text-gray-700">
+                    Quantity
+                  </label>
+                  <div className="flex items-center space-x-3 mt-1">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="w-8 h-8 rounded-full flex items-center justify-center border border-gray-300 text-gray-600 hover:border-blue-500 hover:text-blue-500"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      value={quantity}
+                      onChange={(e) =>
+                        setQuantity(
+                          Math.min(
+                            checkStock(),
+                            Math.max(1, parseInt(e.target.value) || 1)
+                          )
+                        )
+                      }
+                      className="w-16 h-8 text-center border border-gray-300 rounded-md"
+                      min="1"
+                      max={checkStock()}
+                    />
+                    <button
+                      onClick={() =>
+                        setQuantity(Math.min(checkStock(), quantity + 1))
+                      }
+                      className="w-8 h-8 rounded-full flex items-center justify-center border border-gray-300 text-gray-600 hover:border-blue-500 hover:text-blue-500"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col space-y-3 mt-auto pt-4">
+                  <button
+                    onClick={() => addToCart(product, quantity)}
+                    disabled={checkStock() <= 0}
+                    className={`flex items-center justify-center px-6 py-3 rounded-lg text-base font-semibold ${
+                      checkStock() <= 0
+                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        : "bg-blue-600 text-white hover:bg-blue-700"
+                    }`}
+                  >
+                    <FaShoppingCart className="mr-2" />
+                    Add to Cart
+                  </button>
+                  <button
+                    onClick={handleAddToFavorites}
+                    className="flex items-center justify-center px-6 py-3 rounded-lg text-base font-semibold border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-blue-500 hover:text-blue-500"
+                  >
+                    <FaHeart className="mr-2" />
+                    Add to Favorites
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import axios from "axios";
 import { gsap } from "gsap";
 import PopUp from "./PopUp"; // Import the PopUp component
+import { useNavigate } from 'react-router-dom';
 
 const Panier = () => {
+  const navigate = useNavigate();
   const [lignePaniers, setLignePaniers] = useState([]);
   const [products, setProducts] = useState([]);
   const [tvas, setTvas] = useState([]);
@@ -241,165 +243,105 @@ const Panier = () => {
   };
 
   return (
-    <div className="bg-background dark:bg-darkBackground from-gray-50 to-gray-100 min-h-screen p-8">
-      <div className="text-center mb-8 mt-[50px]">
-     
-     
-        <div className="mb-8 m-auto flex flex-col mt-10 justify-center items-center">
-          <h1
-            className="text-[90px] font-bold mb-[80px] text-primary dark:text-darkPrimary"
-            style={{ fontFamily: "Impact, Haettenschweiler" }}
-          >
-            My Cart
-            {/* {t("about.1")}.&apos; */}
-          </h1>
-        </div>
-      </div>
-
-      {/* Enhanced Table of Products */}
-      <div
-        ref={tableRef}
-        className="max-w-6xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden"
-      >
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-800 text-white">
-                <th className="px-6 py-4 text-left">
-                  <input
-                    type="checkbox"
-                    onChange={(e) =>
-                      setSelectedItems(
-                        e.target.checked
-                          ? lignePaniers.map((item) => item.id)
-                          : []
-                      )
-                    }
-                    checked={
-                      selectedItems.length === lignePaniers.length &&
-                      lignePaniers.length > 0
-                    }
-                  />
-                </th>
-                <th className="px-6 py-4 text-left">Product</th>
-                <th className="px-6 py-4 text-left">Details</th>
-                <th className="px-6 py-4 text-center">Price</th>
-                <th className="px-6 py-4 text-center">Quantity</th>
-                <th className="px-6 py-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {lignePaniers.map((item) => {
-                const productDetails = getProductDetails(item.produit_id);
-                const tvaDetails = getTvaDetails(productDetails.tva_id);
-                return (
-                  <tr
-                    key={item.id}
-                    id={`cart-item-${item.id}`}
-                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200"
+    <div className="container mx-auto px-4 py-8 ">
+      <div className="flex flex-col lg:flex-row gap-8 mt-[150px] ">
+        {/* Left side - Cart Items */}
+        <div className="lg:w-2/3">
+          <h2 className="text-2xl font-bold mb-6">Your Cart</h2>
+          {lignePaniers.map((item) => {
+            const productDetails = getProductDetails(item.produit_id);
+            return (
+              <div
+                key={item.id}
+                className="flex items-center gap-4 p-4 bg-white rounded-lg shadow mb-4"
+              >
+                <img
+                  src={productDetails.image || "placeholder.jpg"}
+                  alt={productDetails.nom}
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
+                <div className="flex-grow">
+                  <h3 className="font-semibold text-lg">
+                    {productDetails.nom}
+                  </h3>
+                  <button
+                    onClick={() => removeFromLignePanier(item.id)}
+                    className="text-red-500 text-sm"
                   >
-                    <td className="px-6 py-4 text-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedItems.includes(item.id)}
-                        onChange={() => handleCheckboxChange(item.id)}
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-4">
-                        <img
-                          src={productDetails.image || "placeholder.jpg"}
-                          alt={productDetails.nom}
-                          className="w-16 h-16 object-cover rounded-lg shadow-sm"
-                        />
-                        <span className="font-medium">
-                          {productDetails.nom}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="text-sm text-gray-600">
-                        {productDetails.description}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        TVA: {tvaDetails.nom} ({tvaDetails.taux}%)
-                      </p>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className="font-semibold">
-                        {productDetails.prix_HT} MAD
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <input
-                        type="number"
-                        min="1"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          updateQuantity(item.id, parseInt(e.target.value) || 1)
-                        }
-                        className="border border-gray-300 rounded-lg px-4 py-2 w-20 text-center"
-                      />
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => removeFromLignePanier(item.id)}
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 transform hover:scale-105"
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                    Remove
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  
+                  <div className="flex items-center border rounded">
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="px-3 py-1 hover:bg-gray-100"
+                    >
+                      -
+                    </button>
+                    <span className="px-3 py-1">{item.quantity}</span>
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="px-3 py-1 hover:bg-gray-100"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span className="font-semibold min-w-[80px] text-right">
+                    ${(productDetails.prix_HT * item.quantity).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
 
-      <div className="flex justify-end mt-4">
-        <button
-          onClick={deleteSelectedItems}
-          disabled={selectedItems.length === 0}
-          className={`${
-            selectedItems.length === 0
-              ? "bg-gray-300 cursor-not-allowed"
-              : "bg-red-500 hover:bg-red-600"
-          } text-white px-4 py-2 rounded-lg transition-colors duration-200`}
-        >
-          Delete Selected
-        </button>
-      </div>
-
-      {/* Enhanced Cart Totals Section */}
-      <div
-        ref={totalsRef}
-        className="max-w-md mx-auto mt-8 bg-white shadow-xl rounded-lg overflow-hidden"
-      >
-        <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">
-            Cart Summary
-          </h2>
-          <div className="space-y-4">
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium">{total.toFixed(2)} MAD</span>
-            </div>
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Total TVA</span>
-              <span className="font-medium">{tva.toFixed(2)} MAD</span>
-            </div>
-            <div className="flex justify-between py-2 font-bold text-lg">
-              <span>Total</span>
-              <span>{grandTotal.toFixed(2)} MAD</span>
+        {/* Right side - Order Details */}
+        <div className="lg:w-1/3">
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-2xl font-bold mb-6">Order details</h2>
+            <div className="space-y-4">
+              <div className="flex justify-between">
+                <span>Discount</span>
+                <span>${0.0}</span>
+              </div>
+             
+              <div className="flex justify-between">
+                <span>Tax</span>
+                <span>${tva.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between font-bold text-lg pt-4 border-t">
+                <span>Total</span>
+                <span>${grandTotal.toFixed(2)}</span>
+              </div>
+              <button
+                onClick={handleCheckout}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+              >
+                Checkout
+              </button>
+              <button
+                onClick={() => navigate("/shop")}
+                className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50"
+              >
+                Continue Shopping
+              </button>
+              <div className="mt-6">
+                <p className="text-gray-600 mb-2">Do you have a promo code?</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Promo code"
+                    className="flex-grow border rounded-lg px-4 py-2"
+                  />
+                  <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                    Apply
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <button
-            onClick={handleCheckout}
-            className="w-full mt-6 bg-primary hover:bg-primary-dark text-white py-3 rounded-lg transition-all duration-200 transform hover:scale-105"
-          >
-            Proceed to Checkout
-          </button>
         </div>
       </div>
 
@@ -409,7 +351,7 @@ const Panier = () => {
           onClose={() => setIsPopUpOpen(false)} // Close the PopUp
           products={lignePaniers} // Pass cart items
           total={total} // Pass total amount
-          Subtotal={total.toFixed(2)} // Pass total amount
+          montant_HT={total.toFixed(2)} // Pass total amount
           TotalTVA={tva.toFixed(2)} // Pass total amount
         />
       )}

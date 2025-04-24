@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { gsap } from "gsap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import Alert from "./Alert";
 
 const Shop = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -310,57 +311,89 @@ const Shop = () => {
           </p>
         </div>
       ) : (
+        // Replace the product grid section with this new design:
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {currentProducts.map((product) => (
             <div
               key={product.id}
-              className="product-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
+              className="product-card bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow"
             >
-              <img
-               
-                src={`http://127.0.0.1:8000/storage/${product.image}`}
-                alt={product.nom}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="text-lg font-semibold text-gray-800 mb-2 truncate">
-                  {product.nom}
-                </h2>
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+              <div
+                className="relative group"
+                onClick={() => navigate(`/product/${product.id}`)}
+              >
+                <img
+                  src={`http://127.0.0.1:8000/storage/${product.image}`}
+                  alt={product.nom}
+                  className="w-full h-[250px] object-cover rounded-lg"
+                />
+                {/* <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg">
+                  <div className="absolute z-50 top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  
+                  </div>
+                </div> */}
+              </div>
+
+              <div className="mt-4 space-y-2">
+                <div className="flex justify-between items-start">
+                  <h3 className="text-lg font-medium text-gray-800 line-clamp-1">
+                    {product.nom}
+                  </h3>
+                  <div className="flex items-center">
+                    <span className="text-sm text-gray-500 line-through mr-2">
+                      ${(product.prix_HT * 1.2).toFixed(2)}
+                    </span>
+                    <span className="text-lg font-bold text-blue-600">
+                      ${product.prix_HT}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-sm text-gray-500 line-clamp-2">
                   {product.description}
                 </p>
-                <p className="text-lg font-bold text-gray-900 mb-4">
-                  {product.prix_HT} MAD
-                </p>
-                <p className="text-sm text-gray-500 mb-2">
-                  Available: {checkStock(product.id)} in stock
-                </p>
-                <div className="flex justify-between items-center space-x-2">
-                  <button
-                    onClick={() => addToFavorites(product)}
-                    className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-300 w-1/2"
-                  >
-                    <FaHeart className="mr-2" /> Favorites
-                  </button>
-                  <button
-                    onClick={() => addToCart(product)}
-                    disabled={checkStock(product.id) <= 0}
-                    className={`flex items-center justify-center px-4 py-2 rounded-lg transition-colors duration-300 w-1/2 ${
-                      checkStock(product.id) <= 0
-                        ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-green-500 hover:bg-green-600 text-white"
-                    }`}
-                  >
-                    <FaShoppingCart className="mr-2" />
-                    {checkStock(product.id) <= 0 ? "Out of Stock" : "Add "}
-                  </button>
+
+                <div className="flex items-center justify-between pt-2">
+                  <div className="flex items-center">
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={
+                            star <= 4 ? "text-yellow-400" : "text-gray-300"
+                          }
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <span className="text-xs text-gray-500 ml-1">(4.0)</span>
+                  </div>
+
+                  <div className="flex">
+                    <button
+                      onClick={() => addToFavorites(product)}
+                      className=" p-2 rounded-full relative z-30 shadow-md hover:bg-red-500 hover:text-white transition-colors"
+                    >
+                      <FaHeart className="text-xl " />
+                    </button>{" "}
+                    <button
+                      onClick={() => addToCart(product)}
+                      disabled={checkStock(product.id) <= 0}
+                      className={`flex ml-3 items-center space-x-2 px-4 py-2 rounded-full text-sm transition-colors ${
+                        checkStock(product.id) <= 0
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-blue-600 text-white hover:bg-blue-700"
+                      }`}
+                    >
+                      <span>
+                        {checkStock(product.id) <= 0
+                          ? "Out of Stock"
+                          : "Add to Cart"}
+                      </span>
+                    </button>
+                  </div>
                 </div>
-                <Link
-                  to={`/product/${product.id}`}
-                  className="block bg-blue-500 text-white text-center px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 mt-4"
-                >
-                  View Details
-                </Link>
               </div>
             </div>
           ))}

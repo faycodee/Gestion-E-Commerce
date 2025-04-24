@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const PopUp = ({ onClose, products, total, Subtotal, TotalTVA }) => {
+const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
   const [formData, setFormData] = useState({
     name: "",
     tele: "",
@@ -281,12 +281,7 @@ const PopUp = ({ onClose, products, total, Subtotal, TotalTVA }) => {
             {isSubmitting ? "Processing..." : "Place Order"}
           </button>
         </form>
-        <button
-          onClick={onClose}
-          className="mt-4 w-full bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400"
-        >
-          Cancel
-        </button>
+     
       </div>
     </div>
   );

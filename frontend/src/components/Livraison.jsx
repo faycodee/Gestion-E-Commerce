@@ -77,15 +77,23 @@ function Livraison() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-background dark:bg-darkBackground">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Your Deliveries</h1>
+    <div className="container mx-auto px-4 py-8 bg-background dark:bg-darkBackground">
+     
+      <div className="mb-8 m-auto flex flex-col mt-10 justify-center items-center">
+          <h1
+            className="text-[90px] font-bold mb-[80px] text-primary dark:text-darkPrimary"
+            style={{ fontFamily: "Impact, Haettenschweiler" }}
+          >
+Your Deliveries
+            {/* {t("about.1")}.&apos; */}
+          </h1></div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {livraisons.map((livraison) => (
           <div

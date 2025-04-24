@@ -241,10 +241,19 @@ const Panier = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen p-8">
+    <div className="bg-background dark:bg-darkBackground from-gray-50 to-gray-100 min-h-screen p-8">
       <div className="text-center mb-8 mt-[50px]">
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">My Cart</h1>
-        <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+     
+     
+        <div className="mb-8 m-auto flex flex-col mt-10 justify-center items-center">
+          <h1
+            className="text-[90px] font-bold mb-[80px] text-primary dark:text-darkPrimary"
+            style={{ fontFamily: "Impact, Haettenschweiler" }}
+          >
+            My Cart
+            {/* {t("about.1")}.&apos; */}
+          </h1>
+        </div>
       </div>
 
       {/* Enhanced Table of Products */}

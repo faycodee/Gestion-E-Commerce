@@ -5,6 +5,7 @@ const Faq = () => {
   const [faqs, setFaqs] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null); // Track the active FAQ item
   const [error, setError] = useState(null); // Track errors
+  const [visibleFaqs, setVisibleFaqs] = useState(10); // Number of FAQs to show initially
 
   useEffect(() => {
     // Fetch FAQs from the backend API
@@ -30,20 +31,28 @@ const Faq = () => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
+  const loadMore = () => {
+    setVisibleFaqs((prevVisible) => prevVisible + 10);
+  };
+
   return (
-    <div className="p-8 bg-gray-100 dark:bg-gray-800 min-h-screen  ">
-      <h1 className="text-4xl font-bold text-center mt-[70px] text-gray-800 dark:text-gray-100 mb-8">
-        FAQs
-      </h1>
+    <div className="p-8 bg-background dark:bg-darkBackground min-h-screen  ">
+      <div className="mb-8 m-auto flex flex-col mt-10 justify-center items-center">
+        <h1
+          className="text-[90px] font-bold mb-[80px] text-primary dark:text-darkPrimary"
+          style={{ fontFamily: "Impact, Haettenschweiler" }}
+        >
+          {/* {t("about.1")}.&apos; */}
+          FAQs
+        </h1>
+      </div>
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
-          PRODUCT INFO
-        </h2>
+      
         <div className="border-t border-gray-300">
           {error ? (
             <p className="text-red-500 text-center">{error}</p>
           ) : (
-            faqs.map((faq, index) => (
+            faqs.slice(0, visibleFaqs).map((faq, index) => (
               <div key={faq.Id_FAQ} className="border-b border-gray-300 py-4">
                 <div
                   className="flex justify-between items-center cursor-pointer"
@@ -68,6 +77,16 @@ const Faq = () => {
             ))
           )}
         </div>
+        {faqs.length > visibleFaqs && (
+          <div className="text-center mt-6">
+            <button
+              onClick={loadMore}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg"
+            >
+              Show More
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

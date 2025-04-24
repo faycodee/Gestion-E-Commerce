@@ -54,10 +54,16 @@ const Categories = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
-      
-
-   
+    <div className="bg-background dark:bg-darkBackground min-h-screen p-8 ">
+        <div className="mb-8 m-auto flex flex-col mt-10 justify-center items-center">
+      <h1
+            className="text-[90px] font-bold mb-[80px] text-primary dark:text-darkPrimary"
+            style={{ fontFamily: "Impact, Haettenschweiler" }}
+          >
+            {/* {t("about.1")}.&apos; */}
+            Categories
+          </h1>
+   </div>
 
       {/* Categories Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-[70px]">

@@ -20,10 +20,17 @@ const Favourites = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
-      <h1 className="text-4xl font-bold text-gray-800 text-center mb-8">
-        Your Favorites
-      </h1>
+    <div className="bg-background dark:bg-darkBackground min-h-screen p-8">
+     
+      <div className="mb-8 m-auto flex flex-col mt-10 justify-center items-center">
+      <h1
+            className="text-[90px] font-bold mb-[80px] text-primary dark:text-darkPrimary"
+            style={{ fontFamily: "Impact, Haettenschweiler" }}
+          >
+            {/* {t("about.1")}.&apos; */}
+            Your Favorites
+          </h1>
+      </div>
       {favorites.length === 0 ? (
         <p className="text-center text-gray-600">No favorites added yet.</p>
       ) : (

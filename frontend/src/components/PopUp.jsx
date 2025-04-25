@@ -87,30 +87,57 @@ const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
     }
   };
 
+  // Add points calculation function
+  const calculatePointsReward = (total) => {
+    if (total >= 1000) return 100; // 100 points for orders ≥ 1000
+    if (total >= 500) return 50; // 50 points for orders ≥ 500
+    if (total >= 200) return 20; // 20 points for orders ≥ 200
+    return Math.floor(total / 20); // 1 point for every 20 spent
+  };
+
+  // Update the handleSubmit function
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const userId = JSON.parse(localStorage.getItem("user"))?.id;
-
-      if (!userId) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
         alert("You must be logged in to place an order.");
         setIsSubmitting(false);
         return;
       }
 
-      // Update user tele and adresse if missing
-      await axios.put(`http://localhost:8000/api/users/${userId}`, {
-        tele: formData.tele,
-        adresse: formData.adresse,
+      // Calculate points to award
+      const pointsToAward = calculatePointsReward(total);
+      const currentPoints = parseInt(user.points_fidélité) || 0; // Convert to number, default to 0 if null/undefined
+      const newTotalPoints = currentPoints + pointsToAward;
+
+      console.log("Points calculation:", {
+        currentPoints,
+        pointsToAward,
+        newTotalPoints,
       });
+
+      await axios.put(
+        `http://localhost:8000/api/users/${user.id}`,
+        {
+          tele: formData.tele,
+          adresse: formData.adresse,
+          points_fidélité: newTotalPoints,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       // Create the order
       const orderResponse = await axios.post(
         "http://localhost:8000/api/commandes",
         {
-          user_id: userId,
+          user_id: user.id,
           commentaire: formData.commentaire,
           date_achat: new Date().toISOString().split("T")[0], // Format date as YYYY-MM-DD
           statut: "Pending",
@@ -129,8 +156,6 @@ const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
         });
       }
 
-
-     
       console.log({
         commande_id: commandeId,
         montant_HT: montant_HT,
@@ -163,7 +188,9 @@ const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
         });
       }
 
-      alert("Order placed successfully!");
+      alert(
+        `Order placed successfully! You earned ${pointsToAward} loyalty points!`
+      );
       onClose(); // Close the popup
     } catch (error) {
       console.error("Error placing order:", error);
@@ -281,7 +308,6 @@ const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
             {isSubmitting ? "Processing..." : "Place Order"}
           </button>
         </form>
-     
       </div>
     </div>
   );

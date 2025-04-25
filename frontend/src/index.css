@@ -9,22 +9,13 @@
   --font-alt: "Open Sans", sans-serif;
 
 }
-@layer components {
-  .text-primary {
-    @apply text-blue-600 dark:text-blue-400;
-  }
-  
-  .bg-primary {
-    @apply bg-blue-600 dark:bg-blue-500;
-  }
-}
+
 
 @layer utilities {
   .JJJJJJ {
     @apply bg-red-500;
   }
 }
-
 * {
   box-sizing: border-box;
   padding: 0;

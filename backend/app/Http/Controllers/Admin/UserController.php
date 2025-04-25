@@ -59,15 +59,13 @@ class UserController extends Controller
             'name' => 'sometimes|required|string|max:250',
             'email' => 'sometimes|required|email|max:50',
             'role' => 'sometimes|required|in:user,admin',
-<<<<<<< HEAD
+
             'tele' => 'sometimes|nullable|string|max:20', // Allow updating tele
             'adresse' => 'sometimes|nullable|string|max:250', // Allow updating adresse
             'points_fidélité' => 'sometimes|nullable|integer|min:0', // Add validation for points
-=======
-            'tele' => 'sometimes|nullable|string|max:20',
-            'adresse' => 'sometimes|nullable|string|max:250',
-            'points_fidélité' => 'sometimes|nullable|integer|min:0',
->>>>>>> 93f43bc26718e74f934e2c706e1a7668ae2e3955
+
+            
+
         ]);
 
         $user = User::find($id);

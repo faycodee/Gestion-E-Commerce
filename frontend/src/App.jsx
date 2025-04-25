@@ -22,10 +22,9 @@ import Panier from "./components/Panier";
 
 import Livraison from "./components/Livraison";
 import EditProfil from "./components/EditProfil";
-<<<<<<< HEAD
-=======
+
 import Fidélité from "./components/Fidélité";
->>>>>>> 93f43bc26718e74f934e2c706e1a7668ae2e3955
+
 
 const App = () => (
   <BrowserRouter>
@@ -54,10 +53,9 @@ const App = () => (
         <Route path="/favourites" element={<Favourites />} />
         <Route path="/panier" element={<Panier />} />
         <Route path="/livraison" element={<Livraison />} />
-<<<<<<< HEAD
-=======
+
         <Route path="/Points" element={<Fidélité />} />
->>>>>>> 93f43bc26718e74f934e2c706e1a7668ae2e3955
+
 
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/login" element={<Login />} />

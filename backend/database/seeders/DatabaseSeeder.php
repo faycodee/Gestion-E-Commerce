@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             AvisSeeder::class,
             PaiementSeeder::class,
             FaqSeeder::class,
+            CouponSeeder::class
         ]);
     }
 }

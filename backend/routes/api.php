@@ -1,5 +1,5 @@
 <?php
-use App\Http\Controllers\CouponController;
+use App\Http\Controllers\Admin\CouponController;
 use App\Models\Category;
 use App\Models\TVA;
 

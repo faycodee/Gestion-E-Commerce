@@ -21,20 +21,20 @@ import Favourites from "./components/Favourites";
 import Panier from "./components/Panier";
 
 import Livraison from "./components/Livraison";
+import EditProfil from "./components/EditProfil";
 
 const App = () => (
   <BrowserRouter>
     <CustomCursor />
     <DarkLightToggle />
     <div className="bg-background dark:bg-darkBackground">
-    <Navbar />
+      <Navbar />
       <Routes>
         {/* Public Routes */}
         <Route
           path="/"
           element={
             <>
-          
               <Home />
               <MarqueeComponent r={"-2deg"} />
               <About />
@@ -45,17 +45,23 @@ const App = () => (
           }
         />
         <Route path="/shop" element={<Shop />} />
-        <Route path="/categories" element={<Categories/>} />
-        <Route path="/faq" element={<Faq/>} />
-        <Route path="/favourites" element={<Favourites/>} />
-        <Route path="/panier" element={<Panier/>} />
-        <Route path="/livraison" element={<Livraison/>} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/faq" element={<Faq />} />
+        <Route path="/favourites" element={<Favourites />} />
+        <Route path="/panier" element={<Panier />} />
+        <Route path="/livraison" element={<Livraison />} />
 
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
-      
+        <Route
+          path="/edit-profile"
+          element={
+            <ProtectedRoute>
+              <EditProfil />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </div>
   </BrowserRouter>

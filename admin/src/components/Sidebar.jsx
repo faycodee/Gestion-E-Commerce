@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import {
@@ -15,6 +15,7 @@ import {
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [showProducts, setShowProducts] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   const [showTva, setShowTva] = useState(false);
@@ -194,7 +195,10 @@ const Sidebar = () => {
       </div>
 
       <div className="space-y-2">
-        <button className="w-full mt-2 bg-violet-600 hover:bg-violet-700 text-white font-medium py-2 px-4 rounded-full transition">
+        <button
+          onClick={() => navigate("/reports")}
+          className="w-full mt-2 bg-violet-600 hover:bg-violet-700 text-white font-medium py-2 px-4 rounded-full transition"
+        >
           Generate Report +
         </button>
       </div>

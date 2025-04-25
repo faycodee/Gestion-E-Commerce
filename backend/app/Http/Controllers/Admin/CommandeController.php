@@ -6,6 +6,7 @@ use App\Models\Commande;
 
 class CommandeController extends Controller
 {
+    
     // Fetch all commandes
     public function index()
     {

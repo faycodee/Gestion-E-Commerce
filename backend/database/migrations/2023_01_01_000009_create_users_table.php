@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('password', 60);
             $table->string('tele', 20)->nullable(); // Ajout de la colonne téléphone
             $table->string('adresse', 250)->nullable(); // Ajout de la colonne adresse
+            $table->integer('points_fidélité')->default(0); // Ajout de la colonne adresse
             $table->rememberToken(); // Add this line
             $table->timestamps();
         });

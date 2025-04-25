@@ -25,6 +25,7 @@ class UserController extends Controller
             'role' => 'required|in:user,admin',
             'tele' => 'nullable|string|max:20',
             'adresse' => 'nullable|string|max:250',
+            'points_fidélité' => 'nullable|integer|min:0', // Add validation for points
         ]);
 
         User::create([
@@ -35,6 +36,7 @@ class UserController extends Controller
             'role' => $validated['role'],
             'tele' => $validated['tele'],
             'adresse' => $validated['adresse'],
+            'points_fidélité' => $validated['points_fidélité'] ?? 0, // Set default value if not provided
         ]);
 
         return response()->json(['message' => 'User added successfully'], 201);
@@ -60,6 +62,7 @@ class UserController extends Controller
             'role' => 'sometimes|required|in:user,admin',
             'tele' => 'sometimes|nullable|string|max:20', // Allow updating tele
             'adresse' => 'sometimes|nullable|string|max:250', // Allow updating adresse
+            'points_fidélité' => 'sometimes|nullable|integer|min:0', // Add validation for points
         ]);
 
         // Find the user by ID

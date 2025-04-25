@@ -18,6 +18,7 @@ class User extends Authenticatable
         'password',
         'tele',
         'adresse',
+        'points_fidélité',
     ];
 
     public function avis()

@@ -28,6 +28,7 @@ import EditeReduction from "./components/EditeReduction";
 import LivraisonsList from "./components/LivraisonsList";
 import AddLivraison from "./components/AddLivraison";
 import EditLivraison from "./components/EditLivraison";
+import GenerateReport from "./components/Reports/GenerateReport";
 
 const App = () => {
   const token = localStorage.getItem("auth_token");
@@ -43,6 +44,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/reports" element={<GenerateReport />} />
               <Route path="/products" element={<AllProducts />} />
               <Route path="/products/add" element={<AddProduct />} />
               <Route path="/edit-product/:id" element={<EditProduct />} />
@@ -77,6 +79,9 @@ const App = () => {
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       )}
+     
+        
+     
     </Router>
   );
 };

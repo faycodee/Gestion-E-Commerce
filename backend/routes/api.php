@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Admin\CouponController;
 use App\Models\Category;
 use App\Models\TVA;
 
@@ -77,3 +78,9 @@ Route::post('/livraisons', [LivraisonController::class, 'store']);
 Route::get('/livraisons/{id}', [LivraisonController::class, 'show']);
 Route::put('/livraisons/{id}', [LivraisonController::class, 'update']);
 Route::delete('/livraisons/{id}', [LivraisonController::class, 'destroy']);
+
+Route::prefix('coupons')->group(function () {
+    Route::post('/generate', [CouponController::class, 'generate']);
+    Route::post('/validate', [CouponController::class, 'validate']);
+    Route::post('/redeem', [CouponController::class, 'redeem']);
+});

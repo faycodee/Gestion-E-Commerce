@@ -54,27 +54,40 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validate only the fields that are being updated
         $validated = $request->validate([
             'first_name' => 'sometimes|required|string|max:50',
             'name' => 'sometimes|required|string|max:250',
             'email' => 'sometimes|required|email|max:50',
             'role' => 'sometimes|required|in:user,admin',
+<<<<<<< HEAD
             'tele' => 'sometimes|nullable|string|max:20', // Allow updating tele
             'adresse' => 'sometimes|nullable|string|max:250', // Allow updating adresse
             'points_fidélité' => 'sometimes|nullable|integer|min:0', // Add validation for points
+=======
+            'tele' => 'sometimes|nullable|string|max:20',
+            'adresse' => 'sometimes|nullable|string|max:250',
+            'points_fidélité' => 'sometimes|nullable|integer|min:0',
+>>>>>>> 93f43bc26718e74f934e2c706e1a7668ae2e3955
         ]);
 
-        // Find the user by ID
         $user = User::find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
 
-        // Update only the provided fields
+        // If updating points, log the transaction
+        if (isset($validated['points_fidélité'])) {
+            $pointsDifference = $validated['points_fidélité'] - $user->points_fidélité;
+            \Log::info("Points update for user {$id}: {$pointsDifference} points " . 
+                      ($pointsDifference >= 0 ? "added" : "deducted"));
+        }
+
         $user->update($validated);
 
-        return response()->json(['message' => 'User updated successfully']);
+        return response()->json([
+            'message' => 'User updated successfully',
+            'points_earned' => $pointsDifference ?? 0
+        ]);
     }
 
     public function destroy($id)

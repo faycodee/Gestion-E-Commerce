@@ -7,9 +7,7 @@ import {
   RiSearchLine,
   RiUser3Line,
   RiHeartLine,
-
   RiTruckLine,
-
 } from "react-icons/ri";
 import { gsap } from "gsap";
 import images from "../constants/images";
@@ -123,7 +121,6 @@ const Navbar = () => {
     { to: "/shop", text: t("nav.2") }, // Shop
     { to: "/categories", text: t("nav.3") }, // Category
     { to: "/faq", text: t("nav.4") }, // FAQ
-
   ];
 
   const handleMouseEnter = () => {
@@ -188,14 +185,12 @@ const Navbar = () => {
           <RiHeartLine className="h-5 w-5" />
         </button>
         <button
-
-        onClick={() => navigate("/livraison")}
+          onClick={() => navigate("/livraison")}
           className="hidden md:flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
         >
           <RiTruckLine className="h-5 w-5" />
         </button>
         <button
-
           className="relative p-2 group"
           onClick={() => navigate("/panier")}
         >
@@ -224,6 +219,13 @@ const Navbar = () => {
                     className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     Edit Profile
+                  </Link>
+                  <Link
+                    to="/Points"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    Loyalty Points
                   </Link>
                   <button
                     onClick={handleLogout}

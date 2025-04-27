@@ -110,8 +110,12 @@ const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
 
       // Calculate points to award
       const pointsToAward = calculatePointsReward(total);
-      const currentPoints = parseInt(user.points_fidélité) || 0; // Convert to number, default to 0 if null/undefined
+      const currentPoints = parseInt(user.points_fidélité);
+      console.log("Current points:", currentPoints);
+      console.log("pointsToAward:", pointsToAward);
+      // Convert to number, default to 0 if null/undefined
       const newTotalPoints = currentPoints + pointsToAward;
+      console.log("newTotalPoints:", newTotalPoints);
 
       console.log("Points calculation:", {
         currentPoints,
@@ -119,19 +123,26 @@ const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
         newTotalPoints,
       });
 
-      await axios.put(
-        `http://localhost:8000/api/users/${user.id}`,
-        {
-          tele: formData.tele,
-          adresse: formData.adresse,
-          points_fidélité: newTotalPoints,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+      try {
+        const pointsUpdateResponse = await axios.put(
+          `http://localhost:8000/api/users/${user.id}`,
+          {
+            tele: formData.tele,
+            adresse: formData.adresse,
+            points_fidélité: newTotalPoints,
           },
-        }
-      );
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        console.log("Points update successful:", pointsUpdateResponse.data);
+      } catch (error) {
+        console.error("Points update failed:", error.response?.data);
+        throw error;
+      }
 
       // Create the order
       const orderResponse = await axios.post(
@@ -187,6 +198,13 @@ const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
           commande_id: commandeId,
         });
       }
+
+      // Update user points in localStorage after successful order
+      const updatedUser = {
+        ...user,
+        points_fidélité: newTotalPoints,
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
       alert(
         `Order placed successfully! You earned ${pointsToAward} loyalty points!`

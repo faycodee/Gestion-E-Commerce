@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
+// Update the PopUp component props to include discount
+const PopUp = ({
+  onClose,
+  products,
+  total,
+  montant_HT,
+  TotalTVA,
+  discount,
+  couponCode,
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     tele: "",
@@ -174,14 +183,6 @@ const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
         montant_TVA: TotalTVA,
       });
 
-      // Create facture with proper calculations
-      await axios.post("http://localhost:8000/api/factures", {
-        commande_id: commandeId,
-        montant_HT: montant_HT,
-        payment_status: "pending",
-        montant_TVA: TotalTVA,
-      });
-
       // If livraison is "yes", create a livraison
       if (formData.livraison === "yes") {
         await axios.post("http://localhost:8000/api/livraisons", {
@@ -198,6 +199,28 @@ const PopUp = ({ onClose, products, total, montant_HT, TotalTVA }) => {
           commande_id: commandeId,
         });
       }
+
+      // In the handleSubmit function, after creating the order but before creating the facture:
+      if (couponCode) {
+        try {
+          // Redeem the coupon
+          await axios.post("http://localhost:8000/api/coupons/redeem", {
+            code: couponCode,
+          });
+        } catch (error) {
+          console.error("Error redeeming coupon:", error);
+        }
+      }
+
+      // Create facture with proper calculations
+      await axios.post("http://localhost:8000/api/factures", {
+        commande_id: commandeId,
+        montant_HT: montant_HT,
+        payment_status: "pending",
+        montant_TVA: TotalTVA,
+        discount: discount,
+        total_final: montant_HT + TotalTVA - discount,
+      });
 
       // Update user points in localStorage after successful order
       const updatedUser = {

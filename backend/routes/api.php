@@ -84,3 +84,4 @@ Route::prefix('coupons')->group(function () {
     Route::post('/validate', [CouponController::class, 'validate']);
     Route::post('/redeem', [CouponController::class, 'redeem']);
 });
+

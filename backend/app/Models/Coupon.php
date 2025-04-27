@@ -20,4 +20,9 @@ class Coupon extends Model
         'is_used' => 'boolean',
         'expiry_date' => 'datetime'
     ];
+
+    public function isValid()
+    {
+        return !$this->is_used && $this->expiry_date->isFuture();
+    }
 }

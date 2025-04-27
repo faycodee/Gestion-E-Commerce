@@ -13,6 +13,9 @@ const Panier = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedItems, setSelectedItems] = useState([]); // State for selected items
   const [isPopUpOpen, setIsPopUpOpen] = useState(false); // State to manage PopUp visibility
+  const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [couponError, setCouponError] = useState("");
 
   const userId = JSON.parse(localStorage.getItem("user"))?.id; // Get the logged-in user's ID
   const tableRef = useRef(null);
@@ -209,6 +212,27 @@ const Panier = () => {
     }
   };
 
+  const handleApplyCoupon = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/coupons/validate",
+        {
+          code: couponCode,
+        }
+      );
+
+      if (response.data.discount_percentage) {
+        const discountAmount =
+          (total * response.data.discount_percentage) / 100;
+        setDiscount(discountAmount);
+        setCouponError("");
+      }
+    } catch (error) {
+      setDiscount(0);
+      setCouponError(error.response?.data?.message || "Invalid coupon code");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -243,7 +267,7 @@ const Panier = () => {
 
   const total = calculateTotal();
   const tva = calculateTVA();
-  const grandTotal = total + tva;
+  const grandTotal = total + tva - discount;
 
   const handleCheckout = () => {
     setIsPopUpOpen(true); // Open the PopUp
@@ -309,10 +333,15 @@ const Panier = () => {
             <h2 className="text-2xl font-bold mb-6">Order details</h2>
             <div className="space-y-4">
               <div className="flex justify-between">
-                <span>Discount</span>
-                <span>${0.0}</span>
+                <span>Subtotal</span>
+                <span>${total.toFixed(2)}</span>
               </div>
-
+              {discount > 0 && (
+                <div className="flex justify-between text-green-600">
+                  <span>Discount</span>
+                  <span>-${discount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span>Tax</span>
                 <span>${tva.toFixed(2)}</span>
@@ -338,13 +367,23 @@ const Panier = () => {
                 <div className="flex gap-2">
                   <input
                     type="text"
+                    value={couponCode}
+                    onChange={(e) =>
+                      setCouponCode(e.target.value.toUpperCase())
+                    }
                     placeholder="Promo code"
                     className="flex-grow border rounded-lg px-4 py-2"
                   />
-                  <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                  <button
+                    onClick={handleApplyCoupon}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                  >
                     Apply
                   </button>
                 </div>
+                {couponError && (
+                  <p className="text-red-500 text-sm mt-1">{couponError}</p>
+                )}
               </div>
             </div>
           </div>

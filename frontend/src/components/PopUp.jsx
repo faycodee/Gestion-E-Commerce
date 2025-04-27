@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { sendWhatsAppNotification } from "../utils/whatsapp";
 
 // Update the PopUp component props to include discount
 const PopUp = ({
@@ -165,6 +166,20 @@ const PopUp = ({
       );
 
       const commandeId = orderResponse.data.id;
+
+      // Send WhatsApp notification
+      try {
+        await sendWhatsAppNotification(
+          commandeId.toString(),
+          formData.name,
+          formData.tele,
+          formData.adresse
+        );
+        console.log("WhatsApp notification sent successfully");
+      } catch (error) {
+        console.error("Failed to send WhatsApp notification:", error);
+        // Continue with order processing even if WhatsApp notification fails
+      }
 
       // Create ligne_commandes for each product in the cart
       for (const product of products) {

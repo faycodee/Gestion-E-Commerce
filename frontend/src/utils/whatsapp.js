@@ -4,21 +4,24 @@ export const sendWhatsAppNotification = async (
   phone,
   address
 ) => {
+  
   try {
+    const formattedAddress = String(address).replace(/\n/g, " ").trim();
+
     const response = await fetch(
-      `https://graph.facebook.com/v17.0/607822679087527/messages`,
+        `https://graph.facebook.com/v17.0/${(import.meta.env.VITE_WHATSAPP_PHONE_NUMBER_ID).trim()}/messages`,
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer EAASz3t7NFsoBO4oh3wZCj6B8q29kIkLGrVBekrINCA6a10Lf8ZAifvVuidAEZCZAe9V0AMzCaghgLgX9ZAUxg9uqMSy5jRZCZBFVrbJLIlLi9SSUevb1PTC8gBP66KjH9n3T3FcrjRGLBrzrFxZBd2BOrF4BJ63yZBdCwh3uVyiWKesWVQFTaBT099dXTR3mDLrfukarHnC6ZBIZCuqVW6nT10Y1BN4Pk7m`,
+          Authorization: `Bearer ${import.meta.env.VITE_WHATSAPP_API_TOKEN}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           messaging_product: "whatsapp",
-          to: "212690626544",
+          to: import.meta.env.VITE_ADMIN_PHONE_NUMBER,
           type: "template",
           template: {
-            name: "orders",
+            name: import.meta.env.VITE_WHATSAPP_TEMPLATE_NAME,
             language: {
               code: "en",
             },
@@ -26,10 +29,10 @@ export const sendWhatsAppNotification = async (
               {
                 type: "body",
                 parameters: [
-                  { type: "text", text: "12345" },
-                  { type: "text", text: "John Doe" },
-                  { type: "text", text: "+212690626544" },
-                  { type: "text", text: "123 Main St, Casablanca" },
+                  { type: "text", text: String(orderId) },
+                  { type: "text", text: String(customerName) },
+                  { type: "text", text: String(phone) },
+                  { type: "text", text: formattedAddress },
                 ],
               },
             ],

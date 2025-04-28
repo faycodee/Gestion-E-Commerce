@@ -46,13 +46,16 @@ const AddReduction = () => {
         </div>
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Pourcentage</label>
-          <input
-            type="text"
-            value={pourcentageReduction}
-            onChange={(e) => setPourcentageReduction(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
+          <div className="flex items-center">
+            <input
+              type="number"
+              value={pourcentageReduction}
+              onChange={(e) => setPourcentageReduction(e.target.value)}
+              className="w-full p-2 border rounded"
+              required
+            />
+            <span className="ml-2 text-gray-600 font-medium">%</span>
+          </div>
         </div>
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Actif</label>

@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
-import { gsap } from "gsap";
+import { useState } from "react";
 import {
   ChevronDown,
   Home,
@@ -12,6 +11,7 @@ import {
   Percent,
   Tag,
   Settings,
+  Scissors, // Icon for Reductions
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -20,29 +20,14 @@ const Sidebar = () => {
   const [showProducts, setShowProducts] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   const [showTva, setShowTva] = useState(false);
-  const [showCaracteristiques, setShowCaracteristiques] = useState(false); // State for Caractéristiques dropdown
-  const [showReductions, setShowReductions] = useState(false);
+  const [showCaracteristiques, setShowCaracteristiques] = useState(false);
+  const [showReductions, setShowReductions] = useState(false); // State for Reductions dropdown
   const [showLivraisons, setShowLivraisons] = useState(false);
-  const sidebarRef = useRef(null);
 
   const isActive = (path) => location.pathname === path;
 
-  useEffect(() => {
-    // Animate the sidebar with GSAP
-    if (sidebarRef.current) {
-      gsap.fromTo(
-        sidebarRef.current,
-        { x: -200, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.5, ease: "power2.out" }
-      );
-    }
-  }, []);
-
   return (
-    <div
-      ref={sidebarRef}
-      className="w-64 bg-white shadow h-screen p-4 flex flex-col justify-between"
-    >
+    <div className="w-64 bg-white shadow h-screen p-4 flex flex-col justify-between">
       <div className="space-y-2">
         <Link
           to="/"
@@ -101,38 +86,38 @@ const Sidebar = () => {
           )}
         </div>
 
-        {/* Dropdown for TVA */}
+        {/* Dropdown for Reductions */}
         <div className="relative">
           <button
-            onClick={() => setShowTva(!showTva)}
+            onClick={() => setShowReductions(!showReductions)}
             className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
           >
             <span className="flex items-center gap-2">
-              <Percent className="w-5 h-5" /> TVA
+              <Scissors className="w-5 h-5" /> Reductions
             </span>
             <ChevronDown
               className={`w-4 h-4 transition-transform ${
-                showTva ? "rotate-180" : ""
+                showReductions ? "rotate-180" : ""
               }`}
             />
           </button>
-          {showTva && (
+          {showReductions && (
             <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
               <Link
-                to="/tva"
+                to="/reductions/list"
                 className={`block px-4 py-2 hover:bg-gray-50 ${
-                  isActive("/tva") ? "font-semibold text-indigo-600" : ""
+                  isActive("/reductions/list") ? "font-semibold text-indigo-600" : ""
                 }`}
               >
-                All TVA
+                All Reductions
               </Link>
               <Link
-                to="/tva/add"
+                to="/reductions/add"
                 className={`block px-4 py-2 hover:bg-gray-50 ${
-                  isActive("/tva/add") ? "font-semibold text-indigo-600" : ""
+                  isActive("/reductions/add") ? "font-semibold text-indigo-600" : ""
                 }`}
               >
-                Add TVA
+                Add Reduction
               </Link>
             </div>
           )}

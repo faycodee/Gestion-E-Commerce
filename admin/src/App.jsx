@@ -62,7 +62,7 @@ const App = () => {
               <Route path="/tva/add" element={<TvaManagement />} />
 
               {/* Routes pour les Réductions */}
-              <Route path="/reductions/list" element={<AllReduction />} />
+              <Route path="/reductions/list" element={<AllReduction/>} />
               <Route path="/reductions/add" element={<AddReduction />} />
               <Route path="/reductions/edit/:id" element={<EditeReduction />} />
               <Route path="/chats" element={<Chats />} />

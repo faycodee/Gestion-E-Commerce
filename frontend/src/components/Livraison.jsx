@@ -119,25 +119,52 @@ function Livraison() {
 
       const doc = new jsPDF();
 
-      // Add header
-      doc.setFontSize(20);
-      doc.text("FACTURE", 105, 20, { align: "center" });
+      // Add logo and company info
+      doc.setFontSize(10);
+      doc.setTextColor(128, 128, 128);
+      doc.text("Weboost", 20, 20);
+      doc.text("123 Street Name", 20, 25);
+      doc.text("Fes, Maroc", 20, 30);
+      doc.text("Phone: +1234567890", 20, 35);
+      doc.text("Email: Weboost@company.com", 20, 40);
 
-      // Add facture details
-      doc.setFontSize(12);
-      doc.text(`Facture N°: ${facture.id}`, 20, 40);
+      // Add facture header with styling
+      doc.setFontSize(24);
+      doc.setTextColor(66, 139, 202);
+      doc.text("FACTURE", 105, 50, { align: "center" });
+
+      // Add divider line
+      doc.setDrawColor(220, 220, 220);
+      doc.setLineWidth(0.5);
+      doc.line(20, 55, 190, 55);
+
+      // Billing information in two columns
+      doc.setFontSize(11);
+      doc.setTextColor(60, 60, 60);
+
+      // Left column - Facture details
+      doc.text("Facture Details:", 20, 70);
+      doc.setFontSize(10);
+      doc.text(`Facture N°: ${facture.id}`, 20, 80);
       doc.text(
         `Date: ${new Date(facture.date_facturation).toLocaleDateString()}`,
         20,
-        50
+        85
       );
-      doc.text(`Order N°: ${commande.id}`, 20, 60);
-      doc.text(`Status: ${facture.payment_status}`, 20, 70);
+      doc.text(`Order N°: ${commande.id}`, 20, 90);
+      doc.text(`Payment Status: ${facture.payment_status}`, 20, 95);
 
-      // Add delivery details
-      doc.text("Delivery Information:", 20, 90);
-      doc.text(`Carrier: ${livraison.nom_transporteur}`, 30, 100);
-      doc.text(`Shipping Cost: ${livraison.frais_expedition} MAD`, 30, 110);
+      // Right column - Shipping details
+      doc.setFontSize(11);
+      doc.text("Shipping Information:", 110, 70);
+      doc.setFontSize(10);
+      doc.text(`Carrier: ${livraison.nom_transporteur}`, 110, 80);
+      doc.text(`Shipping Cost: ${livraison.frais_expedition} MAD`, 110, 85);
+      doc.text(`Estimated Arrival: ${livraison.estime_arrive}`, 110, 90);
+      doc.text(`Weight: ${livraison.poid} kg`, 110, 95);
+
+      // Add another divider
+      doc.line(20, 105, 190, 105);
 
       // Prepare table data
       const tableData = lignes.map((ligne) => [
@@ -147,25 +174,74 @@ function Livraison() {
         `${(ligne.prix_unitaire * ligne.quantite).toFixed(2)} MAD`,
       ]);
 
-      let finalY = 130; // Default starting Y position
+      let yPosition = 115; // Starting position for the table
 
-      // Use autoTable plugin
+      // Enhanced table styling
       autoTable(doc, {
-        startY: 130,
-        head: [["Product ID", "Quantity", "Unit Price", "Total"]],
+        startY: yPosition,
+        head: [["Product", "Quantity", "Unit Price", "Total"]],
         body: tableData,
-        theme: "striped",
-        headStyles: { fillColor: [66, 139, 202] },
-        styles: { fontSize: 10 },
+        theme: "grid",
+        headStyles: {
+          fillColor: [66, 139, 202],
+          fontSize: 11,
+          halign: "center",
+          fontStyle: "bold",
+        },
+        bodyStyles: {
+          fontSize: 10,
+          halign: "center",
+        },
+        columnStyles: {
+          0: { halign: "left" },
+          2: { halign: "right" },
+          3: { halign: "right" },
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245],
+        },
+        margin: { top: 20 },
         didDrawPage: function (data) {
-          finalY = data.cursor.y + 20;
+          yPosition = data.cursor.y + 20;
         },
       });
 
-      // Add totals using the finalY from callback
-      doc.text(`Amount HT: ${facture.montant_HT} MAD`, 140, finalY);
-      doc.text(`TVA: ${facture.montant_TVA} MAD`, 140, finalY + 10);
-      doc.text(`Amount TTC: ${facture.montant_TTC} MAD`, 140, finalY + 20);
+      // Add totals with better styling
+      doc.setDrawColor(220, 220, 220);
+      doc.setFillColor(250, 250, 250);
+      doc.rect(110, yPosition - 5, 80, 35, "F");
+
+      // Add total lines
+      doc.setFontSize(10);
+      doc.setTextColor(60, 60, 60);
+      doc.text("Amount HT:", 115, yPosition);
+      doc.text(`${facture.montant_HT} MAD`, 180, yPosition, { align: "right" });
+
+      doc.text("TVA:", 115, yPosition + 10);
+      doc.text(`${facture.montant_TVA} MAD`, 180, yPosition + 10, {
+        align: "right",
+      });
+
+      doc.setFontSize(12);
+      doc.setTextColor(66, 139, 202);
+      doc.text("Total TTC:", 115, yPosition + 25);
+      doc.text(`${facture.montant_TTC} MAD`, 180, yPosition + 25, {
+        align: "right",
+      });
+
+      // Add footer
+      const pageHeight = doc.internal.pageSize.height;
+      doc.setFontSize(8);
+      doc.setTextColor(128, 128, 128);
+      doc.text("Thank you for your business!", 105, pageHeight - 20, {
+        align: "center",
+      });
+      doc.text(
+        "For any questions, please contact our support team.",
+        105,
+        pageHeight - 15,
+        { align: "center" }
+      );
 
       // Save PDF
       doc.save(`facture_${facture.id}.pdf`);

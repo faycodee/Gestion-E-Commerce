@@ -16,7 +16,7 @@ class ProduitSeeder extends Seeder
                 'prix_HT' => 999.00,
                 'quantity' => 15,
                 'image' => 'iphone14.jpg',
-                'category_id' => 1, // Smartphones
+                'category_id' => 1, 
                 'tva_id' => 1,
             ],
             [
@@ -25,7 +25,7 @@ class ProduitSeeder extends Seeder
                 'prix_HT' => 899.00,
                 'quantity' => 20,
                 'image' => 'galaxy_s23.jpg',
-                'category_id' => 1, // Smartphones
+                'category_id' => 1, 
                 'tva_id' => 1,
             ],
             [
@@ -34,7 +34,7 @@ class ProduitSeeder extends Seeder
                 'prix_HT' => 349.00,
                 'quantity' => 30,
                 'image' => 'sony_wh1000xm5.jpg',
-                'category_id' => 2, // Headphones
+                'category_id' => 1, 
                 'tva_id' => 2,
             ],
             [
@@ -43,7 +43,7 @@ class ProduitSeeder extends Seeder
                 'prix_HT' => 1299.00,
                 'quantity' => 10,
                 'image' => 'dell_xps13.jpg',
-                'category_id' => 3, // Laptops
+                'category_id' => 1, 
                 'tva_id' => 1,
             ],
             [
@@ -52,7 +52,7 @@ class ProduitSeeder extends Seeder
                 'prix_HT' => 2499.00,
                 'quantity' => 8,
                 'image' => 'macbook_pro16.jpg',
-                'category_id' => 3, // Laptops
+                'category_id' => 1, 
                 'tva_id' => 1,
             ],
             [
@@ -61,7 +61,7 @@ class ProduitSeeder extends Seeder
                 'prix_HT' => 99.00,
                 'quantity' => 50,
                 'image' => 'logitech_mx_master3.jpg',
-                'category_id' => 1, // Accessories
+                'category_id' => 1, 
                 'tva_id' => 2,
             ],
             [
@@ -70,7 +70,7 @@ class ProduitSeeder extends Seeder
                 'prix_HT' => 2499.00,
                 'quantity' => 5,
                 'image' => 'canon_eos_r6.jpg',
-                'category_id' => 2, // Cameras
+                'category_id' => 1, 
                 'tva_id' => 1,
             ],
             [
@@ -79,7 +79,7 @@ class ProduitSeeder extends Seeder
                 'prix_HT' => 799.00,
                 'quantity' => 12,
                 'image' => 'samsung_qled_tv.jpg',
-                'category_id' => 1, // Televisions
+                'category_id' => 1, 
                 'tva_id' => 1,
             ],
             [
@@ -88,7 +88,7 @@ class ProduitSeeder extends Seeder
                 'prix_HT' => 299.00,
                 'quantity' => 25,
                 'image' => 'bose_soundlink_revolve.jpg',
-                'category_id' => 3, // Speakers
+                'category_id' => 1,
                 'tva_id' => 2,
             ],
             [
@@ -97,7 +97,7 @@ class ProduitSeeder extends Seeder
                 'prix_HT' => 149.00,
                 'quantity' => 40,
                 'image' => 'fitbit_charge5.jpg',
-                'category_id' => 2, // Wearables
+                'category_id' => 1, 
                 'tva_id' => 2,
             ],
         ]);

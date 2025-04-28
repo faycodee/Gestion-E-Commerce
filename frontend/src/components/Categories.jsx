@@ -74,7 +74,7 @@ const Categories = () => {
           >
             {/* Display category image */}
             <img
-              src={`http://localhost:8000/${category.image}`}
+              src={`http://127.0.0.1:8000/storage/${category.image}`}
               alt={category.nom}
               className="w-full h-48 object-cover"
             />
@@ -93,22 +93,7 @@ const Categories = () => {
         ))}
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-center mt-8">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageChange(index + 1)}
-            className={`mx-1 px-4 py-2 rounded ${
-              currentPage === index + 1
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
+     
     </div>
   );
 };

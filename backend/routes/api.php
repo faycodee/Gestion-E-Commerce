@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\TvaController;
 use App\Http\Controllers\Admin\FactureController;
 use App\Http\Controllers\Admin\ReductionController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ReductionProduitController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Public\PubProduitController;
 use App\Http\Controllers\Public\PubCategoryController;
@@ -56,20 +57,16 @@ Route::prefix('ligne-panier')->group(function () {
     Route::delete('/{id}', [LignePanierController::class, 'destroy']); // Remove a product from a panier
 });
 
-// Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::apiResource('/commandes', CommandeController::class);
-    Route::apiResource('/factures', FactureController::class);
-    Route::apiResource('/reductions', ReductionController::class);
     Route::apiResource('/users', UserController::class);
-// });
-
-// routes/api.php
-
-
-
+    
+});
+Route::apiResource('/factures', FactureController::class);
+Route::apiResource('/reductions', ReductionController::class);
+Route::apiResource('/reductionproduits', ReductionProduitController::class);
 Route::get('/categories', fn () => Category::all());
 Route::get('/tvas', fn () => TVA::all());
-
 
 Route::post('/googlesheets/append', [GoogleSheetsController::class, 'appendToSheet']);
 

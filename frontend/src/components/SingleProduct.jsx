@@ -12,6 +12,7 @@ const SingleProduct = () => {
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [characteristics, setCharacteristics] = useState([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -21,6 +22,15 @@ const SingleProduct = () => {
           `http://127.0.0.1:8000/api/produits/${id}`
         );
         setProduct(response.data);
+
+        // Fetch characteristics
+        const characteristicsResponse = await axios.get(
+          `http://127.0.0.1:8000/api/caracteristiques`
+        );
+        const productCharacteristics = characteristicsResponse.data.data.filter(
+          (char) => char.produit_id === parseInt(id)
+        );
+        setCharacteristics(productCharacteristics);
 
         const categoryResponse = await axios.get(
           `http://127.0.0.1:8000/api/categories/${response.data.category_id}`
@@ -310,6 +320,55 @@ const SingleProduct = () => {
                     {product.description}
                   </p>
                 </div>
+
+                {/* Characteristics */}
+                {characteristics.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                      Available Options
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <h4 className="text-xs font-medium text-gray-500">
+                          Colors
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {[
+                            ...new Set(
+                              characteristics.map((char) => char.couleur)
+                            ),
+                          ].map((color, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 text-sm border border-gray-200 rounded-full hover:border-blue-500 cursor-pointer"
+                            >
+                              {color}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="text-xs font-medium text-gray-500">
+                          Sizes
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {[
+                            ...new Set(
+                              characteristics.map((char) => char.taille)
+                            ),
+                          ].map((size, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 text-sm border border-gray-200 rounded-full hover:border-blue-500 cursor-pointer"
+                            >
+                              {size}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Stock Status */}
                 <div className="flex items-center p-3 bg-gray-50 rounded-lg">

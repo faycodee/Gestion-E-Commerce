@@ -58,10 +58,11 @@ Route::prefix('ligne-panier')->group(function () {
 });
 
 Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
-    Route::apiResource('/commandes', CommandeController::class);
-    Route::apiResource('/users', UserController::class);
+   
     
 });
+Route::apiResource('/commandes', CommandeController::class);
+Route::apiResource('/users', UserController::class);
 Route::apiResource('/factures', FactureController::class);
 Route::apiResource('/reductions', ReductionController::class);
 Route::apiResource('/reductionproduits', ReductionProduitController::class);

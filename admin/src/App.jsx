@@ -18,10 +18,9 @@ import EditUser from "./components/EditUser";
 import AllCategories from "./components/AllCategories";
 import AddCategory from "./components/AddCategory";
 import EditCategory from "./components/EditCategory";
-import AddTva from "./components/AddTva";
+import TvaManagement from "./components/TvaManagement";
 import TvaList from "./components/TvaList";
 import Ligne_orders from "./components/ligne_Orders";
-import TvaManagement from "./components/TvaManagement";
 import AllReduction from "./components/AllReduction";
 import AddReduction from "./components/AddReduction";
 import EditeReduction from "./components/EditeReduction";
@@ -56,9 +55,8 @@ const App = () => {
               <Route path="/categories" element={<AllCategories />} />
               <Route path="/categories/add" element={<AddCategory />} />
               <Route path="/categories/edit/:id" element={<EditCategory />} />
-              <Route path="/tva" element={<AddTva />} />
-              <Route path="/tva/list" element={<TvaList />} />
-              <Route path="/tva/manage" element={<TvaManagement />} />
+              <Route path="/tva" element={<TvaList />} />
+              <Route path="/tva/add" element={<TvaManagement />} />
 
               {/* Routes pour les Réductions */}
               <Route path="/reductions/list" element={<AllReduction />} />

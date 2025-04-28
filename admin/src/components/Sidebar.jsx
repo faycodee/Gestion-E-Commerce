@@ -18,7 +18,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const [showProducts, setShowProducts] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
-  const [showTva, setShowTva] = useState(false);
+  const [showTva, setShowTva] = useState(false); // State for TVA dropdown
   const [showReductions, setShowReductions] = useState(false);
   const [showLivraisons, setShowLivraisons] = useState(false);
   const sidebarRef = useRef(null);
@@ -99,6 +99,43 @@ const Sidebar = () => {
           )}
         </div>
 
+        {/* Dropdown for TVA */}
+        <div className="relative">
+          <button
+            onClick={() => setShowTva(!showTva)}
+            className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
+          >
+            <span className="flex items-center gap-2">
+              <Percent className="w-5 h-5" /> TVA
+            </span>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                showTva ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          {showTva && (
+            <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
+              <Link
+                to="/tva"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/tva") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                All TVA
+              </Link>
+              <Link
+                to="/tva/add"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/tva/add") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                Add TVA
+              </Link>
+            </div>
+          )}
+        </div>
+
         <Link
           to="/customers"
           className={`flex items-center gap-2 p-2 rounded ${
@@ -116,82 +153,6 @@ const Sidebar = () => {
         >
           <MessageSquare className="w-5 h-5" /> Chats
         </Link>
-
-        {/* Dropdown for Categories */}
-        <div className="relative">
-          <button
-            onClick={() => setShowCategories(!showCategories)}
-            className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
-          >
-            <span className="flex items-center gap-2">
-              <List className="w-5 h-5" /> Categories
-            </span>
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${
-                showCategories ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-          {showCategories && (
-            <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
-              <Link
-                to="/categories"
-                className={`block px-4 py-2 hover:bg-gray-50 ${
-                  isActive("/categories") ? "font-semibold text-indigo-600" : ""
-                }`}
-              >
-                All Categories
-              </Link>
-              <Link
-                to="/categories/add"
-                className={`block px-4 py-2 hover:bg-gray-50 ${
-                  isActive("/categories/add")
-                    ? "font-semibold text-indigo-600"
-                    : ""
-                }`}
-              >
-                Add Category
-              </Link>
-            </div>
-          )}
-        </div>
-
-        {/* Dropdown for Livraisons */}
-        <div className="relative">
-          <button
-            onClick={() => setShowLivraisons(!showLivraisons)}
-            className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
-          >
-            <span className="flex items-center gap-2">
-              <Package className="w-5 h-5" /> Livraisons
-            </span>
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${
-                showLivraisons ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-          {showLivraisons && (
-            <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
-              <Link
-                to="/livraisons"
-                className={`block px-4 py-2 hover:bg-gray-50 ${
-                  isActive("/livraisons") ? "font-semibold text-indigo-600" : ""
-                }`}
-              >
-                All Livraisons
-              </Link>
-              <Link
-                to="/livraisons/add"
-                className={`block px-4 py-2 hover:bg-gray-50 ${
-                  isActive("/livraisons/add") ? "font-semibold text-indigo-600" : ""
-                }`}
-              >
-                Add Livraison
-              </Link>
-            </div>
-          )}
-        </div>
       </div>
 
       <div className="space-y-2">

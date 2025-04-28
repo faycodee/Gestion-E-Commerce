@@ -11,6 +11,7 @@ import {
   List,
   Percent,
   Tag,
+  Settings,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -18,7 +19,8 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const [showProducts, setShowProducts] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
-  const [showTva, setShowTva] = useState(false); // State for TVA dropdown
+  const [showTva, setShowTva] = useState(false);
+  const [showCaracteristiques, setShowCaracteristiques] = useState(false); // State for Caractéristiques dropdown
   const [showReductions, setShowReductions] = useState(false);
   const [showLivraisons, setShowLivraisons] = useState(false);
   const sidebarRef = useRef(null);
@@ -131,6 +133,47 @@ const Sidebar = () => {
                 }`}
               >
                 Add TVA
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Dropdown for Caractéristiques */}
+        <div className="relative">
+          <button
+            onClick={() => setShowCaracteristiques(!showCaracteristiques)}
+            className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
+          >
+            <span className="flex items-center gap-2">
+              <Settings className="w-5 h-5" /> Caractéristiques
+            </span>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                showCaracteristiques ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          {showCaracteristiques && (
+            <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
+              <Link
+                to="/caracteristiques"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/caracteristiques")
+                    ? "font-semibold text-indigo-600"
+                    : ""
+                }`}
+              >
+                All Caractéristiques
+              </Link>
+              <Link
+                to="/caracteristiques/add"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/caracteristiques/add")
+                    ? "font-semibold text-indigo-600"
+                    : ""
+                }`}
+              >
+                Add Caractéristiques
               </Link>
             </div>
           )}

@@ -28,6 +28,9 @@ import LivraisonsList from "./components/LivraisonsList";
 import AddLivraison from "./components/AddLivraison";
 import EditLivraison from "./components/EditLivraison";
 import GenerateReport from "./components/Reports/GenerateReport";
+import CaracteristiquesList from "./components/AllCaracteristiques";
+import AddCaracteristique from "./components/AddCaracteristique";
+
 
 const App = () => {
   const token = localStorage.getItem("auth_token");
@@ -66,6 +69,8 @@ const App = () => {
               <Route path="/livraisons" element={<LivraisonsList />} />
               <Route path="/livraisons/add" element={<AddLivraison />} />
               <Route path="/livraisons/edit/:id" element={<EditLivraison />} />
+              <Route path="/caracteristiques" element={<CaracteristiquesList />} />
+              <Route path="/caracteristiques/add" element={<AddCaracteristique />} />
             </Routes>
           </div>
         </div>

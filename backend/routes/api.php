@@ -25,7 +25,7 @@ use App\Http\Controllers\User\LignePanierController;
 use App\Http\Controllers\User\LigneCommandeController;
 use App\Http\Controllers\Admin\GoogleSheetsController;
 use App\Http\Controllers\Admin\LivraisonController;
-
+use App\Http\Controllers\Admin\CaracteristiqueController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -85,3 +85,4 @@ Route::prefix('coupons')->group(function () {
     Route::post('/redeem', [CouponController::class, 'redeem']);
 });
 
+Route::apiResource('/caracteristiques', CaracteristiqueController::class);

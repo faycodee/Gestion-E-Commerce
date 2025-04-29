@@ -287,7 +287,7 @@ const Panier = () => {
                 className="flex items-center gap-4 p-4 bg-white rounded-lg shadow mb-4"
               >
                 <img
-                  src={productDetails.image || "placeholder.jpg"}
+                    src={`http://127.0.0.1:8000/storage/${productDetails.image}`}
                   alt={productDetails.nom}
                   className="w-24 h-24 object-cover rounded-lg"
                 />

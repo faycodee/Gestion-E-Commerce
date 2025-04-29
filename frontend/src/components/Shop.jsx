@@ -4,8 +4,6 @@ import { gsap } from "gsap";
 import { Link, useNavigate } from "react-router-dom";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import Alert from "./Alert";
-import { Slider } from "@mui/material";
-import { FaFilter } from "react-icons/fa";
 
 const Shop = () => {
   const navigate = useNavigate();
@@ -15,11 +13,10 @@ const Shop = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
-  const productsPerPage = 8;
-  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [priceRange, setPriceRange] = useState([0, 1000]);
-  const [showFilters, setShowFilters] = useState(false);
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
+  const [categories, setCategories] = useState([]);
+  const productsPerPage = 8;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +26,6 @@ const Shop = () => {
           axios.get("http://127.0.0.1:8000/api/produits"),
           axios.get("http://127.0.0.1:8000/api/categories"),
         ]);
-
         setProducts(productsResponse.data);
         setCategories(categoriesResponse.data);
         setError(null);
@@ -241,9 +237,26 @@ const Shop = () => {
     }
   };
 
-  const handlePriceChange = (event, newValue) => {
-    setPriceRange(newValue);
-  };
+  useEffect(() => {
+    console.log("Selected Category:", selectedCategory);
+    console.log("Products:", products);
+  }, [selectedCategory, products]);
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.nom
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    // Convert both values to numbers for comparison, except when "all"
+    const matchesCategory =
+      selectedCategory === "all" ||
+      Number(product.categorie_id) === Number(selectedCategory);
+
+    const matchesPrice =
+      product.prix_HT >= priceRange.min && product.prix_HT <= priceRange.max;
+
+    return matchesSearch && matchesCategory && matchesPrice;
+  });
 
   if (isLoading) {
     return (
@@ -269,18 +282,6 @@ const Shop = () => {
     );
   }
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.nom
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" ||
-      product.category_id === parseInt(selectedCategory);
-    const matchesPrice =
-      product.prix_HT >= priceRange[0] && product.prix_HT <= priceRange[1];
-    return matchesSearch && matchesCategory && matchesPrice;
-  });
-
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(
@@ -292,6 +293,30 @@ const Shop = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  const CategorySelect = () => (
+    <div className="w-full md:w-1/3">
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Category
+      </label>
+      <select
+        value={selectedCategory}
+        onChange={(e) => {
+          console.log("Selected value:", e.target.value);
+          setSelectedCategory(e.target.value);
+          setCurrentPage(1); // Reset to first page when changing category
+        }}
+        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+        <option value="all">All Categories</option>
+        {categories.map((category) => (
+          <option key={category.id} value={category.id}>
+            {category.nom}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
 
   return (
     <div className="min-h-screen p-8  bg-background dark:bg-darkBackground">
@@ -315,6 +340,56 @@ const Shop = () => {
         </p>
       </div>
 
+      <div className="mb-8 flex flex-col md:flex-row justify-center items-center gap-6">
+        <CategorySelect />
+        <div className="w-full md:w-1/3">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Price Range: ${priceRange.min} - ${priceRange.max}
+          </label>
+          <div className="flex gap-4">
+            <input
+              type="range"
+              min="0"
+              max="1000"
+              value={priceRange.min}
+              onChange={(e) =>
+                setPriceRange({ ...priceRange, min: parseInt(e.target.value) })
+              }
+              className="w-full"
+            />
+            <input
+              type="range"
+              min="0"
+              max="1000"
+              value={priceRange.max}
+              onChange={(e) =>
+                setPriceRange({ ...priceRange, max: parseInt(e.target.value) })
+              }
+              className="w-full"
+            />
+          </div>
+        </div>
+
+        <div className="w-full md:w-1/3">
+          <button
+            onClick={() => {
+              setSelectedCategory("all");
+              setPriceRange({ min: 0, max: 1000 });
+              setSearchTerm("");
+            }}
+            className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+          >
+            Reset Filters
+          </button>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <p className="text-sm text-gray-500">
+          Showing {filteredProducts.length} of {products.length} products
+        </p>
+      </div>
+
       <div className="mb-6 flex justify-center">
         <input
           type="text"
@@ -323,99 +398,6 @@ const Shop = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-      </div>
-
-      <div className="mb-8">
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mb-4"
-        >
-          <FaFilter />
-          {showFilters ? "Hide Filters" : "Show Filters"}
-        </button>
-
-        {showFilters && (
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Categories
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => setSelectedCategory("all")}
-                    className={`px-4 py-2 rounded-full text-sm ${
-                      selectedCategory === "all"
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                    }`}
-                  >
-                    All
-                  </button>
-                  {categories.map((category) => (
-                    <button
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
-                      className={`px-4 py-2 rounded-full text-sm ${
-                        selectedCategory === category.id
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                      }`}
-                    >
-                      {category.nom}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Price Range
-                </h3>
-                <div className="px-4">
-                  <Slider
-                    value={priceRange}
-                    onChange={handlePriceChange}
-                    valueLabelDisplay="auto"
-                    min={0}
-                    max={1000}
-                    step={10}
-                    sx={{
-                      color: "#2563eb",
-                      "& .MuiSlider-thumb": {
-                        backgroundColor: "#ffffff",
-                        border: "2px solid currentColor",
-                      },
-                      "& .MuiSlider-valueLabel": {
-                        backgroundColor: "#2563eb",
-                      },
-                    }}
-                  />
-                  <div className="flex justify-between mt-2 text-sm text-gray-600">
-                    <span>${priceRange[0]}</span>
-                    <span>${priceRange[1]}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <div className="flex items-center justify-between text-sm text-gray-600">
-                <span>{filteredProducts.length} products found</span>
-                <button
-                  onClick={() => {
-                    setSelectedCategory("all");
-                    setPriceRange([0, 1000]);
-                    setSearchTerm("");
-                  }}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  Reset Filters
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {currentProducts.length === 0 ? (

@@ -1,258 +1,137 @@
 {
   "nav": {
-    "1": "ÜberUns",
-    "2": "Speisekarte",
-    "3": "Abendshow",
-    "4": "Galerie",
-    "5": "Kontakt",
-    "6":"BuchTisch"
+    "1": "Startseite",
+    "2": "Shop",
+    "3": "Kategorien",
+    "4": "FAQ",
+    "5": "Kontakt"
   },
   "header": {
-    "t1": "Willkommen in unserem Restaurant!",
-    "t2": "Erfrischende Getränke werden hier serviert!",
-    "t3": "Unsere Köche erschaffen Perfektion!",
-    "t4": "Unsere Gerichte schmecken fantastisch!",
-    "5": "Tisch reservieren",
-    "6": "Lounge Le Bureau"
+    "t1": "Willkommen in unserem Shop!",
+    "t2": "Finde, was du liebst – in allen Kategorien!",
+    "t3": "Beste Qualitätsprodukte, handverlesen für dich.",
+    "t4": "Entdecke die neuesten Trends und Angebote!",
+    "5": "Jetzt einkaufen",
+    "6": "Dein Marktplatz für alles"
   },
   "about": {
-    "1": "Unsere Geschichte",
-    "2": "Das Restaurant Lounge Le Bureau in Fès, Marokko, bietet eine raffinierte Küche, die lokale und saisonale Zutaten in den Vordergrund stellt. Unter der Leitung eines leidenschaftlichen Küchenchefs bietet das Restaurant ein einzigartiges gastronomisches Erlebnis in einem eleganten und intimen Ambiente, mit besonderer Aufmerksamkeit für jeden Gast, um jedes Mahl unvergesslich zu machen.",
-    "3": "Wir bemühen uns, die Produkte mit viel Sorgfalt und Präzision zu respektieren.",
-    "4": "Genießen Sie die Großzügigkeit und Einfallsreichtum des Sternekochs.",
-    "5": "Entdecken Sie unser Restaurant, das eine große Auswahl an hochwertigen Weinen anbietet."
+    "1": "Wer wir sind",
+    "2": "Gegründet im Jahr 2024, begannen wir als kleines Herzensprojekt mit einer großen Vision – Qualitätsprodukte aus aller Welt zu dir nach Hause zu bringen. Was als bescheidener Online-Shop begann, hat sich zu einem vertrauenswürdigen E-Commerce-Ziel entwickelt.",
+    "3": "Unsere Reise wird von unseren Grundwerten wie Qualität, Kundenzufriedenheit und Innovation geleitet. Wir wählen unsere Produkte sorgfältig aus, damit jedes Stück unseren hohen Standards entspricht.",
+    "4": "Zufriedene Kunden",
+    "5": "Kundensupport",
+    "6": "Sichere Zahlungen"
   },
   "gallery": {
-    "1": "Unsere Gerichte",
-    "1t": "FRÜHSTÜCK MIT DEN",
-    "1s": "AROMEN FRISCHEN",
-    "1h": "KAFFEES",
-    "1d": "Beginnen Sie Ihren Tag im Herzen von Venedig",
-    "2t": "ABENDESSEN IN EINER",
-    "2s": "ROMANTISCHEN",
-    "2h": "ATMOSPHÄRE",
-    "2d": "Erleben Sie die Magie der venezianischen Nächte",
-    "3t": "KULINARISCHE",
-    "3s": "EXZELLENZ",
-    "3d": "Entdecken Sie unsere Welt exquisiter Aromen",
-    "3b": "Entdecken Sie Unsere Gerichte",
-    "4": "Unsere kulinarische Galerie",
-    "5": "Entdecken Sie unsere Signature-Gerichte und Kreationen"
+    "1": "Produkt-Highlights",
+    "1t": "MORGENTECHNIK",
+    "1s": "MIT DEN BESTEN",
+    "1h": "GERÄTEN",
+    "1d": "Starte deinen Tag mit neuester Technik",
+    "2t": "STYLE DICH",
+    "2s": "FÜR DEINEN TÄGLICHEN",
+    "2h": "LOOK",
+    "2d": "Mode, die deine Persönlichkeit zeigt",
+    "3t": "ZUHAUSE &",
+    "3s": "WOHNEN",
+    "3d": "Mach deinen Raum gemütlich und smart",
+    "3b": "Kollektionen entdecken",
+    "4": "Unsere Produktgalerie",
+    "5": "Entdecke Top-Produkte und Neuheiten"
   },
-
   "menu": {
-    "title": "Das Bureau Restaurant",
+    "title": "Nach Kategorie shoppen",
     "sections": {
-      "salads": "Salate",
-      "hotStarters": "Warme Vorspeisen",
-      "starters": "Vorspeisen",
-      "traditional": "Traditionelle Gerichte",
-      "pizza": "Pizza aus dem Holzofen",
-      "pasta": "Italienische Pasta",
-      "meatAndPoultry": "Fleisch und Geflügel",
-      "fish": "Fisch"
+      "electronics": "Elektronik",
+      "fashion": "Mode",
+      "homeDecor": "Wohnen & Leben",
+      "beauty": "Schönheit & Gesundheit",
+      "toys": "Spielzeug & Kinder",
+      "sports": "Sport & Outdoor"
     },
-    "salads": {
-      "richBureau": {
-        "name": "Reicher Salat des Bureau",
-        "description": "Mesclun-Salat, Avocado, Garnelen, Palmherz, Mais, Gegrillte Paprika, Aufschnitt, Frische Tomate"
+    "electronics": {
+      "smartphones": {
+        "name": "Smartphones",
+        "description": "Neueste Modelle führender Marken"
       },
-      "market": {
-        "name": "Marktsalat",
-        "description": "Grüner Salat, Frische Tomate, Geriebene Karotte, Grüne Bohnen, Gurke, Kartoffel, Mais, Paprika, Gekochte Eier, Thunfisch, Zwiebel"
+      "laptops": {
+        "name": "Laptops",
+        "description": "Für Arbeit, Freizeit und alles dazwischen"
       },
-      "caesar": {
-        "name": "Caesar-Salat",
-        "description": "Caesar-Dressing, Geflügel, Parmesan, Kandierte Tomaten, Sardellen"
+      "headphones": {
+        "name": "Kopfhörer",
+        "description": "Geräuschunterdrückend und kabellos"
       }
     },
-    "specialties": {
-      "cheeseSlate": "Käseplatte",
-      "beefCarpaccio": "Rinder-Carpaccio",
-      "avocadoShrimp": {
-        "name": "Avocado mit Garnelencocktail-Sauce"
+    "fashion": {
+      "mensClothing": {
+        "name": "Herrenbekleidung",
+        "description": "Trendige und bequeme Styles"
+      },
+      "womensClothing": {
+        "name": "Damenbekleidung",
+        "description": "Elegant, lässig und alles dazwischen"
+      },
+      "accessories": {
+        "name": "Accessoires",
+        "description": "Uhren, Taschen, Sonnenbrillen und mehr"
       }
     },
-    "hotStarters": {
-      "gratineeEggplant": "Überbackene Aubergine",
-      "seafoodGratin": "Meeresfrüchte-Gratin",
-      "legumesGratin": "Gemüse-Gratin",
-      "pilPilShrimp": "Pil Pil Garnelen nach andalusischer Art",
-      "vegetableSoup": "Gemüsesuppe",
-      "fishSoup": "Fischsuppe"
-    },
-    "starters": {
-      "moroccanSalad": {
-        "name": "Marokkanischer Salat",
-        "description": "Tomate, Zwiebel, Thunfisch"
+    "homeDecor": {
+      "furniture": {
+        "name": "Möbel",
+        "description": "Stilvolle und funktionale Stücke"
       },
-      "aubergineSalad": "Auberginen-Salat",
-      "brioatesAssortment": "Brioates-Auswahl",
-      "chickenPastilla": "Hähnchen-Pastilla",
-      "seafoodPastilla": "Meeresfrüchte-Pastilla",
-      "harira": "Traditionelle marokkanische Suppe (Harira)"
-    },
-    "pizza": {
-      "margherita": {
-        "name": "Margherita",
-        "description": "Tomatensauce, Mozzarella, Basilikum"
+      "lighting": {
+        "name": "Beleuchtung",
+        "description": "Schaffe die perfekte Stimmung"
       },
-      "seafood": {
-        "name": "Meeresfrüchte",
-        "description": "Tomatensauce, Mozzarella, Garnelen, Tintenfisch, Muscheln, Basilikum, Oregano"
-      },
-      "fourCheeses": {
-        "name": "4-Käse-Pizza",
-        "description": "Ricotta, Mozzarella, Blauschimmelkäse, Fontal, Parmesan"
-      },
-      "bureau": {
-        "name": "Pizza The Bureau",
-        "description": "Tomatensauce, Mozzarella, Hackfleisch, Geräucherter Putenschinken, Champignons, Oregano"
-      },
-      "custom": {
-        "name": "Pizza nach Wahl",
-        "description": "Zusammenstellung durch unseren Gast"
+      "kitchen": {
+        "name": "Küchenzubehör",
+        "description": "Werkzeuge und Geräte für einfaches Kochen"
       }
     },
-    "pasta": {
-      "penneToscana": {
-        "name": "Penne alla Toscana",
-        "description": "Geräucherter Putenschinken, Champignons, Spinat, Basilikum"
+    "beauty": {
+      "skincare": {
+        "name": "Hautpflege",
+        "description": "Pflege und schütze deine Haut"
       },
-      "tagliatelleAlfredo": {
-        "name": "Tagliatelle Alfredo",
-        "description": "Gebratene Hähnchenstreifen, Crème Fraîche, Oregano"
+      "makeup": {
+        "name": "Make-up",
+        "description": "Von dezent bis glamourös"
       },
-      "linguineMamma": {
-        "name": "Linguine della Mamma",
-        "description": "Thunfisch, Champignons, Tomatensauce"
-      },
-      "spaghettiPuttanesca": {
-        "name": "Spaghetti Puttanesca",
-        "description": "Gesalzene Sardellen, Kirschtomaten, Schwarze Oliven, Basilikum, Olivenöl"
-      },
-      "spaghettiDelmare": {
-        "name": "Spaghetti Delmare",
-        "description": "Tintenfisch, Garnelen, Muscheln, Kirschtomaten, Olivenöl, Basilikum"
-      }
-    },
-    "traditional": {
-      "beefTagine": {
-        "name": "Rindfleisch-Tajine",
-        "description": "Mit Zwiebeln und Mandeln"
-      },
-      "meatballTagine": {
-        "name": "Hackfleischbällchen-Tajine",
-        "description": "Mit Tomatensauce und Ei"
-      },
-      "chickenTagine": {
-        "name": "Hähnchen-Tajine",
-        "description": "Mit kandierten Zitronen und Oliven"
-      },
-      "moroccanTagine": {
-        "name": "Fisch-Tajine nach marokkanischer Art",
-        "description": "Je nach Tagesangebot"
-      },
-      "couscous": {
-        "beef": "Rindfleisch-Couscous",
-        "chicken": "Hähnchen-Couscous",
-        "vegetable": "Gemüse-Couscous",
-        "moroccan": {
-          "name": "Couscous nach marokkanischer Art",
-          "description": "Grieß, Zwiebeln und karamellisierte Rosinen, Kichererbsen"
-        }
-      },
-      "seffa": {
-        "name": "Seffa mit Engelshaar-Nudeln",
-        "description": "Mit Rind oder Hähnchen",
-        "ingredients": "Sehr feine Vermicelli, Trockenfrüchte, Rosinen, Mandeln, Datteln"
-      }
-    },
-    "meatAndPoultry": {
-      "beefFillet": {
-        "name": "Rinderfilet",
-        "description": "220 g"
-      },
-      "beefSteak": {
-        "name": "Rindersteak",
-        "description": "220 g"
-      },
-      "ossoBucco": {
-        "name": "Osso Bucco",
-        "description": "Geschmorte Kalbshaxe"
-      },
-      "mincedBeef": {
-        "name": "Hackfleisch",
-        "description": "Mit Champignons de Paris"
-      },
-      "chickenCutlet": {
-        "name": "Panierte Hähnchenbrust"
-      },
-      "lemonChicken": {
-        "name": "Hähnchenbrust mit Zitrone"
-      },
-      "mincedChicken": {
-        "name": "Hackfleisch vom Hähnchen",
-        "description": "Mit zwei asiatischen Pilzsorten"
-      },
-      "moroccanSkewers": {
-        "name": "Marokkanische Hähnchenspieße"
-      },
-      "cordonBleu": {
-        "name": "Hähnchen-Cordon Bleu",
-        "description": "Mit Estragon-Sauce"
-      },
-      "accompaniments": {
-        "title": "Beilagen",
-        "options": "Gemüse oder Pasta, Kartoffelpüree, Frische Pommes, Reis"
-      }
-    },
-    "fish": {
-      "dorade": {
-        "name": "Dorade aus dem Holzofen"
-      },
-      "saintPierre": {
-        "name": "Filet vom Petersfisch nach marokkanischer Art"
-      },
-      "swordfish": {
-        "name": "Gegrilltes Schwertfischfilet",
-        "description": "Mit grüner Sauce aus Olivenöl"
-      },
-      "salmon": {
-        "name": "Gegrilltes Lachsfilet",
-        "description": "Nach marokkanischer Art"
+      "fragrance": {
+        "name": "Parfüms",
+        "description": "Unverwechselbare Düfte für jeden Stil"
       }
     },
     "pricing": {
-      "salads": "Ab 85 DH",
-      "hotStarters": "Ab 70 DH",
-      "starters": "Ab 70 DH",
-      "traditional": "Ab 90 DH",
-      "pizza": "Ab 70 DH",
-      "pasta": "Ab 90 DH",
-      "meatAndPoultry": "Ab 110 DH",
-      "fish": "Ab 180 DH"
+      "electronics": "Ab 499 DH",
+      "fashion": "Ab 129 DH",
+      "homeDecor": "Ab 89 DH",
+      "beauty": "Ab 59 DH",
+      "toys": "Ab 39 DH",
+      "sports": "Ab 99 DH"
     }
   },
   "book": {
-    "1": "Buchungskalender"
+    "1": "Bestellungen verfolgen"
   },
   "foot": {
-  "1": "KONTAKTIEREN SIE UNS",
-  "2": "ÖFFNUNGSZEITEN",
-  "3": "ADRESSE",
-  "4": "ÜBER UNS",
-  "5": "Unsere Geschichte",
-  "6": "Menü",
-  "7": "ENTDECKEN",
-  "8": "Veranstaltungen",
-  "9": "Galerie",
-  "10": "INFORMATIONEN",
-  "11": "Reservierungen",
-  "12": "Kontakt",
-  "13": "IMPRESSUM",
-  "14": "DATENSCHUTZRICHTLINIE",
-  "15": "COOKIE-VERWALTUNG"
-}
-
+    "1": "KONTAKT",
+    "2": "KUNDENSERVICE",
+    "3": "UNSER STANDORT",
+    "4": "ÜBER UNS",
+    "5": "Unsere Geschichte",
+    "6": "Produktkategorien",
+    "7": "ENTDECKEN",
+    "8": "Blog & Tipps",
+    "9": "Galerie",
+    "10": "INFORMATIONEN",
+    "11": "Versand & Rückgabe",
+    "12": "Kontakt",
+    "13": "AGB",
+    "14": "DATENSCHUTZRICHTLINIE",
+    "15": "COOKIE-EINSTELLUNGEN"
+  }
 }

@@ -4,6 +4,8 @@ import { gsap } from "gsap";
 import { Link, useNavigate } from "react-router-dom";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import Alert from "./Alert";
+import { Slider } from "@mui/material";
+import { FaFilter } from "react-icons/fa";
 
 const Shop = () => {
   const navigate = useNavigate();
@@ -14,15 +16,22 @@ const Shop = () => {
   const [error, setError] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const productsPerPage = 8;
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const productsResponse = await axios.get(
-          "http://127.0.0.1:8000/api/produits"
-        );
+        const [productsResponse, categoriesResponse] = await Promise.all([
+          axios.get("http://127.0.0.1:8000/api/produits"),
+          axios.get("http://127.0.0.1:8000/api/categories"),
+        ]);
+
         setProducts(productsResponse.data);
+        setCategories(categoriesResponse.data);
         setError(null);
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
@@ -232,6 +241,10 @@ const Shop = () => {
     }
   };
 
+  const handlePriceChange = (event, newValue) => {
+    setPriceRange(newValue);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center  bg-background dark:bg-darkBackground">
@@ -256,9 +269,17 @@ const Shop = () => {
     );
   }
 
-  const filteredProducts = products.filter((product) =>
-    product.nom.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.nom
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" ||
+      product.category_id === parseInt(selectedCategory);
+    const matchesPrice =
+      product.prix_HT >= priceRange[0] && product.prix_HT <= priceRange[1];
+    return matchesSearch && matchesCategory && matchesPrice;
+  });
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -302,6 +323,99 @@ const Shop = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+      </div>
+
+      <div className="mb-8">
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mb-4"
+        >
+          <FaFilter />
+          {showFilters ? "Hide Filters" : "Show Filters"}
+        </button>
+
+        {showFilters && (
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Categories
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setSelectedCategory("all")}
+                    className={`px-4 py-2 rounded-full text-sm ${
+                      selectedCategory === "all"
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    All
+                  </button>
+                  {categories.map((category) => (
+                    <button
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category.id)}
+                      className={`px-4 py-2 rounded-full text-sm ${
+                        selectedCategory === category.id
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
+                    >
+                      {category.nom}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Price Range
+                </h3>
+                <div className="px-4">
+                  <Slider
+                    value={priceRange}
+                    onChange={handlePriceChange}
+                    valueLabelDisplay="auto"
+                    min={0}
+                    max={1000}
+                    step={10}
+                    sx={{
+                      color: "#2563eb",
+                      "& .MuiSlider-thumb": {
+                        backgroundColor: "#ffffff",
+                        border: "2px solid currentColor",
+                      },
+                      "& .MuiSlider-valueLabel": {
+                        backgroundColor: "#2563eb",
+                      },
+                    }}
+                  />
+                  <div className="flex justify-between mt-2 text-sm text-gray-600">
+                    <span>${priceRange[0]}</span>
+                    <span>${priceRange[1]}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-between text-sm text-gray-600">
+                <span>{filteredProducts.length} products found</span>
+                <button
+                  onClick={() => {
+                    setSelectedCategory("all");
+                    setPriceRange([0, 1000]);
+                    setSearchTerm("");
+                  }}
+                  className="text-blue-600 hover:text-blue-800"
+                >
+                  Reset Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {currentProducts.length === 0 ? (

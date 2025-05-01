@@ -109,7 +109,7 @@ const AllProducts = () => {
           onChange={(e) => setSelectedCategory(e.target.value)}
           className="p-2 border rounded w-full md:w-1/4"
         >
-          <option value="">Toutes les catégories</option>
+          <option value="">Toutes les catégories</option> {/* Option par défaut */}
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>
               {cat.nom}

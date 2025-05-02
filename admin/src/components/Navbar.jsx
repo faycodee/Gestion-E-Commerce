@@ -6,37 +6,52 @@ import {
 import { FiLogOut } from "react-icons/fi";
 import { AiOutlineSetting, AiOutlineUser } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios pour les requêtes API
 
 const Navbar = () => {
   const [showNotif, setShowNotif] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [user, setUser] = useState(null);
+  const [commentCount, setCommentCount] = useState(0); // Nombre de commentaires
+  const [comments, setComments] = useState([]); // Liste des commentaires
+  const [showComments, setShowComments] = useState(false); // État pour afficher/masquer les commentaires
   const navigate = useNavigate();
 
   useEffect(() => {
-    // استرجاع بيانات المستخدم من localStorage
+    // Récupérer les données utilisateur depuis localStorage
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+
+    // Récupérer les commentaires des commandes
+    fetchCommentCount();
   }, []);
 
+  const fetchCommentCount = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/commandes");
+      const commandes = response.data;
+
+      // Filtrer les commandes avec des commentaires non vides
+      const filteredComments = commandes.filter(
+        (commande) => commande.commentaire && commande.commentaire.trim() !== ""
+      );
+      setCommentCount(filteredComments.length); // Mettre à jour le nombre de commentaires
+      setComments(filteredComments); // Stocker les commentaires
+    } catch (error) {
+      console.error("Erreur lors de la récupération des commentaires :", error);
+    }
+  };
+
   const handleLogout = () => {
-    // إضافة تأكيد قبل تسجيل الخروج
     const confirmLogout = window.confirm("Voulez-vous vraiment vous déconnecter?");
-    
     if (confirmLogout) {
-      // حذف بيانات المستخدم من localStorage
       localStorage.removeItem("auth_token");
       localStorage.removeItem("user");
-
       alert("✅ Vous avez été déconnecté !");
-      
-      // بدلاً من استخدام navigate، نقوم بإعادة تحميل الصفحة
-      // هذا سيضمن إعادة تحميل كامل التطبيق وتطبيق حالة المصادقة الجديدة
       window.location.href = "/login";
     }
-    // إذا اختار المستخدم "Cancel"، لن يتم تنفيذ أي إجراء
   };
 
   return (
@@ -47,22 +62,19 @@ const Navbar = () => {
         <div className="relative">
           <RiNotification3Line
             className="text-purple-600 text-xl cursor-pointer"
-            onClick={() => setShowNotif(!showNotif)}
+            onClick={() => setShowNotif(!showNotif)} // Toggle affichage des notifications
+            onDoubleClick={() => setShowComments(false)} // Double-clic pour masquer tous les commentaires
           />
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
 
           {showNotif && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg p-4 space-y-2 z-20">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-800">Messages</span>
-                <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">13</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-800">Sales</span>
-                <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">2</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-800">Alerts</span>
+              <div
+                className="flex justify-between items-center cursor-pointer"
+                onClick={() => setShowComments(!showComments)} // Toggle affichage des commentaires
+              >
+                <span className="text-gray-800">Commentaire</span>
+                <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">{commentCount}</span>
               </div>
             </div>
           )}
@@ -93,6 +105,24 @@ const Navbar = () => {
           )}
         </div>
       </div>
+
+      {/* Liste des commentaires */}
+      {showComments && (
+        <div className="absolute top-16 right-4 w-96 bg-white rounded-xl shadow-lg p-4 z-30">
+          <h3 className="text-lg font-bold mb-2">Commentaires</h3>
+          <ul className="space-y-2">
+            {comments.map((comment, index) => (
+              <li key={index} className="border-b pb-2">
+                <p className="text-gray-800 text-sm">{comment.commentaire}</p>
+                <p className="text-gray-500 text-xs">Commande ID: {comment.id}</p>
+              </li>
+            ))}
+          </ul>
+          {comments.length === 0 && (
+            <p className="text-gray-500 text-sm">Aucun commentaire disponible.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };

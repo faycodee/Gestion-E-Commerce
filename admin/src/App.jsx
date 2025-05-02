@@ -28,9 +28,9 @@ import LivraisonsList from "./components/LivraisonsList";
 import AddLivraison from "./components/AddLivraison";
 import EditLivraison from "./components/EditLivraison";
 import GenerateReport from "./components/Reports/GenerateReport";
-import CaracteristiquesList from "./components/AllCaracteristiques";
 import AddCaracteristique from "./components/AddCaracteristique";
-
+import AllCaracteristiques from "./components/AllCaracteristiques";
+import EditCaracteristique from "./components/EditCaracteristique";
 
 const App = () => {
   const token = localStorage.getItem("auth_token");
@@ -58,8 +58,8 @@ const App = () => {
               <Route path="/categories" element={<AllCategories />} />
               <Route path="/categories/add" element={<AddCategory />} />
               <Route path="/categories/edit/:id" element={<EditCategory />} />
-              <Route path="/tva" element={<TvaList />} />
-              <Route path="/tva/add" element={<TvaManagement />} />
+              <Route path="/tvas" element={<TvaList />} />
+              <Route path="/tvas/add" element={<TvaManagement />} />
 
               {/* Routes pour les Réductions */}
               <Route path="/reductions/list" element={<AllReduction/>} />
@@ -69,8 +69,9 @@ const App = () => {
               <Route path="/livraisons" element={<LivraisonsList />} />
               <Route path="/livraisons/add" element={<AddLivraison />} />
               <Route path="/livraisons/edit/:id" element={<EditLivraison />} />
-              <Route path="/caracteristiques" element={<CaracteristiquesList />} />
+              <Route path="/caracteristiques" element={<AllCaracteristiques />} />
               <Route path="/caracteristiques/add" element={<AddCaracteristique />} />
+              <Route path="/caracteristiques/edit/:id" element={<EditCaracteristique/>} />
             </Routes>
           </div>
         </div>

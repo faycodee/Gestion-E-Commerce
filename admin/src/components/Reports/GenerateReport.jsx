@@ -9,6 +9,8 @@ const GenerateReport = () => {
   const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
   const [factures, setFactures] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // État pour la page actuelle
+  const itemsPerPage = 15; // Nombre d'éléments par page
 
   useEffect(() => {
     Promise.all([
@@ -17,9 +19,6 @@ const GenerateReport = () => {
       axios.get("http://localhost:8000/api/users")
     ])
       .then(([ordersResponse, facturesResponse, usersResponse]) => {
-        console.log(ordersResponse.data);
-        console.log(usersResponse.data);
-        console.log(facturesResponse.data);
         setOrders(ordersResponse.data);
         setUsers(usersResponse.data);
         setFactures(facturesResponse.data);
@@ -34,15 +33,10 @@ const GenerateReport = () => {
     XLSX.writeFile(workbook, "orders.xlsx");
   };
 
-  // Fonction d'exportation PDF mise à jour
   const exportToPDF = () => {
     try {
-      // Créer une nouvelle instance de jsPDF
       const doc = new jsPDF();
-      
       doc.text("Order Report", 20, 10);
-      
-      // Définir les données pour le tableau
       const tableColumn = ["Order ID", "Customer", "Payment Status", "Delivery Status"];
       const tableRows = orders.map((order) => [
         order.id || "N/A",
@@ -50,8 +44,6 @@ const GenerateReport = () => {
         factures.find((facture) => facture.commande_id === order.id)?.payment_status || "Non renseigné",
         order.statut || "Non renseigné",
       ]);
-      
-      // Utiliser autoTable directement
       autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
@@ -60,11 +52,28 @@ const GenerateReport = () => {
         styles: { fontSize: 8 },
         headStyles: { fillColor: [66, 66, 66] }
       });
-      
-      // Enregistrer le PDF
       doc.save("orders.pdf");
     } catch (error) {
       console.error("Error generating PDF:", error);
+    }
+  };
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(orders.length / itemsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
     }
   };
 
@@ -83,7 +92,7 @@ const GenerateReport = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {currentItems.map((order) => (
               <tr key={order.id}>
                 <td className="border-b p-2">{order.id}</td>
                 <td className="border-b p-2">
@@ -97,6 +106,31 @@ const GenerateReport = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination controls */}
+      <div className="flex justify-center items-center gap-4 mt-4">
+        <button
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+          className={`px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 ${
+            currentPage === 1 && "opacity-50 cursor-not-allowed"
+          }`}
+        >
+          ⬅️ Précédent
+        </button>
+        <span className="text-gray-600">
+          Page {currentPage} / {totalPages}
+        </span>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className={`px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 ${
+            currentPage === totalPages && "opacity-50 cursor-not-allowed"
+          }`}
+        >
+          Suivant ➡️
+        </button>
       </div>
 
       <div className="flex gap-4 mt-4">

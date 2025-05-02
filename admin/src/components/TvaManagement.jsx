@@ -20,7 +20,7 @@ const TvaManagement = () => {
       setNom("");
       setPeriodeTva("");
       setTaux("");
-      navigate("/tva"); // Redirection vers /tva/list
+      navigate("/tvas"); // Redirection vers /tva/list
     } catch (err) {
       console.error("Erreur lors de l'ajout de la TVA :", err);
       alert("❌ Une erreur s'est produite.");
@@ -28,7 +28,7 @@ const TvaManagement = () => {
   };
 
   const handleCancel = () => {
-    navigate("/tva"); // Redirection vers /tva/list
+    navigate("/tvas"); // Redirection vers /tva/list
   };
 
   return (

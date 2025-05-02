@@ -86,6 +86,43 @@ const Sidebar = () => {
           )}
         </div>
 
+        {/* Dropdown for Categories */}
+        <div className="relative">
+          <button
+            onClick={() => setShowCategories(!showCategories)}
+            className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
+          >
+            <span className="flex items-center gap-2">
+              <List className="w-5 h-5" /> Categories
+            </span>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                showCategories ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          {showCategories && (
+            <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
+              <Link
+                to="/categories"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/categories") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                All Categories
+              </Link>
+              <Link
+                to="/categories/add"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/categories/add") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                Add Category
+              </Link>
+            </div>
+          )}
+        </div>
+
         {/* Dropdown for Reductions */}
         <div className="relative">
           <button
@@ -123,6 +160,43 @@ const Sidebar = () => {
           )}
         </div>
 
+        {/* Dropdown for TVA */}
+        <div className="relative">
+          <button
+            onClick={() => setShowTva(!showTva)}
+            className="flex items-center justify-between w-full p-2 rounded text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
+          >
+            <span className="flex items-center gap-2">
+              <Percent className="w-5 h-5" /> TVA
+            </span>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                showTva ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          {showTva && (
+            <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
+              <Link
+                to="/tvas"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/tvas") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                All TVA
+              </Link>
+              <Link
+                to="/tvas/add"
+                className={`block px-4 py-2 hover:bg-gray-50 ${
+                  isActive("/tvas/add") ? "font-semibold text-indigo-600" : ""
+                }`}
+              >
+                Add TVA
+              </Link>
+            </div>
+          )}
+        </div>
+
         {/* Dropdown for Caractéristiques */}
         <div className="relative">
           <button
@@ -140,29 +214,35 @@ const Sidebar = () => {
           </button>
           {showCaracteristiques && (
             <div className="ml-4 mt-1 bg-white border rounded shadow text-sm z-10">
-              <Link
-                to="/caracteristiques"
-                className={`block px-4 py-2 hover:bg-gray-50 ${
-                  isActive("/caracteristiques")
-                    ? "font-semibold text-indigo-600"
-                    : ""
-                }`}
-              >
-                All Caractéristiques
-              </Link>
+                      <Link
+          to="/caracteristiques"
+          className={`block px-4 py-2 hover:bg-gray-50 ${
+            isActive("/caracteristiques") ? "font-semibold text-indigo-600" : ""
+          }`}
+        >
+          All Caractéristiques
+        </Link>
               <Link
                 to="/caracteristiques/add"
                 className={`block px-4 py-2 hover:bg-gray-50 ${
-                  isActive("/caracteristiques/add")
-                    ? "font-semibold text-indigo-600"
-                    : ""
+                  isActive("/caracteristiques/add") ? "font-semibold text-indigo-600" : ""
                 }`}
               >
-                Add Caractéristiques
+                Add Caractéristique
               </Link>
             </div>
           )}
         </div>
+
+        {/* Link for Livraisons */}
+        <Link
+          to="/livraisons"
+          className={`flex items-center gap-2 p-2 rounded ${
+            isActive("/livraisons") ? "bg-gray-100 font-semibold" : "text-gray-700"
+          } hover:bg-gray-100 transition`}
+        >
+          <Package className="w-5 h-5" /> Livraisons
+        </Link>
 
         <Link
           to="/customers"

@@ -294,7 +294,7 @@ const Dashboard = () => {
           
           salesDataPoints.push({
             name: dateStr,
-            المبيعات: dayOrders.length * Math.floor(Math.random() * 200 + 50)
+            Ventes: dayOrders.length * Math.floor(Math.random() * 200 + 50)
           });
         }
         break;
@@ -308,8 +308,8 @@ const Dashboard = () => {
           weekStart.setDate(date.getDate() - date.getDay());
           
           salesDataPoints.push({
-            name: `أسبوع ${4-i}`,
-            المبيعات: Math.floor(Math.random() * 1000 + 500)
+            name: `semaine ${4-i}`,
+            Ventes: Math.floor(Math.random() * 1000 + 500)
           });
         }
         break;
@@ -317,7 +317,7 @@ const Dashboard = () => {
       case 'month':
       default:
         // Last 6 months
-        const months = ['يناير', 'فبراير', 'مارس', 'إبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+        const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
         const currentMonth = now.getMonth();
         
         for (let i = 5; i >= 0; i--) {
@@ -325,7 +325,7 @@ const Dashboard = () => {
           
           salesDataPoints.push({
             name: months[monthIndex],
-            المبيعات: Math.floor(Math.random() * 5000 + 1000)
+            Ventes: Math.floor(Math.random() * 5000 + 1000)
           });
         }
         break;
@@ -389,13 +389,13 @@ const Dashboard = () => {
 
   const arabicStats = [
     {
-      title: "معدل التحويل",
+      title: " Taux de conversion",
       value: `${conversionRate}%`,
       icon: <ArrowTrendingUpIcon className="h-6 w-6" />,
       color: "bg-violet-100 text-violet-600",
     },
     {
-      title: "السلات المهجورة",
+      title: "Paniers abandonnés",
       value: abandonedCarts,
       icon: <ArchiveBoxXMarkIcon className="h-6 w-6" />,
       color: "bg-rose-100 text-rose-600",
@@ -436,7 +436,7 @@ const Dashboard = () => {
       <div 
         className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4 rounded-lg shadow-md transform transition-all duration-500 hover:scale-105"
       >
-        <h2 className="text-xl font-bold text-center" dir="rtl">لوحة الإحصائيات (تابلو دو بور ستاتيستيك)</h2>
+        <h2 className="text-xl font-bold text-center" dir="rtl">Panneau de statistiques</h2>
       </div>
 
       {/* Arabic Stats Section */}
@@ -467,25 +467,25 @@ const Dashboard = () => {
         className="bg-white rounded-2xl shadow-md p-4 mb-6 transform transition hover:shadow-lg duration-300"
       >
         <div className="flex justify-between items-center mb-4" dir="rtl">
-          <h2 className="text-lg font-semibold">المبيعات حسب الفترة الزمنية</h2>
+          <h2 className="text-lg font-semibold">Ventes par période</h2>
           <div className="flex space-x-2">
             <button 
               onClick={() => setTimeframeOption("day")}
               className={`px-3 py-1 rounded transition-colors duration-300 ${timeframeOption === "day" ? "bg-indigo-600 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
             >
-              يومي
+              tous les jours
             </button>
             <button 
               onClick={() => setTimeframeOption("week")}
               className={`px-3 py-1 rounded transition-colors duration-300 ${timeframeOption === "week" ? "bg-indigo-600 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
             >
-              أسبوعي
+              hebdomadaire
             </button>
             <button 
               onClick={() => setTimeframeOption("month")}
               className={`px-3 py-1 rounded transition-colors duration-300 ${timeframeOption === "month" ? "bg-indigo-600 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
             >
-              شهري
+              mensuel
             </button>
           </div>
         </div>
@@ -495,7 +495,7 @@ const Dashboard = () => {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="المبيعات" fill="#4338CA">
+            <Bar dataKey="Ventes" fill="#4338CA">
               {salesData.map((entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
@@ -512,7 +512,7 @@ const Dashboard = () => {
         ref={productsChartRef}
         className="bg-white rounded-2xl shadow-md p-4 mb-6 transform transition hover:shadow-lg duration-300"
       >
-        <h2 className="text-lg font-semibold mb-4" dir="rtl">المنتجات الأكثر مبيعا</h2>
+        <h2 className="text-lg font-semibold mb-4" dir="rtl">Produits les plus vendus</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
             data={topProducts}
@@ -596,7 +596,7 @@ const Dashboard = () => {
 
       {/* Footer */}
       <div className="bg-white p-4 rounded-lg shadow-md text-center text-gray-500 mt-8">
-        <p>© 2025 Dashboard. All rights reserved.</p>
+        <p>&copy; 2025 Dashboard. All rights reserved.</p>
       </div>
     </div>
   );

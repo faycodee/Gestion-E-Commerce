@@ -118,49 +118,59 @@ const PopUp = ({
         return;
       }
 
-      // Calculate points to award
+      // Calculate points
       const pointsToAward = calculatePointsReward(total);
-      const currentPoints = parseInt(user.points_fidélité);
-      console.log("Current points:", currentPoints);
-      console.log("pointsToAward:", pointsToAward);
-      // Convert to number, default to 0 if null/undefined
+      const currentPoints = parseInt(user.points_fidélité) || 0; // Ensure it's a number
       const newTotalPoints = currentPoints + pointsToAward;
-      console.log("newTotalPoints:", newTotalPoints);
 
-      console.log("Points calculation:", {
-        currentPoints,
-        pointsToAward,
-        newTotalPoints,
-      });
-
+      // Update user data with all required fields
       try {
+        const userUpdateData = {
+          name: formData.name,
+          tele: formData.tele,
+          adresse: formData.adresse,
+          points_fidélité: newTotalPoints,
+          email: user.email, // Include email
+        };
+
+        console.log("Sending user update with data:", userUpdateData);
+
         const pointsUpdateResponse = await axios.put(
           `http://localhost:8000/api/users/${user.id}`,
-          {
-            tele: formData.tele,
-            adresse: formData.adresse,
-            points_fidélité: newTotalPoints,
-          },
+          userUpdateData,
           {
             headers: {
               "Content-Type": "application/json",
+              Accept: "application/json",
             },
           }
         );
 
+        if (!pointsUpdateResponse.data) {
+          throw new Error("No response data from points update");
+        }
+
         console.log("Points update successful:", pointsUpdateResponse.data);
       } catch (error) {
-        console.error("Points update failed:", error.response?.data);
-        throw error;
+        console.error("Points update failed:", {
+          error: error.response?.data || error.message,
+          status: error.response?.status,
+          details: error.response?.data?.message
+        });
+        
+        // Show specific error message to user
+        alert(`Failed to update user data: ${error.response?.data?.message || error.message}`);
+        setIsSubmitting(false);
+        return;
       }
 
-      // Create the order
+      // Continue with order creation...
       const orderResponse = await axios.post(
         "http://localhost:8000/api/commandes",
         {
           user_id: user.id,
           commentaire: formData.commentaire,
-          date_achat: new Date().toISOString().split("T")[0], // Format date as YYYY-MM-DD
+          date_achat: new Date().toISOString().split("T")[0],
           statut: "Pending",
         }
       );
@@ -249,8 +259,13 @@ const PopUp = ({
       );
       onClose(); // Close the popup
     } catch (error) {
-      console.error("Error placing order:", error);
-      alert("Failed to place the order. Please try again.");
+      console.error("Error placing order:", {
+        error: error.response?.data || error.message,
+        status: error.response?.status,
+        details: error.response?.data?.message
+      });
+      
+      alert(`Failed to place order: ${error.response?.data?.message || error.message}`);
     } finally {
       setIsSubmitting(false);
     }
